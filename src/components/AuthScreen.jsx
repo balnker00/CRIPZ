@@ -67,23 +67,36 @@ export default function AuthScreen({ onAuth }) {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <label style={{ display: 'block', marginBottom: '14px' }}>
+          <div style={{ marginBottom: '14px' }}>
             <div style={{ color: '#555', fontSize: '0.55rem', letterSpacing: '0.2em', marginBottom: '6px' }}>USERNAME</div>
-            <input
-              type="text"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              autoComplete="username"
-              spellCheck={false}
-              style={{
-                width: '100%', boxSizing: 'border-box',
-                background: '#060e06', border: '1px solid #1a3a1a',
-                borderRadius: '4px', padding: '10px 12px',
-                color: '#00ff88', fontSize: '0.8rem',
-                fontFamily: 'inherit', outline: 'none',
-              }}
-            />
-          </label>
+            <div style={{
+              display: 'flex', alignItems: 'center',
+              background: '#060e06', border: '1px solid #1a3a1a',
+              borderRadius: '4px', overflow: 'hidden',
+            }}>
+              <input
+                type="text"
+                value={username}
+                onChange={e => setUsername(e.target.value.replace(/\s+/g, '_'))}
+                autoComplete="username"
+                spellCheck={false}
+                style={{
+                  flex: 1, minWidth: 0,
+                  background: 'transparent', border: 'none',
+                  padding: '10px 12px',
+                  color: '#00ff88', fontSize: '0.8rem',
+                  fontFamily: 'inherit', outline: 'none',
+                }}
+              />
+              <span style={{
+                color: '#2a5a2a', fontSize: '0.65rem',
+                paddingRight: '10px', whiteSpace: 'nowrap',
+                userSelect: 'none',
+              }}>
+                @cryptoripz.com
+              </span>
+            </div>
+          </div>
 
           <label style={{ display: 'block', marginBottom: '20px' }}>
             <div style={{ color: '#555', fontSize: '0.55rem', letterSpacing: '0.2em', marginBottom: '6px' }}>PASSWORD</div>

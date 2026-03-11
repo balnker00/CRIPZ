@@ -17,7 +17,7 @@ export function useAuth() {
   }, [])
 
   async function handleAuth(mode, username, password) {
-    const email = `${username.toLowerCase().replace(/\s+/g, '_')}@cripz.game`
+    const email = `${username.toLowerCase().replace(/\s+/g, '_')}@cryptoripz.com`
     if (mode === 'signup') {
       const { error } = await supabase.auth.signUp({
         email,
