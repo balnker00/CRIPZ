@@ -686,9 +686,8 @@ main {
   letter-spacing: 0.12em;
   padding: 2px 6px;
   border-radius: 2px;
-  align-self: flex-start;
-  margin-bottom: 6px;
   border: 1px solid transparent;
+  line-height: 1.4;
 }
 
 .rarity-common    .card-rarity-badge { background: rgba(200,200,200,0.08); color: #999;          border-color: #666; }
@@ -1069,3 +1068,215 @@ main {
   .about-table td { padding: 0.35rem 0.4rem; }
   header { padding: 0.8rem 1rem; }
 }
+
+/* ══════════════════════════════
+   THEME SWITCH BUTTON
+══════════════════════════════ */
+.theme-switch {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 500;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  padding: 0.45rem 0.9rem;
+  background: transparent;
+  border: 1px solid rgba(0, 255, 153, 0.35);
+  color: rgba(0, 255, 153, 0.6);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.theme-switch:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(0, 255, 153, 0.06);
+}
+
+/* ══════════════════════════════
+   LIGHT THEME
+══════════════════════════════ */
+[data-theme="light"] {
+  --bg:     #f2f0e8;
+  --green:  #007744;
+  --red:    #cc2200;
+  --purple: #7700cc;
+  --gold:   #aa7700;
+  --orange: #cc5500;
+  --blue:   #1144bb;
+  --dim:    #e4e2da;
+  --border: #ccc8bc;
+  --text:   #1a1a14;
+}
+
+[data-theme="light"] body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* No scanlines in light mode */
+[data-theme="light"] body::before { opacity: 0; }
+
+/* Subtle ink grid */
+[data-theme="light"] body::after {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+[data-theme="light"] header {
+  background: rgba(242,240,232,0.95);
+  border-bottom-color: rgba(0,119,68,0.2);
+}
+
+[data-theme="light"] .rainbow-bar {
+  background: var(--green);
+  box-shadow: 0 0 6px rgba(0,119,68,0.4);
+}
+
+[data-theme="light"] .stats-bar {
+  background: rgba(0,119,68,0.04);
+  border-bottom-color: rgba(0,119,68,0.12);
+}
+
+[data-theme="light"] .stat-val  { color: var(--green); }
+[data-theme="light"] .stat-label { opacity: 0.55; }
+
+/* Pack */
+[data-theme="light"] .pack {
+  background: linear-gradient(135deg, #eeeae0 0%, #e8e4d8 50%, #eeeae0 100%);
+  border-color: var(--green);
+  box-shadow: 0 0 20px rgba(0,119,68,0.15), inset 0 0 20px rgba(0,0,0,0.03);
+}
+
+[data-theme="light"] .pack::before {
+  background: linear-gradient(45deg, transparent 30%, rgba(0,119,68,0.05) 50%, transparent 70%);
+}
+
+[data-theme="light"] .pack-wrapper:hover .pack {
+  box-shadow: 0 0 40px rgba(0,119,68,0.3), 0 0 80px rgba(0,119,68,0.08);
+}
+
+[data-theme="light"] .pack-name { color: var(--green); }
+[data-theme="light"] .pack-sub  { color: rgba(0,119,68,0.5); }
+
+/* Cards */
+[data-theme="light"] .card.rarity-common    { border-color: #bbb; }
+[data-theme="light"] .card.rarity-rare      { border-color: var(--blue);   box-shadow: 0 0 12px rgba(17,68,187,0.2); }
+[data-theme="light"] .card.rarity-epic      { border-color: var(--purple); box-shadow: 0 0 15px rgba(119,0,204,0.25); }
+[data-theme="light"] .card.rarity-legendary { border-color: var(--orange); }
+
+[data-theme="light"] .card.rarity-golden-common,
+[data-theme="light"] .card.rarity-golden-rare,
+[data-theme="light"] .card.rarity-golden-epic,
+[data-theme="light"] .card.rarity-golden-legendary {
+  border-color: var(--gold);
+}
+
+[data-theme="light"] .rarity-common    .card-bg { background: radial-gradient(circle at 50% 50%, #f8f6f0 0%, #f0ede6 100%); }
+[data-theme="light"] .rarity-rare      .card-bg { background: radial-gradient(circle at 30% 30%, #eef0ff 0%, #ece8e0 100%); }
+[data-theme="light"] .rarity-epic      .card-bg { background: radial-gradient(circle at 70% 30%, #f5eeff 0%, #ece8e0 100%); }
+[data-theme="light"] .rarity-legendary .card-bg { background: radial-gradient(circle at 50% 0%,  #fff4ee 0%, #ece8e0 100%); }
+[data-theme="light"] .rarity-golden-common   .card-bg { background: radial-gradient(circle at 50% 50%, #fff8e8 0%, #f0ece0 100%); }
+[data-theme="light"] .rarity-golden-rare     .card-bg { background: radial-gradient(circle at 30% 30%, #fff8e0 0%, #ece8d8 100%); }
+[data-theme="light"] .rarity-golden-epic     .card-bg { background: radial-gradient(circle at 70% 30%, #fff6e0 0%, #ece8d8 100%); }
+[data-theme="light"] .rarity-golden-legendary .card-bg { background: radial-gradient(circle at 50% 0%,  #fff4d8 0%, #ece8d8 100%); }
+
+[data-theme="light"] .card-name        { color: #111; }
+[data-theme="light"] .card-ticker      { color: var(--green); }
+[data-theme="light"] .card-stat-label  { color: rgba(0,0,0,0.4); }
+[data-theme="light"] .card-stat-val    { color: #222; }
+[data-theme="light"] .card-divider     { background: rgba(0,0,0,0.1); }
+[data-theme="light"] .card-image       { background: rgba(0,0,0,0.05); }
+
+[data-theme="light"] .rarity-common    .card-rarity-badge { background: rgba(0,0,0,0.06); color: #666; border-color: #aaa; }
+[data-theme="light"] .rarity-rare      .card-rarity-badge { background: rgba(17,68,187,0.1); }
+[data-theme="light"] .rarity-epic      .card-rarity-badge { background: rgba(119,0,204,0.1); }
+[data-theme="light"] .rarity-legendary .card-rarity-badge { background: rgba(204,85,0,0.1); }
+
+[data-theme="light"] .rarity-golden-common   .card-rarity-badge,
+[data-theme="light"] .rarity-golden-rare     .card-rarity-badge,
+[data-theme="light"] .rarity-golden-epic     .card-rarity-badge,
+[data-theme="light"] .rarity-golden-legendary .card-rarity-badge { background: rgba(170,119,0,0.12); }
+
+[data-theme="light"] .card-golden-tag { background: rgba(170,119,0,0.12); }
+
+/* Tabs */
+[data-theme="light"] .tabs             { border-bottom-color: rgba(0,119,68,0.2); }
+[data-theme="light"] .tab-btn          { color: rgba(0,80,40,0.45); }
+[data-theme="light"] .tab-btn:hover    { color: var(--green); }
+[data-theme="light"] .tab-btn.active   { color: var(--green); border-bottom-color: var(--green); }
+[data-theme="light"] .tab-badge        { background: rgba(0,119,68,0.1); color: var(--green); }
+
+/* Filter buttons */
+[data-theme="light"] .filter-btn       { border-color: rgba(0,0,0,0.18); color: rgba(0,0,0,0.45); }
+[data-theme="light"] .filter-btn:hover,
+[data-theme="light"] .filter-btn.active { border-color: var(--green); color: var(--green); background: rgba(0,119,68,0.06); }
+
+/* Buttons */
+[data-theme="light"] .pull-btn         { border-color: var(--green); color: var(--green); }
+[data-theme="light"] .pull-btn::before { background: var(--green); }
+[data-theme="light"] .pull-btn:hover:not(:disabled) { color: #fff; }
+
+[data-theme="light"] .count-btn        { border-color: rgba(0,119,68,0.35); color: rgba(0,119,68,0.65); }
+[data-theme="light"] .count-btn:hover,
+[data-theme="light"] .count-btn.active { border-color: var(--green); color: var(--green); background: rgba(0,119,68,0.06); }
+
+/* Notification */
+[data-theme="light"] .notif {
+  background: #f8f6f0;
+  border-color: #d0ccc0;
+  border-left-color: var(--green);
+  color: var(--text);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+[data-theme="light"] .notif.rare { border-left-color: var(--gold); }
+
+/* Empty state */
+[data-theme="light"] .empty-state      { border-color: rgba(0,0,0,0.1); }
+[data-theme="light"] .empty-text       { color: rgba(0,0,0,0.3); }
+
+/* Codex unknown */
+[data-theme="light"] .codex-unknown    { opacity: 0.15 !important; }
+
+/* About panel */
+[data-theme="light"] .about-section-title { color: var(--green); border-bottom-color: rgba(0,119,68,0.15); }
+[data-theme="light"] .about-desc       { color: var(--text); }
+[data-theme="light"] .about-list li    { color: var(--text); }
+[data-theme="light"] .about-list li::before { color: var(--green); }
+[data-theme="light"] .about-list strong { color: #111; }
+[data-theme="light"] .about-table td   { border-bottom-color: rgba(0,0,0,0.06); }
+[data-theme="light"] .about-table th   { border-bottom-color: rgba(0,119,68,0.15); color: rgba(0,80,40,0.6); }
+
+/* Section label */
+[data-theme="light"] .section-label    { color: var(--green); }
+
+/* Theme switch (light mode state) */
+[data-theme="light"] .theme-switch {
+  border-color: rgba(0,119,68,0.4);
+  color: rgba(0,100,50,0.7);
+}
+[data-theme="light"] .theme-switch:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(0,119,68,0.08);
+}
+
+/* Loading screen in light mode */
+[data-theme="light"] .loading-screen { background: var(--bg); }
+[data-theme="light"] .loading-crypto { color: var(--green); text-shadow: 0 0 20px rgba(0,119,68,0.4); }
+[data-theme="light"] .loading-ripz   { color: var(--red); }
+[data-theme="light"] .loading-tagline { color: var(--red); }
+[data-theme="light"] .loading-bar    { background: var(--green); box-shadow: 0 0 8px rgba(0,119,68,0.6); }
+[data-theme="light"] .loading-bar-wrap { background: rgba(0,119,68,0.1); }
+[data-theme="light"] .loading-status { color: rgba(0,100,50,0.5); }
+
+/* Auth screen in light mode */
+[data-theme="light"] .logo-crypto { color: var(--green); }
+[data-theme="light"] .logo-ripz   { color: var(--red); }
+[data-theme="light"] .tagline     { color: var(--red); }
+[data-theme="light"] .ticker-badge { color: var(--red); border-color: var(--red); }

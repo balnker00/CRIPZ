@@ -130,10 +130,24 @@ export function useGame(user) {
     setTimeout(() => setPulling(false), pullCount * 140 + 500)
   }, [pulling, pullCount, coins, user, showNotif])
 
+  function parseNum(val) {
+    if (!val && val !== 0) return 0
+    if (typeof val === 'number') return val
+    const s = String(val).replace(/[$,\s]/g, '').toUpperCase()
+    const n = parseFloat(s)
+    if (isNaN(n)) return 0
+    if (s.endsWith('B')) return n * 1_000_000_000
+    if (s.endsWith('M')) return n * 1_000_000
+    if (s.endsWith('K')) return n * 1_000
+    return n
+  }
+
   const stats = {
-    totalPulls: collection.length,
-    totalCards: collection.length,
-    unique:     new Set(collection.map(c => c.coin?.['TICKER']).filter(Boolean)).size,
+    totalPulls:    collection.length,
+    totalCards:    collection.length,
+    unique:        new Set(collection.map(c => c.coin?.['TICKER']).filter(Boolean)).size,
+    totalHolders:  collection.reduce((s, c) => s + parseNum(c.coin?.['HOLDERS']), 0),
+    totalMC:       collection.reduce((s, c) => s + parseNum(c.coin?.['MARKET CAP']), 0),
     rarest: collection.length > 0
       ? collection.reduce(
           (b, p) => RARITY_ORDER.indexOf(p.rarity) > RARITY_ORDER.indexOf(b.rarity) ? p : b,

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from './hooks/useAuth'
 import { useGame } from './hooks/useGame'
 import Header from './components/Header'
@@ -12,6 +12,12 @@ import AuthScreen from './components/AuthScreen'
 
 export default function App() {
   const [appLoading, setAppLoading] = useState(true)
+  const [theme, setTheme] = useState(() => localStorage.getItem('cripz-theme') || 'dark')
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('cripz-theme', theme)
+  }, [theme])
 
   const { user, authLoading, username, handleAuth, signOut } = useAuth()
 
@@ -73,6 +79,15 @@ export default function App() {
 
         <Notification msg={notif.msg} rare={notif.rare} show={notif.show} />
       </div>
+
+      {/* Theme switch — fixed bottom-left */}
+      <button
+        className="theme-switch"
+        onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
+        title="Toggle theme"
+      >
+        {theme === 'dark' ? '◑ LIGHT' : '● DARK'}
+      </button>
     </>
   )
 }
