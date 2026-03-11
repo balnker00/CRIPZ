@@ -18,7 +18,7 @@ export default function Header({ username, onSignOut }) {
         </div>
 
         {username && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
             <span style={{ color: '#00ff88', fontSize: '0.6rem', letterSpacing: '0.15em', opacity: 0.7 }}>
               {username.toUpperCase()}
             </span>

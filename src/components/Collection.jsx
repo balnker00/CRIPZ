@@ -1,18 +1,21 @@
 import Card from './Card'
 
 const FILTERS = [
-  { label: 'All',        value: 'ALL'       },
-  { label: 'Common',     value: 'C'         },
-  { label: 'Rare',       value: 'R'         },
-  { label: 'Super Rare', value: 'SR'        },
-  { label: 'Ultra Rare', value: 'UR'        },
-  { label: 'Legendary',  value: 'LEGENDARY' },
+  { label: 'All',       value: 'ALL'       },
+  { label: 'Common',    value: 'COMMON'    },
+  { label: 'Rare',      value: 'RARE'      },
+  { label: 'Epic',      value: 'EPIC'      },
+  { label: 'Legendary', value: 'LEGENDARY' },
+  { label: '★ Golden',  value: 'GOLDEN'    },
 ]
 
 export default function Collection({ collection, filter, setFilter }) {
-  const items = filter === 'ALL'
-    ? [...collection].reverse()
-    : [...collection].reverse().filter(c => c.rarity === filter)
+  const items = (() => {
+    const list = [...collection].reverse()
+    if (filter === 'ALL')    return list
+    if (filter === 'GOLDEN') return list.filter(c => c.rarity.startsWith('GOLDEN_'))
+    return list.filter(c => c.rarity === filter)
+  })()
 
   return (
     <>

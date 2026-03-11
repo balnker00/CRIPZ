@@ -10,6 +10,19 @@ function computeAge(createdAt) {
   return `${Math.floor(days / 365)}y`
 }
 
+function rarityLabel(rarity) {
+  if (rarity.startsWith('GOLDEN_')) return `★ ${rarity.replace('GOLDEN_', '')}`
+  return rarity
+}
+
+function rarityClass(rarity) {
+  return rarity.toLowerCase().replace('_', '-')
+}
+
+function dexscreenerUrl(coin) {
+  return `https://dexscreener.com/search?q=${encodeURIComponent(coin['TICKER'] ?? coin['NAME'] ?? '')}`
+}
+
 export default function Card({ coin, rarity, animate = false, delay = 0 }) {
   const [revealed, setRevealed] = useState(!animate)
   const [imgErr, setImgErr]     = useState(false)
@@ -20,19 +33,26 @@ export default function Card({ coin, rarity, animate = false, delay = 0 }) {
     return () => clearTimeout(t)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  function handleClick() {
+    window.open(dexscreenerUrl(coin), '_blank', 'noopener,noreferrer')
+  }
+
   return (
-    <div className={`card rarity-${rarity}${revealed ? ' revealed' : ''}`}>
+    <div
+      className={`card rarity-${rarityClass(rarity)}${revealed ? ' revealed' : ''}`}
+      onClick={handleClick}
+      title={`View ${coin['NAME']} on DexScreener`}
+    >
       <div className="card-bg" />
       <div className="card-content">
-        <div className="card-rarity-badge">{rarity}</div>
+        <div className="card-rarity-badge">{rarityLabel(rarity)}</div>
 
-        <div className="card-emoji">
+        <div className="card-image">
           {coin['IMAGE URL'] && !imgErr
             ? <img
                 src={coin['IMAGE URL']}
                 alt={coin['NAME']}
                 onError={() => setImgErr(true)}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
               />
             : <span style={{ fontSize: '1.8rem' }}>🪙</span>
           }

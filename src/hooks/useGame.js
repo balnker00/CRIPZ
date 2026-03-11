@@ -1,16 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { RARITIES, RARITY_ORDER } from '../data/gameData'
+import { rollRarity, RARITY_ORDER } from '../data/gameData'
 import { supabase } from '../lib/supabase'
-
-function rollRarity() {
-  const total = RARITIES.reduce((s, r) => s + r.weight, 0)
-  let roll = Math.random() * total
-  for (const r of RARITIES) {
-    roll -= r.weight
-    if (roll <= 0) return r.rarity
-  }
-  return 'C'
-}
 
 export function useGame(user) {
   const [coins, setCoins]               = useState([])
@@ -25,8 +15,10 @@ export function useGame(user) {
   const [notif, setNotif]               = useState({ msg: '', rare: false, show: false })
   const [flash, setFlash]               = useState(false)
   const [pulling, setPulling]           = useState(false)
-  const notifTimer = useRef(null)
-  const coinsRef = useRef([])
+  const notifTimer  = useRef(null)
+  const coinsRef    = useRef([])
+  // Stores DB-format cards: [{coin_id, rarity}] — one row per user
+  const userCardsRef = useRef([])
 
   // Fetch coins once on mount
   useEffect(() => {
@@ -47,23 +39,26 @@ export function useGame(user) {
       })
   }, [])
 
-  // Load user's saved collection when user + coins are ready
+  // Load user's collection (single row with cards array) when user + coins are ready
   useEffect(() => {
     setCollection([])
+    userCardsRef.current = []
     if (!user || !coinsReady) return
 
     supabase
       .from('user_collection')
-      .select('*')
+      .select('cards')
       .eq('user_id', user.id)
-      .order('pulled_at', { ascending: true })
+      .maybeSingle()
       .then(({ data, error }) => {
         if (error) { console.error('Failed to load collection:', error); return }
-        const loaded = (data ?? [])
-          .map(row => ({
-            id:     row.id,
-            coin:   coinsRef.current.find(c => c.id === row.coin_id),
-            rarity: row.rarity,
+        const dbCards = data?.cards ?? []
+        userCardsRef.current = dbCards
+        const loaded = dbCards
+          .map((c, i) => ({
+            id:     `db-${i}-${c.coin_id}`,
+            coin:   coinsRef.current.find(coin => coin.id === c.coin_id),
+            rarity: c.rarity,
           }))
           .filter(item => item.coin)
         setCollection(loaded)
@@ -95,17 +90,15 @@ export function useGame(user) {
     setRevealedCards(pulls)
     setCollection(prev => [...prev, ...pulls])
 
-    // Persist to DB if logged in
+    // Persist as single row with cards array
     if (user) {
+      const newDbCards = pulls.map(p => ({ coin_id: p.coin.id, rarity: p.rarity }))
+      userCardsRef.current = [...userCardsRef.current, ...newDbCards]
       supabase
         .from('user_collection')
-        .insert(pulls.map(p => ({
-          user_id: user.id,
-          coin_id: p.coin.id,
-          rarity:  p.rarity,
-        })))
+        .upsert({ user_id: user.id, cards: userCardsRef.current }, { onConflict: 'user_id' })
         .then(({ error }) => {
-          if (error) console.error('Failed to save pulls:', error)
+          if (error) console.error('Failed to save cards:', error)
         })
     }
 
@@ -113,12 +106,16 @@ export function useGame(user) {
       (b, p) => RARITY_ORDER.indexOf(p.rarity) > RARITY_ORDER.indexOf(b.rarity) ? p : b,
       pulls[0]
     )
-    if (best.rarity === 'LEGENDARY') {
-      showNotif(`💀 LEGENDARY!\n${best.coin['NAME']} ($${best.coin['TICKER']})`, true)
-    } else if (best.rarity === 'UR') {
-      showNotif(`✨ ULTRA RARE!\n${best.coin['NAME']} ($${best.coin['TICKER']})`, true)
-    } else if (best.rarity === 'SR') {
-      showNotif(`🌸 Super Rare: ${best.coin['NAME']}`, false)
+    const isGolden  = best.rarity.startsWith('GOLDEN_')
+    const baseRarity = isGolden ? best.rarity.replace('GOLDEN_', '') : best.rarity
+    const goldPrefix = isGolden ? '★ GOLDEN ' : ''
+
+    if (baseRarity === 'LEGENDARY') {
+      showNotif(`${goldPrefix}💀 LEGENDARY!\n${best.coin['NAME']} ($${best.coin['TICKER']})`, true)
+    } else if (baseRarity === 'EPIC') {
+      showNotif(`${goldPrefix}🟣 EPIC!\n${best.coin['NAME']} ($${best.coin['TICKER']})`, isGolden)
+    } else if (isGolden) {
+      showNotif(`★ GOLDEN ${baseRarity}: ${best.coin['NAME']}`, false)
     }
 
     setTimeout(() => setPulling(false), pullCount * 140 + 500)
@@ -127,7 +124,7 @@ export function useGame(user) {
   const stats = {
     totalPulls: collection.length,
     totalCards: collection.length,
-    unique:     new Set(collection.map(c => c.coin['TICKER'])).size,
+    unique:     new Set(collection.map(c => c.coin?.['TICKER']).filter(Boolean)).size,
     rarest: collection.length > 0
       ? collection.reduce(
           (b, p) => RARITY_ORDER.indexOf(p.rarity) > RARITY_ORDER.indexOf(b.rarity) ? p : b,
