@@ -1,11 +1,7 @@
 import Collection from './Collection'
 import Codex from './Codex'
+import About from './About'
 import { COINS } from '../data/gameData'
-
-const TABS = [
-  { id: 'collection', label: 'Collection' },
-  { id: 'codex',      label: 'Codex'      },
-]
 
 export default function TabsPanel({
   activeTab, setActiveTab,
@@ -16,20 +12,26 @@ export default function TabsPanel({
   return (
     <div className="tabs-wrapper">
       <div className="tabs">
-        {TABS.map(tab => (
-          <button
-            key={tab.id}
-            className={`tab-btn${activeTab === tab.id ? ' active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            {tab.label}
-            <span className="tab-badge">
-              {tab.id === 'collection'
-                ? collection.length
-                : `${uniqueCount}/${COINS.length}`}
-            </span>
-          </button>
-        ))}
+        <button
+          className={`tab-btn${activeTab === 'collection' ? ' active' : ''}`}
+          onClick={() => setActiveTab('collection')}
+        >
+          Collection
+          <span className="tab-badge">{collection.length}</span>
+        </button>
+        <button
+          className={`tab-btn${activeTab === 'codex' ? ' active' : ''}`}
+          onClick={() => setActiveTab('codex')}
+        >
+          Codex
+          <span className="tab-badge">{uniqueCount}/{COINS.length}</span>
+        </button>
+        <button
+          className={`tab-btn${activeTab === 'about' ? ' active' : ''}`}
+          onClick={() => setActiveTab('about')}
+        >
+          About
+        </button>
       </div>
 
       <div className="tab-panel active">
@@ -39,8 +41,10 @@ export default function TabsPanel({
             filter={collFilter}
             setFilter={setCollFilter}
           />
-        ) : (
+        ) : activeTab === 'codex' ? (
           <Codex collection={collection} />
+        ) : (
+          <About />
         )}
       </div>
     </div>

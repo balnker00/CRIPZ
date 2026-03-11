@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useGame } from './hooks/useGame'
 import Header from './components/Header'
 import StatsBar from './components/StatsBar'
@@ -5,8 +6,11 @@ import PackSection from './components/PackSection'
 import RevealArea from './components/RevealArea'
 import TabsPanel from './components/TabsPanel'
 import Notification from './components/Notification'
+import LoadingScreen from './components/LoadingScreen'
 
 export default function App() {
+  const [loading, setLoading] = useState(true)
+
   const {
     collection,
     pullCount, setPullCount,
@@ -22,31 +26,35 @@ export default function App() {
 
   return (
     <>
-      {flash && <div className="flash" />}
+      {loading && <LoadingScreen onDone={() => setLoading(false)} />}
 
-      <Header />
-      <StatsBar stats={stats} />
+      <div className={`app-content${loading ? ' app-content-hidden' : ''}`}>
+        {flash && <div className="flash" />}
 
-      <main>
-        <PackSection
-          pullCount={pullCount}
-          setPullCount={setPullCount}
-          onOpen={openPack}
-          pulling={pulling}
-        />
+        <Header />
+        <StatsBar stats={stats} />
 
-        <RevealArea cards={revealedCards} />
+        <main>
+          <PackSection
+            pullCount={pullCount}
+            setPullCount={setPullCount}
+            onOpen={openPack}
+            pulling={pulling}
+          />
 
-        <TabsPanel
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          collection={collection}
-          collFilter={collFilter}
-          setCollFilter={setCollFilter}
-        />
-      </main>
+          <RevealArea cards={revealedCards} />
 
-      <Notification msg={notif.msg} rare={notif.rare} show={notif.show} />
+          <TabsPanel
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            collection={collection}
+            collFilter={collFilter}
+            setCollFilter={setCollFilter}
+          />
+        </main>
+
+        <Notification msg={notif.msg} rare={notif.rare} show={notif.show} />
+      </div>
     </>
   )
 }
