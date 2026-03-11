@@ -27,10 +27,10 @@ export default function Card({ coin, rarity, animate = false, delay = 0 }) {
         <div className="card-rarity-badge">{rarity}</div>
 
         <div className="card-emoji">
-          {coin.image_url && !imgErr
+          {coin['IMAGE URL'] && !imgErr
             ? <img
-                src={coin.image_url}
-                alt={coin.name}
+                src={coin['IMAGE URL']}
+                alt={coin['NAME']}
                 onError={() => setImgErr(true)}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
               />
@@ -38,21 +38,21 @@ export default function Card({ coin, rarity, animate = false, delay = 0 }) {
           }
         </div>
 
-        <div className="card-name">{coin.name}</div>
-        <div className="card-ticker">${coin.ticker}</div>
+        <div className="card-name">{coin['NAME']}</div>
+        <div className="card-ticker">${coin['TICKER']}</div>
         <div className="card-divider" />
 
         <div className="card-stat">
           <span className="card-stat-label">MCAP</span>
-          <span className="card-stat-val neutral">{coin.market_cap ?? '?'}</span>
+          <span className="card-stat-val neutral">{coin['MARKET CAP'] ?? '?'}</span>
         </div>
         <div className="card-stat">
           <span className="card-stat-label">HOLDERS</span>
-          <span className="card-stat-val neutral">{coin.holders ?? '?'}</span>
+          <span className="card-stat-val neutral">{coin['HOLDERS'] ?? '?'}</span>
         </div>
         <div className="card-stat">
           <span className="card-stat-label">AGE</span>
-          <span className="card-stat-val neutral">{computeAge(coin.created_at)}</span>
+          <span className="card-stat-val neutral">{computeAge(coin['CREATED AT'])}</span>
         </div>
       </div>
     </div>

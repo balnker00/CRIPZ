@@ -74,11 +74,11 @@ export function useGame() {
       pulls[0]
     )
     if (best.rarity === 'LEGENDARY') {
-      showNotif(`💀 LEGENDARY!\n${best.coin.name} ($${best.coin.ticker})`, true)
+      showNotif(`💀 LEGENDARY!\n${best.coin['NAME']} ($${best.coin['TICKER']})`, true)
     } else if (best.rarity === 'UR') {
-      showNotif(`✨ ULTRA RARE!\n${best.coin.name} ($${best.coin.ticker})`, true)
+      showNotif(`✨ ULTRA RARE!\n${best.coin['NAME']} ($${best.coin['TICKER']})`, true)
     } else if (best.rarity === 'SR') {
-      showNotif(`🌸 Super Rare: ${best.coin.name}`, false)
+      showNotif(`🌸 Super Rare: ${best.coin['NAME']}`, false)
     }
 
     setTimeout(() => setPulling(false), pullCount * 140 + 500)
@@ -87,7 +87,7 @@ export function useGame() {
   const stats = {
     totalPulls: collection.length,
     totalCards: collection.length,
-    unique:     new Set(collection.map(c => c.coin.ticker)).size,
+    unique:     new Set(collection.map(c => c.coin['TICKER'])).size,
     rarest: collection.length > 0
       ? collection.reduce(
           (b, p) => RARITY_ORDER.indexOf(p.rarity) > RARITY_ORDER.indexOf(b.rarity) ? p : b,

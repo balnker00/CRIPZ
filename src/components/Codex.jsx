@@ -4,7 +4,7 @@ export default function Codex({ coins, collection }) {
   return (
     <div className="collection-grid">
       {coins.map(coin => {
-        const found = collection.find(c => c.coin.id === coin.id)
+        const found = collection.find(c => c.coin['TICKER'] === coin['TICKER'])
         if (found) {
           return <Card key={coin.id} coin={found.coin} rarity={found.rarity} />
         }
