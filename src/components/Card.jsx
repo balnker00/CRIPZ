@@ -12,17 +12,13 @@ export default function Card({ coin, rarity, animate = false, delay = 0 }) {
   const isPos       = coin.change.startsWith('+')
   const isInf       = coin.change.includes('∞')
   const changeClass = isInf ? 'neutral' : isPos ? 'positive' : 'negative'
-  const corner      = rarity === 'LEGENDARY' ? '💀' : '◆'
 
   return (
     <div className={`card rarity-${rarity}${revealed ? ' revealed' : ''}`}>
-      <div className="card-art">
-        <span className="card-flower tl">{corner}</span>
-        <span className="card-flower tr">{corner}</span>
-        <span className="card-emoji">{coin.icon}</span>
+      <div className="card-bg" />
+      <div className="card-content">
         <div className="card-rarity-badge">{rarity}</div>
-      </div>
-      <div className="card-body">
+        <div className="card-emoji">{coin.icon}</div>
         <div className="card-name">{coin.name}</div>
         <div className="card-ticker">${coin.ticker}</div>
         <div className="card-divider" />
