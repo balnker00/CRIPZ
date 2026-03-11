@@ -37,6 +37,7 @@ export function useGame() {
           setCoinsError(error.message)
         } else {
           console.log(`Loaded ${data?.length ?? 0} coins from Supabase`)
+          if (data?.length) console.log('First coin object:', JSON.stringify(data[0], null, 2))
           setCoins(data ?? [])
           if (!data?.length) setCoinsError('No coins found — check RLS policies on the coinz table')
         }
