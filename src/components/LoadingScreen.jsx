@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import logoImg from '../assets/logo.svg'
+import logoImg from '../assets/pfp1.png'
 
 export default function LoadingScreen({ onDone }) {
   const [phase, setPhase] = useState('enter') // enter → loaded → exit
