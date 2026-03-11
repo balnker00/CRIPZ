@@ -33,7 +33,7 @@ export default function AuthScreen({ onAuth }) {
           <span style={{ color: '#fff' }}>RIPZ</span>
         </div>
         <div style={{ color: '#555', fontSize: '0.6rem', letterSpacing: '0.2em', marginTop: '4px' }}>
-          MEMECOINS // OWN. TRADE. PLAY.
+          CRYPTO
         </div>
       </div>
 
