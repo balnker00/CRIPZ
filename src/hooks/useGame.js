@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { rollRarity, RARITY_ORDER, RARITY_IDS, RARITY_BY_ID } from '../data/gameData'
+import { rollBaseRarity, GOLDEN_CHANCE, RARITY_ORDER, RARITY_BY_ID } from '../data/gameData'
 import { supabase } from '../lib/supabase'
 
 export function useGame(user) {
@@ -15,9 +15,11 @@ export function useGame(user) {
   const [notif, setNotif]               = useState({ msg: '', rare: false, show: false })
   const [flash, setFlash]               = useState(false)
   const [pulling, setPulling]           = useState(false)
-  const notifTimer  = useRef(null)
-  const coinsRef    = useRef([])
-  // Stores DB-format cards: [{coin_id, rarity_id}] — one row per user
+  const [rarityPoolsReady, setRarityPoolsReady] = useState(false)
+  const notifTimer      = useRef(null)
+  const coinsRef        = useRef([])
+  const rarityPoolsRef  = useRef({}) // { COMMON: [coinId,...], RARE: [...], ... }
+  // Stores DB-format cards: [{coin_id, is_golden}] — one row per user
   const userCardsRef = useRef([])
 
   // Fetch coins once on mount
@@ -39,6 +41,20 @@ export function useGame(user) {
       })
   }, [])
 
+  // Fetch rarity pools (coin_ids per base rarity) once on mount
+  useEffect(() => {
+    supabase
+      .from('rarities')
+      .select('name, coin_ids')
+      .then(({ data, error }) => {
+        if (error) console.error('Failed to load rarity pools:', error)
+        const pools = {}
+        ;(data ?? []).forEach(r => { pools[r.name] = r.coin_ids ?? [] })
+        rarityPoolsRef.current = pools
+        setRarityPoolsReady(true)
+      })
+  }, [])
+
   // Clear all state on logout
   useEffect(() => {
     if (!user) {
@@ -48,11 +64,11 @@ export function useGame(user) {
     }
   }, [user])
 
-  // Load user's collection (single row with cards array) when user + coins are ready
+  // Load user's collection (single row with cards array) when user + coins + pools are ready
   useEffect(() => {
     setCollection([])
     userCardsRef.current = []
-    if (!user || !coinsReady) return
+    if (!user || !coinsReady || !rarityPoolsReady) return
 
     supabase
       .from('user_collection')
@@ -64,16 +80,24 @@ export function useGame(user) {
         const dbCards = data?.cards ?? []
         userCardsRef.current = dbCards
         const loaded = dbCards
-          .map((c, i) => ({
-            id:     `db-${i}-${c.coin_id}`,
-            coin:   coinsRef.current.find(coin => coin.id === c.coin_id),
-            // support rarity_id (new) or rarity string (legacy)
-            rarity: (c.rarity_id != null ? RARITY_BY_ID[c.rarity_id] : c.rarity) ?? 'COMMON',
-          }))
+          .map((c, i) => {
+            const coin = coinsRef.current.find(coin => coin.id === c.coin_id)
+            let rarity
+            if (c.rarity_id != null) {
+              // legacy format: derive from stored rarity_id
+              rarity = RARITY_BY_ID[c.rarity_id] ?? 'COMMON'
+            } else {
+              // new format: look up base rarity from the pool each coin belongs to
+              const base = Object.entries(rarityPoolsRef.current)
+                .find(([, ids]) => ids.includes(c.coin_id))?.[0] ?? 'COMMON'
+              rarity = c.is_golden ? `GOLDEN_${base}` : base
+            }
+            return { id: `db-${i}-${c.coin_id}`, coin, rarity }
+          })
           .filter(item => item.coin)
         setCollection(loaded)
       })
-  }, [user?.id, coinsReady]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user?.id, coinsReady, rarityPoolsReady]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const showNotif = useCallback((msg, rare = false) => {
     setNotif({ msg, rare, show: true })
@@ -91,18 +115,31 @@ export function useGame(user) {
     setFlash(true)
     setTimeout(() => setFlash(false), 650)
 
-    const pulls = Array.from({ length: pullCount }, (_, i) => ({
-      id:     `${Date.now()}-${i}`,
-      coin:   coins[Math.floor(Math.random() * coins.length)],
-      rarity: rollRarity(),
-    }))
+    const pulls = Array.from({ length: pullCount }, (_, i) => {
+      const baseRarity = rollBaseRarity()
+      const pool = rarityPoolsRef.current[baseRarity] ?? []
+      let coin
+      if (pool.length > 0) {
+        const coinId = pool[Math.floor(Math.random() * pool.length)]
+        coin = coinsRef.current.find(c => c.id === coinId)
+      }
+      // Fallback: pool empty or coin not found — pick random from all coins
+      if (!coin) coin = coinsRef.current[Math.floor(Math.random() * coinsRef.current.length)]
+      const isGolden = Math.random() < GOLDEN_CHANCE
+      return {
+        id:       `${Date.now()}-${i}`,
+        coin,
+        rarity:   isGolden ? `GOLDEN_${baseRarity}` : baseRarity,
+        isGolden,
+      }
+    })
 
     setRevealedCards(pulls)
     setCollection(prev => [...prev, ...pulls])
 
-    // Persist as single row with cards array
+    // Persist as single row with cards array: {coin_id, is_golden}
     if (user) {
-      const newDbCards = pulls.map(p => ({ coin_id: p.coin.id, rarity_id: RARITY_IDS[p.rarity] ?? 1 }))
+      const newDbCards = pulls.map(p => ({ coin_id: p.coin.id, is_golden: p.isGolden }))
       userCardsRef.current = [...userCardsRef.current, ...newDbCards]
       supabase
         .from('user_collection')
