@@ -13,6 +13,8 @@ export default function App() {
 
   const {
     coins,
+    coinsLoading,
+    coinsError,
     collection,
     pullCount, setPullCount,
     revealedCards,
@@ -41,6 +43,8 @@ export default function App() {
             setPullCount={setPullCount}
             onOpen={openPack}
             pulling={pulling}
+            coinsLoading={coinsLoading}
+            coinsError={coinsError}
           />
 
           <RevealArea cards={revealedCards} />

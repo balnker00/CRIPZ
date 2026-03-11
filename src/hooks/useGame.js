@@ -14,6 +14,8 @@ function rollRarity() {
 
 export function useGame() {
   const [coins, setCoins]               = useState([])
+  const [coinsLoading, setCoinsLoading] = useState(true)
+  const [coinsError, setCoinsError]     = useState(null)
   const [collection, setCollection]     = useState([])
   const [pullCount, setPullCount]       = useState(5)
   const [revealedCards, setRevealedCards] = useState([])
@@ -29,8 +31,15 @@ export function useGame() {
       .from('coinz')
       .select('*')
       .then(({ data, error }) => {
-        if (error) console.error('Failed to load coins:', error)
-        else setCoins(data ?? [])
+        setCoinsLoading(false)
+        if (error) {
+          console.error('Supabase error loading coins:', error)
+          setCoinsError(error.message)
+        } else {
+          console.log(`Loaded ${data?.length ?? 0} coins from Supabase`)
+          setCoins(data ?? [])
+          if (!data?.length) setCoinsError('No coins found — check RLS policies on the coinz table')
+        }
       })
   }, [])
 
@@ -44,7 +53,7 @@ export function useGame() {
   }, [])
 
   const openPack = useCallback(() => {
-    if (pulling || coins.length === 0) return
+    if (pulling || coinsLoading || coins.length === 0) return
     setPulling(true)
 
     setFlash(true)
@@ -88,6 +97,8 @@ export function useGame() {
 
   return {
     coins,
+    coinsLoading,
+    coinsError,
     collection,
     pullCount,
     setPullCount,
