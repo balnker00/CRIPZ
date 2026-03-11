@@ -12,14 +12,14 @@ export default function PackSection({ onOpen, pulling, coinsLoading, coinsError 
 
   return (
     <div className="pack-section">
-      <div className="section-label">// chaos pack — memecoin edition //</div>
+      <div className="section-label">// Season 1 - the memes //</div>
 
       <div className="pack-wrapper" onClick={btnDisabled ? undefined : onOpen}>
         <div className="pack">
           <div className="pack-bg-flower" />
           <img src={logoImg} alt="Pack" className="pack-logo-img" />
-          <div className="pack-name">CHAOS PACK</div>
-          <div className="pack-sub">$RIPZ · random rarity</div>
+          <div className="pack-name">MEMES PACK</div>
+          <div className="pack-sub">RIPZ · random rarity</div>
         </div>
       </div>
 

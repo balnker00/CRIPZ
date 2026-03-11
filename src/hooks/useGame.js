@@ -114,7 +114,7 @@ export function useGame(user) {
     setFlash(true)
     setTimeout(() => setFlash(false), 650)
 
-    const pulls = Array.from({ length: 1 }, (_, i) => {
+    const pulls = Array.from({ length: 4 }, (_, i) => {
       const baseRarity = rollBaseRarity()
       const pool = rarityPoolsRef.current[baseRarity] ?? []
       let coin
@@ -164,7 +164,7 @@ export function useGame(user) {
       showNotif(`★ GOLDEN ${baseRarity}: ${best.coin['NAME']}`, false)
     }
 
-    setTimeout(() => setPulling(false), 640)
+    setTimeout(() => setPulling(false), 4 * 140 + 500)
   }, [pulling, coins, user, showNotif])
 
   function parseNum(val) {
