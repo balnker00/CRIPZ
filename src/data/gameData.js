@@ -5,10 +5,8 @@ export const BASE_RARITIES = [
   { rarity: 'RARE',      weight: 20 }, // ~19.61% base
   { rarity: 'COMMON',    weight: 77 }, // ~75.49% base
 ]
-// Total = 102 (normalised internally)
 
 // Golden: ~2% of all pulls — sits between Epic and Legendary in rarity
-// After rolling base rarity, there is a 2% flat chance it becomes a golden copy
 export const GOLDEN_CHANCE = 0.02
 
 export function rollRarity() {
@@ -33,3 +31,31 @@ export const RARITY_ORDER = [
   'LEGENDARY',
   'GOLDEN_LEGENDARY',
 ]
+
+// Fixed IDs matching the `rarities` table in Supabase.
+// Run this SQL once in your dashboard:
+//
+//   CREATE TABLE rarities (
+//     id smallint PRIMARY KEY, name text UNIQUE NOT NULL, order_rank smallint NOT NULL
+//   );
+//   INSERT INTO rarities (id, name, order_rank) VALUES
+//     (1,'COMMON',1),(2,'GOLDEN_COMMON',2),(3,'RARE',3),(4,'GOLDEN_RARE',4),
+//     (5,'EPIC',5),(6,'GOLDEN_EPIC',6),(7,'LEGENDARY',7),(8,'GOLDEN_LEGENDARY',8);
+//   ALTER TABLE rarities ENABLE ROW LEVEL SECURITY;
+//   CREATE POLICY "Public read rarities" ON rarities FOR SELECT USING (true);
+//
+export const RARITY_IDS = {
+  COMMON:           1,
+  GOLDEN_COMMON:    2,
+  RARE:             3,
+  GOLDEN_RARE:      4,
+  EPIC:             5,
+  GOLDEN_EPIC:      6,
+  LEGENDARY:        7,
+  GOLDEN_LEGENDARY: 8,
+}
+
+// Reverse lookup: id → name
+export const RARITY_BY_ID = Object.fromEntries(
+  Object.entries(RARITY_IDS).map(([name, id]) => [id, name])
+)

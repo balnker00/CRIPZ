@@ -45,7 +45,7 @@ export default function Card({ coin, rarity, animate = false, delay = 0 }) {
     >
       <div className="card-bg" />
       <div className="card-content">
-        <div style={{ display: 'flex', gap: '4px', alignItems: 'center', marginBottom: '6px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '4px', alignItems: 'center', marginBottom: '6px', overflow: 'hidden' }}>
           <div className="card-rarity-badge">{baseRarity}</div>
           {isGolden && <div className="card-golden-tag">GOLDEN</div>}
         </div>

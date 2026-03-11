@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { rollRarity, RARITY_ORDER } from '../data/gameData'
+import { rollRarity, RARITY_ORDER, RARITY_IDS, RARITY_BY_ID } from '../data/gameData'
 import { supabase } from '../lib/supabase'
 
 export function useGame(user) {
@@ -17,7 +17,7 @@ export function useGame(user) {
   const [pulling, setPulling]           = useState(false)
   const notifTimer  = useRef(null)
   const coinsRef    = useRef([])
-  // Stores DB-format cards: [{coin_id, rarity}] — one row per user
+  // Stores DB-format cards: [{coin_id, rarity_id}] — one row per user
   const userCardsRef = useRef([])
 
   // Fetch coins once on mount
@@ -67,7 +67,8 @@ export function useGame(user) {
           .map((c, i) => ({
             id:     `db-${i}-${c.coin_id}`,
             coin:   coinsRef.current.find(coin => coin.id === c.coin_id),
-            rarity: c.rarity,
+            // support rarity_id (new) or rarity string (legacy)
+            rarity: (c.rarity_id != null ? RARITY_BY_ID[c.rarity_id] : c.rarity) ?? 'COMMON',
           }))
           .filter(item => item.coin)
         setCollection(loaded)
@@ -101,7 +102,7 @@ export function useGame(user) {
 
     // Persist as single row with cards array
     if (user) {
-      const newDbCards = pulls.map(p => ({ coin_id: p.coin.id, rarity: p.rarity }))
+      const newDbCards = pulls.map(p => ({ coin_id: p.coin.id, rarity_id: RARITY_IDS[p.rarity] ?? 1 }))
       userCardsRef.current = [...userCardsRef.current, ...newDbCards]
       supabase
         .from('user_collection')
