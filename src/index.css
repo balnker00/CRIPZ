@@ -3,12 +3,15 @@
    Dark × Green × Mono
 ═══════════════════════════════════════════════════════════════════ */
 
+html { font-size: 18px; }
+
 :root {
   --bg:     #0a0a0a;
   --green:  #00FF99;
   --red:    #FF3333;
   --purple: #CC00FF;
   --gold:   #FFD700;
+  --orange: #FF8800;
   --blue:   #4488ff;
   --dim:    #1a1a1a;
   --border: #1f1f1f;
@@ -112,8 +115,8 @@ body::after {
 }
 
 .loading-logo {
-  width: 140px;
-  height: 140px;
+  width: 160px;
+  height: 160px;
   object-fit: contain;
   position: relative;
   z-index: 1;
@@ -123,8 +126,8 @@ body::after {
 
 .loading-glow {
   position: absolute;
-  width: 160px;
-  height: 160px;
+  width: 190px;
+  height: 190px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(0, 255, 153, 0.12) 0%, transparent 70%);
   animation: glow-pulse 2s ease-in-out infinite;
@@ -208,24 +211,37 @@ body::after {
 header {
   position: relative;
   z-index: 10;
-  text-align: center;
-  padding: 1.5rem 1rem 1rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 1.2rem 1.5rem 1rem;
   border-bottom: 1px solid rgba(0, 255, 153, 0.15);
   background: transparent;
+}
+
+/* Left placeholder balances right user column so logo stays centred */
+.header-spacer {}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .header-flowers-row { display: none; }
 
 .logo {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.9rem;
   animation: flicker 8s infinite;
 }
 
 .logo-img {
-  height: 64px;
-  width: 64px;
+  height: 112px;
+  width: 112px;
   object-fit: contain;
   filter: drop-shadow(0 0 10px rgba(0, 255, 153, 0.4)) drop-shadow(0 0 24px rgba(255, 215, 0, 0.2));
   flex-shrink: 0;
@@ -234,8 +250,8 @@ header {
 .logo-text {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0.15rem;
+  align-items: center;
+  gap: 0.2rem;
 }
 
 .logo-wordmark {
@@ -290,17 +306,16 @@ header {
 
 .tagline {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   color: var(--red);
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   opacity: 0.8;
-  border: none;
-  background: none;
   padding: 0;
-  border-radius: 0;
+  margin: 0;
   display: block;
-  text-align: left;
+  text-align: center;
+  line-height: 1;
 }
 
 /* ── STATS BAR ── */
@@ -404,7 +419,6 @@ main {
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* shimmer sweep */
 .pack::before {
   content: '';
   position: absolute;
@@ -431,11 +445,8 @@ main {
     0 0 100px rgba(0, 255, 153, 0.1);
 }
 
-.pack-wrapper:active .pack {
-  transform: scale(0.98);
-}
+.pack-wrapper:active .pack { transform: scale(0.98); }
 
-/* corner bracket decoration (reuses pack-bg-flower element) */
 .pack-bg-flower {
   position: absolute;
   top: 8px;
@@ -446,15 +457,10 @@ main {
   border-right: 2px solid var(--red);
   font-size: 0;
   color: transparent;
-  animation: none;
   z-index: 1;
 }
 
-.pack-icon {
-  font-size: 2.5rem;
-  position: relative;
-  z-index: 1;
-}
+.pack-icon { font-size: 2.5rem; position: relative; z-index: 1; }
 
 .pack-logo-img {
   width: 88px;
@@ -506,7 +512,6 @@ main {
   cursor: pointer;
   text-transform: uppercase;
   border-radius: 2px;
-  box-shadow: none;
   position: relative;
   overflow: hidden;
   transition: color 0.2s;
@@ -548,7 +553,6 @@ main {
   cursor: pointer;
   text-transform: uppercase;
   border-radius: 2px;
-  box-shadow: none;
   transition: border-color 0.2s, color 0.2s, background 0.2s;
 }
 
@@ -557,8 +561,6 @@ main {
   border-color: var(--green);
   color: var(--green);
   background: rgba(0, 255, 153, 0.05);
-  transform: none;
-  box-shadow: none;
 }
 
 /* ── REVEAL AREA ── */
@@ -587,14 +589,14 @@ main {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.25);
   letter-spacing: 0.1em;
-  font-weight: normal;
-  text-transform: none;
 }
 
-/* ── CARD ── */
+/* ══════════════════════════════
+   CARD
+══════════════════════════════ */
 .card {
   width: 160px;
-  min-height: 240px;
+  height: 272px;       /* fixed — all cards identical size */
   border-radius: 6px;
   border: 2px solid #444;
   overflow: hidden;
@@ -619,30 +621,65 @@ main {
   z-index: 20;
 }
 
-/* Rarity borders */
-.card.rarity-C         { border-color: #444; }
-.card.rarity-R         { border-color: var(--blue);   box-shadow: 0 0 15px rgba(68, 136, 255, 0.3); }
-.card.rarity-SR        { border-color: var(--purple); box-shadow: 0 0 20px rgba(204, 0, 255, 0.4); }
-.card.rarity-UR        { border-color: var(--gold);   box-shadow: 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.15); }
-.card.rarity-LEGENDARY { border-color: var(--red);    animation: legendary-pulse 2s infinite; }
+/* ── Rarity borders & glows ── */
+.card.rarity-common    { border-color: #888; }
+.card.rarity-rare      { border-color: var(--blue);   box-shadow: 0 0 15px rgba(68,136,255,0.3); }
+.card.rarity-epic      { border-color: var(--purple); box-shadow: 0 0 20px rgba(204,0,255,0.4); }
+.card.rarity-legendary { border-color: var(--orange); animation: legendary-pulse 2s infinite; }
+
+/* All golden variants share gold border + pulse */
+.card.rarity-golden-common,
+.card.rarity-golden-rare,
+.card.rarity-golden-epic,
+.card.rarity-golden-legendary {
+  border-color: var(--gold);
+  animation: golden-pulse 1.8s infinite;
+}
 
 @keyframes legendary-pulse {
-  0%, 100% { box-shadow: 0 0 40px rgba(255, 51, 51, 0.6), 0 0 80px rgba(255, 51, 51, 0.2); }
-  50%       { box-shadow: 0 0 65px rgba(255, 51, 51, 0.9), 0 0 120px rgba(255, 51, 51, 0.35); }
+  0%, 100% { box-shadow: 0 0 40px rgba(255,136,0,0.6), 0 0 80px rgba(255,136,0,0.2); }
+  50%       { box-shadow: 0 0 65px rgba(255,136,0,0.9), 0 0 120px rgba(255,136,0,0.35); }
 }
 
-/* Card radial background by rarity */
-.card-bg {
+@keyframes golden-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(255,215,0,0.55), 0 0 60px rgba(255,215,0,0.2); }
+  50%       { box-shadow: 0 0 55px rgba(255,215,0,0.85), 0 0 100px rgba(255,215,0,0.3); }
+}
+
+/* ── Card backgrounds by rarity ── */
+.card-bg { position: absolute; inset: 0; z-index: 0; }
+
+.rarity-common          .card-bg { background: radial-gradient(circle at 50% 50%, #111 0%, #0a0a0a 100%); }
+.rarity-rare            .card-bg { background: radial-gradient(circle at 30% 30%, #0a0d1a 0%, #0a0a0a 100%); }
+.rarity-epic            .card-bg { background: radial-gradient(circle at 70% 30%, #0d0010 0%, #0a0a0a 100%); }
+.rarity-legendary       .card-bg { background: radial-gradient(circle at 50% 0%,  #1a0800 0%, #0a0a0a 100%); }
+.rarity-golden-common   .card-bg { background: radial-gradient(circle at 50% 50%, #1a1300 0%, #0a0a0a 100%); }
+.rarity-golden-rare     .card-bg { background: radial-gradient(circle at 30% 30%, #1a1400 0%, #0a0a0a 100%); }
+.rarity-golden-epic     .card-bg { background: radial-gradient(circle at 70% 30%, #1a1400 0%, #0a0a0a 100%); }
+.rarity-golden-legendary .card-bg { background: radial-gradient(circle at 50% 0%,  #1a1200 0%, #0a0a0a 100%); }
+
+/* Golden shimmer sweep across the background */
+.rarity-golden-common   .card-bg::after,
+.rarity-golden-rare     .card-bg::after,
+.rarity-golden-epic     .card-bg::after,
+.rarity-golden-legendary .card-bg::after {
+  content: '';
   position: absolute;
   inset: 0;
-  z-index: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255, 215, 0, 0.07) 50%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  animation: golden-shimmer 2.5s linear infinite;
 }
 
-.rarity-C         .card-bg { background: radial-gradient(circle at 50% 50%, #111 0%, #0a0a0a 100%); }
-.rarity-R         .card-bg { background: radial-gradient(circle at 30% 30%, #0a0d1a 0%, #0a0a0a 100%); }
-.rarity-SR        .card-bg { background: radial-gradient(circle at 70% 30%, #0d0010 0%, #0a0a0a 100%); }
-.rarity-UR        .card-bg { background: radial-gradient(circle at 50% 20%, #1a1200 0%, #0a0a0a 100%); }
-.rarity-LEGENDARY .card-bg { background: radial-gradient(circle at 50% 0%,  #1a0000 0%, #0a0a0a 100%); }
+@keyframes golden-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
 
 /* Card content */
 .card-content {
@@ -651,34 +688,69 @@ main {
   padding: 10px;
   display: flex;
   flex-direction: column;
-  min-height: 240px;
+  height: 100%;
+  overflow: hidden;
 }
 
 /* Rarity badge */
 .card-rarity-badge {
   font-family: 'Orbitron', monospace;
-  font-size: 0.48rem;
+  font-size: 0.40rem;
   font-weight: 900;
-  letter-spacing: 0.12em;
-  padding: 2px 6px;
+  letter-spacing: 0.10em;
+  padding: 1px 5px;
   border-radius: 2px;
-  align-self: flex-start;
-  margin-bottom: 6px;
   border: 1px solid transparent;
+  line-height: 1.4;
 }
 
-.rarity-C         .card-rarity-badge { background: #222;                      color: #666;          border-color: #333; }
-.rarity-R         .card-rarity-badge { background: rgba(68, 136, 255, 0.15);  color: var(--blue);   border-color: var(--blue); }
-.rarity-SR        .card-rarity-badge { background: rgba(204, 0, 255, 0.15);   color: var(--purple); border-color: var(--purple); }
-.rarity-UR        .card-rarity-badge { background: rgba(255, 215, 0, 0.15);   color: var(--gold);   border-color: var(--gold); }
-.rarity-LEGENDARY .card-rarity-badge { background: rgba(255, 51, 51, 0.2);    color: var(--red);    border-color: var(--red); }
+.rarity-common    .card-rarity-badge { background: rgba(200,200,200,0.08); color: #999;          border-color: #666; }
+.rarity-rare      .card-rarity-badge { background: rgba(68,136,255,0.15);  color: var(--blue);   border-color: var(--blue); }
+.rarity-epic      .card-rarity-badge { background: rgba(204,0,255,0.15);   color: var(--purple); border-color: var(--purple); }
+.rarity-legendary .card-rarity-badge { background: rgba(255,136,0,0.2);    color: var(--orange); border-color: var(--orange); }
 
-/* Emoji */
-.card-emoji {
-  font-size: 2.2rem;
-  text-align: center;
-  padding: 8px 0;
-  line-height: 1;
+.rarity-golden-common    .card-rarity-badge,
+.rarity-golden-rare      .card-rarity-badge,
+.rarity-golden-epic      .card-rarity-badge,
+.rarity-golden-legendary .card-rarity-badge {
+  background: rgba(255, 215, 0, 0.2);
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+/* Golden tag pill — shown alongside the base rarity badge */
+.card-golden-tag {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.35rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 1px 4px;
+  border-radius: 2px;
+  background: rgba(255, 215, 0, 0.15);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  white-space: nowrap;
+}
+
+/* ── Card image — fixed uniform size ── */
+.card-image {
+  width: 100%;
+  height: 108px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 /* Name */
@@ -689,8 +761,10 @@ main {
   letter-spacing: 0.04em;
   color: #fff;
   margin-bottom: 2px;
-  word-break: break-word;
   line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Ticker */
@@ -707,7 +781,6 @@ main {
   height: 1px;
   background: rgba(255, 255, 255, 0.08);
   margin-bottom: 8px;
-  border-radius: 0;
 }
 
 /* Stats */
@@ -731,18 +804,6 @@ main {
 .negative { color: var(--red);   }
 .neutral  { color: var(--text);  }
 
-/* Chain */
-.card-chain {
-  font-size: 0.5rem;
-  color: rgba(255, 255, 255, 0.25);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-top: auto;
-  padding-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  font-family: 'Share Tech Mono', monospace;
-}
-
 /* Collection grid */
 .collection-grid {
   display: grid;
@@ -752,9 +813,9 @@ main {
 
 .collection-grid .card {
   width: 100%;
+  height: 272px;   /* same as reveal cards — always uniform */
   transform: none;
   opacity: 1;
-  min-height: 200px;
 }
 
 .collection-grid .card:hover {
@@ -803,8 +864,8 @@ main {
   gap: 0.5rem;
 }
 
-.tab-btn:hover          { color: var(--green); background: transparent; }
-.tab-btn.active         { color: var(--green); border-bottom-color: var(--green); }
+.tab-btn:hover  { color: var(--green); background: transparent; }
+.tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
 
 .tab-badge {
   background: rgba(0, 255, 153, 0.12);
@@ -837,7 +898,6 @@ main {
   color: rgba(255, 255, 255, 0.4);
   font-family: 'Share Tech Mono', monospace;
   letter-spacing: 0.1em;
-  box-shadow: none;
   transition: border-color 0.15s, color 0.15s, background 0.15s;
 }
 
@@ -846,8 +906,48 @@ main {
   border-color: var(--green);
   color: var(--green);
   background: rgba(0, 255, 153, 0.05);
-  transform: none;
-  box-shadow: none;
+}
+
+/* ── PAGINATION ── */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  min-width: 26px;
+  text-align: center;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(0, 255, 153, 0.05);
+}
+
+.page-btn.active {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(0, 255, 153, 0.08);
+}
+
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
 }
 
 /* ── NOTIFICATION ── */
@@ -866,7 +966,6 @@ main {
   z-index: 1000;
   max-width: 220px;
   line-height: 1.5;
-  box-shadow: none;
   transform: translateX(120%);
   transition: transform 0.3s cubic-bezier(0.34, 1.4, 0.64, 1);
   white-space: pre-line;
@@ -891,7 +990,7 @@ main {
   100% { opacity: 0; }
 }
 
-/* ── REVEAL WRAPPER (share button) ── */
+/* ── REVEAL WRAPPER ── */
 .reveal-wrapper {
   display: flex;
   flex-direction: column;
@@ -932,11 +1031,7 @@ main {
   max-width: 680px;
 }
 
-.about-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
+.about-section { display: flex; flex-direction: column; gap: 0.75rem; }
 
 .about-section-title {
   font-family: 'Orbitron', monospace;
@@ -981,19 +1076,12 @@ main {
   opacity: 0.7;
 }
 
-.about-list strong {
-  color: #fff;
-  font-weight: bold;
-}
+.about-list strong { color: #fff; font-weight: bold; }
 
 .about-green { color: var(--green); }
 .about-red   { color: var(--red);   }
-.about-dim   { color: var(--text);  opacity: 0.5; }
-
-.about-dim-text {
-  opacity: 0.5;
-  font-size: 0.68rem;
-}
+.about-dim   { color: var(--text); opacity: 0.5; }
+.about-dim-text { opacity: 0.5; font-size: 0.68rem; }
 
 /* About rarity table */
 .about-table {
@@ -1022,18 +1110,318 @@ main {
   vertical-align: middle;
 }
 
-.rarity-row.legendary td:first-child { color: var(--red);    font-weight: bold; font-family: 'Orbitron', monospace; }
-.rarity-row.ur        td:first-child { color: var(--gold);   font-weight: bold; font-family: 'Orbitron', monospace; }
-.rarity-row.sr        td:first-child { color: var(--purple); font-weight: bold; font-family: 'Orbitron', monospace; }
+.rarity-row.legendary td:first-child { color: var(--orange); font-weight: bold; font-family: 'Orbitron', monospace; }
+.rarity-row.epic      td:first-child { color: var(--purple); font-weight: bold; font-family: 'Orbitron', monospace; }
 .rarity-row.r         td:first-child { color: var(--blue);   font-weight: bold; font-family: 'Orbitron', monospace; }
-.rarity-row.c         td:first-child { color: #666;          font-weight: bold; font-family: 'Orbitron', monospace; }
+.rarity-row.c         td:first-child { color: #888;          font-weight: bold; font-family: 'Orbitron', monospace; }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 600px) {
-  .card        { width: 130px; }
-  .reveal-area { gap: 0.5rem; }
-  .logo        { font-size: clamp(1.8rem, 10vw, 3rem); }
-  .about-table { font-size: 0.6rem; }
+/* ══════════════════════════════
+   RESPONSIVE — TABLET (≤768px)
+══════════════════════════════ */
+@media (max-width: 768px) {
+  html { font-size: 16px; }
+
+  header {
+    padding: 0.9rem 1rem 0.75rem;
+    grid-template-columns: 0 auto 1fr; /* logo left-ish, user right */
+  }
+  .header-spacer { display: none; }
+  .logo-img { height: 80px; width: 80px; }
+  .logo-wordmark { font-size: clamp(1.5rem, 8vw, 2.8rem); }
+
+  main { padding: 1.5rem 0.75rem; }
+
+  .stats-bar { gap: 1rem; font-size: 0.65rem; padding: 0.6rem 0.75rem; }
+
+  .pack { width: 140px; height: 200px; }
+  .pack-logo-img { width: 72px; height: 72px; }
+
+  .card      { width: 145px; height: 260px; }
+  .card-image { height: 96px; }
+  .collection-grid .card { height: 260px; }
+  .collection-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+
+  .reveal-area { gap: 0.6rem; }
+
+  .about-table { font-size: 0.62rem; }
   .about-table th,
-  .about-table td { padding: 0.35rem 0.4rem; }
+  .about-table td { padding: 0.35rem 0.5rem; }
+
+  .theme-switch { bottom: 1rem; left: 1rem; font-size: 0.55rem; padding: 0.4rem 0.75rem; }
 }
+
+/* ══════════════════════════════
+   RESPONSIVE — MOBILE (≤480px)
+══════════════════════════════ */
+@media (max-width: 480px) {
+  html { font-size: 15px; }
+
+  header {
+    padding: 0.75rem 0.75rem 0.6rem;
+    grid-template-columns: 0 auto 1fr;
+  }
+  .header-spacer { display: none; }
+  .logo { gap: 0.6rem; }
+  .logo-img { height: 62px; width: 62px; }
+  .logo-wordmark { font-size: clamp(1.3rem, 9vw, 2.2rem); }
+  .ticker-badge  { display: none; }         /* hide $RIPZ badge on tiny screens */
+  .tagline       { font-size: 0.5rem; }
+
+  main { padding: 1rem 0.5rem; }
+
+  /* Stats bar: 2-column wrap */
+  .stats-bar {
+    gap: 0.6rem 1.2rem;
+    font-size: 0.58rem;
+    padding: 0.5rem 0.75rem;
+    justify-content: flex-start;
+  }
+
+  .pack { width: 130px; height: 186px; }
+  .pack-logo-img { width: 62px; height: 62px; }
+  .pack-name  { font-size: 0.55rem; }
+  .pull-btn   { font-size: 0.65rem; padding: 0.7rem 1.6rem; }
+  .count-btns { gap: 0.5rem; }
+  .count-btn  { padding: 0.4rem 0.8rem; font-size: 0.58rem; }
+
+  /* Cards — 2 per row */
+  .collection-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.5rem;
+  }
+  .card, .collection-grid .card { width: 100%; height: 250px; }
+  .card-image { height: 86px; }
+  .card-name  { font-size: 0.5rem; }
+
+  .reveal-area { gap: 0.4rem; min-height: auto; padding: 0.5rem 0; }
+
+  /* Tabs */
+  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tab-btn { font-size: 0.55rem; padding: 0.5rem 0.8rem; white-space: nowrap; }
+
+  /* Filters */
+  .filter-row { gap: 0.3rem; }
+  .filter-btn { font-size: 0.52rem; padding: 3px 8px; }
+
+  .about-panel    { gap: 1.5rem; }
+  .about-desc,
+  .about-list li  { font-size: 0.65rem; }
+  .about-table    { font-size: 0.55rem; }
+  .about-table th,
+  .about-table td { padding: 0.3rem 0.35rem; }
+
+  .theme-switch { bottom: 0.75rem; left: 0.75rem; font-size: 0.5rem; padding: 0.35rem 0.6rem; }
+  .notif        { max-width: 180px; font-size: 0.6rem; right: 0.5rem; top: 0.5rem; }
+}
+
+/* ══════════════════════════════
+   THEME SWITCH BUTTON
+══════════════════════════════ */
+.theme-switch {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 500;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  padding: 0.45rem 0.9rem;
+  background: transparent;
+  border: 1px solid rgba(0, 255, 153, 0.35);
+  color: rgba(0, 255, 153, 0.6);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.theme-switch:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(0, 255, 153, 0.06);
+}
+
+/* ══════════════════════════════
+   LIGHT THEME
+══════════════════════════════ */
+[data-theme="light"] {
+  --bg:     #f2f0e8;
+  --green:  #007744;
+  --red:    #cc2200;
+  --purple: #7700cc;
+  --gold:   #aa7700;
+  --orange: #cc5500;
+  --blue:   #1144bb;
+  --dim:    #e4e2da;
+  --border: #ccc8bc;
+  --text:   #1a1a14;
+}
+
+[data-theme="light"] body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* No scanlines in light mode */
+[data-theme="light"] body::before { opacity: 0; }
+
+/* Subtle ink grid */
+[data-theme="light"] body::after {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+[data-theme="light"] header {
+  background: rgba(242,240,232,0.95);
+  border-bottom-color: rgba(0,119,68,0.2);
+}
+
+[data-theme="light"] .rainbow-bar {
+  background: var(--green);
+  box-shadow: 0 0 6px rgba(0,119,68,0.4);
+}
+
+[data-theme="light"] .stats-bar {
+  background: rgba(0,119,68,0.04);
+  border-bottom-color: rgba(0,119,68,0.12);
+}
+
+[data-theme="light"] .stat-val  { color: var(--green); }
+[data-theme="light"] .stat-label { opacity: 0.55; }
+
+/* Pack */
+[data-theme="light"] .pack {
+  background: linear-gradient(135deg, #eeeae0 0%, #e8e4d8 50%, #eeeae0 100%);
+  border-color: var(--green);
+  box-shadow: 0 0 20px rgba(0,119,68,0.15), inset 0 0 20px rgba(0,0,0,0.03);
+}
+
+[data-theme="light"] .pack::before {
+  background: linear-gradient(45deg, transparent 30%, rgba(0,119,68,0.05) 50%, transparent 70%);
+}
+
+[data-theme="light"] .pack-wrapper:hover .pack {
+  box-shadow: 0 0 40px rgba(0,119,68,0.3), 0 0 80px rgba(0,119,68,0.08);
+}
+
+[data-theme="light"] .pack-name { color: var(--green); }
+[data-theme="light"] .pack-sub  { color: rgba(0,119,68,0.5); }
+
+/* Cards */
+[data-theme="light"] .card.rarity-common    { border-color: #bbb; }
+[data-theme="light"] .card.rarity-rare      { border-color: var(--blue);   box-shadow: 0 0 12px rgba(17,68,187,0.2); }
+[data-theme="light"] .card.rarity-epic      { border-color: var(--purple); box-shadow: 0 0 15px rgba(119,0,204,0.25); }
+[data-theme="light"] .card.rarity-legendary { border-color: var(--orange); }
+
+[data-theme="light"] .card.rarity-golden-common,
+[data-theme="light"] .card.rarity-golden-rare,
+[data-theme="light"] .card.rarity-golden-epic,
+[data-theme="light"] .card.rarity-golden-legendary {
+  border-color: var(--gold);
+}
+
+[data-theme="light"] .rarity-common    .card-bg { background: radial-gradient(circle at 50% 50%, #f8f6f0 0%, #f0ede6 100%); }
+[data-theme="light"] .rarity-rare      .card-bg { background: radial-gradient(circle at 30% 30%, #eef0ff 0%, #ece8e0 100%); }
+[data-theme="light"] .rarity-epic      .card-bg { background: radial-gradient(circle at 70% 30%, #f5eeff 0%, #ece8e0 100%); }
+[data-theme="light"] .rarity-legendary .card-bg { background: radial-gradient(circle at 50% 0%,  #fff4ee 0%, #ece8e0 100%); }
+[data-theme="light"] .rarity-golden-common   .card-bg { background: radial-gradient(circle at 50% 50%, #fff8e8 0%, #f0ece0 100%); }
+[data-theme="light"] .rarity-golden-rare     .card-bg { background: radial-gradient(circle at 30% 30%, #fff8e0 0%, #ece8d8 100%); }
+[data-theme="light"] .rarity-golden-epic     .card-bg { background: radial-gradient(circle at 70% 30%, #fff6e0 0%, #ece8d8 100%); }
+[data-theme="light"] .rarity-golden-legendary .card-bg { background: radial-gradient(circle at 50% 0%,  #fff4d8 0%, #ece8d8 100%); }
+
+[data-theme="light"] .card-name        { color: #111; }
+[data-theme="light"] .card-ticker      { color: var(--green); }
+[data-theme="light"] .card-stat-label  { color: rgba(0,0,0,0.4); }
+[data-theme="light"] .card-stat-val    { color: #222; }
+[data-theme="light"] .card-divider     { background: rgba(0,0,0,0.1); }
+[data-theme="light"] .card-image       { background: rgba(0,0,0,0.05); }
+
+[data-theme="light"] .rarity-common    .card-rarity-badge { background: rgba(0,0,0,0.06); color: #666; border-color: #aaa; }
+[data-theme="light"] .rarity-rare      .card-rarity-badge { background: rgba(17,68,187,0.1); }
+[data-theme="light"] .rarity-epic      .card-rarity-badge { background: rgba(119,0,204,0.1); }
+[data-theme="light"] .rarity-legendary .card-rarity-badge { background: rgba(204,85,0,0.1); }
+
+[data-theme="light"] .rarity-golden-common   .card-rarity-badge,
+[data-theme="light"] .rarity-golden-rare     .card-rarity-badge,
+[data-theme="light"] .rarity-golden-epic     .card-rarity-badge,
+[data-theme="light"] .rarity-golden-legendary .card-rarity-badge { background: rgba(170,119,0,0.12); }
+
+[data-theme="light"] .card-golden-tag { background: rgba(170,119,0,0.12); }
+
+/* Tabs */
+[data-theme="light"] .tabs             { border-bottom-color: rgba(0,119,68,0.2); }
+[data-theme="light"] .tab-btn          { color: rgba(0,80,40,0.45); }
+[data-theme="light"] .tab-btn:hover    { color: var(--green); }
+[data-theme="light"] .tab-btn.active   { color: var(--green); border-bottom-color: var(--green); }
+[data-theme="light"] .tab-badge        { background: rgba(0,119,68,0.1); color: var(--green); }
+
+/* Filter buttons */
+[data-theme="light"] .filter-btn       { border-color: rgba(0,0,0,0.18); color: rgba(0,0,0,0.45); }
+[data-theme="light"] .filter-btn:hover,
+[data-theme="light"] .filter-btn.active { border-color: var(--green); color: var(--green); background: rgba(0,119,68,0.06); }
+
+/* Buttons */
+[data-theme="light"] .pull-btn         { border-color: var(--green); color: var(--green); }
+[data-theme="light"] .pull-btn::before { background: var(--green); }
+[data-theme="light"] .pull-btn:hover:not(:disabled) { color: #fff; }
+
+[data-theme="light"] .count-btn        { border-color: rgba(0,119,68,0.35); color: rgba(0,119,68,0.65); }
+[data-theme="light"] .count-btn:hover,
+[data-theme="light"] .count-btn.active { border-color: var(--green); color: var(--green); background: rgba(0,119,68,0.06); }
+
+/* Notification */
+[data-theme="light"] .notif {
+  background: #f8f6f0;
+  border-color: #d0ccc0;
+  border-left-color: var(--green);
+  color: var(--text);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+[data-theme="light"] .notif.rare { border-left-color: var(--gold); }
+
+/* Empty state */
+[data-theme="light"] .empty-state      { border-color: rgba(0,0,0,0.1); }
+[data-theme="light"] .empty-text       { color: rgba(0,0,0,0.3); }
+
+/* Codex unknown */
+[data-theme="light"] .codex-unknown    { opacity: 0.15 !important; }
+
+/* About panel */
+[data-theme="light"] .about-section-title { color: var(--green); border-bottom-color: rgba(0,119,68,0.15); }
+[data-theme="light"] .about-desc       { color: var(--text); }
+[data-theme="light"] .about-list li    { color: var(--text); }
+[data-theme="light"] .about-list li::before { color: var(--green); }
+[data-theme="light"] .about-list strong { color: #111; }
+[data-theme="light"] .about-table td   { border-bottom-color: rgba(0,0,0,0.06); }
+[data-theme="light"] .about-table th   { border-bottom-color: rgba(0,119,68,0.15); color: rgba(0,80,40,0.6); }
+
+/* Section label */
+[data-theme="light"] .section-label    { color: var(--green); }
+
+/* Theme switch (light mode state) */
+[data-theme="light"] .theme-switch {
+  border-color: rgba(0,119,68,0.4);
+  color: rgba(0,100,50,0.7);
+}
+[data-theme="light"] .theme-switch:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(0,119,68,0.08);
+}
+
+/* Loading screen in light mode */
+[data-theme="light"] .loading-screen { background: var(--bg); }
+[data-theme="light"] .loading-crypto { color: var(--green); text-shadow: 0 0 20px rgba(0,119,68,0.4); }
+[data-theme="light"] .loading-ripz   { color: var(--red); }
+[data-theme="light"] .loading-tagline { color: var(--red); }
+[data-theme="light"] .loading-bar    { background: var(--green); box-shadow: 0 0 8px rgba(0,119,68,0.6); }
+[data-theme="light"] .loading-bar-wrap { background: rgba(0,119,68,0.1); }
+[data-theme="light"] .loading-status { color: rgba(0,100,50,0.5); }
+
+/* Auth screen in light mode */
+[data-theme="light"] .logo-crypto { color: var(--green); }
+[data-theme="light"] .logo-ripz   { color: var(--red); }
+[data-theme="light"] .tagline     { color: var(--red); }
+[data-theme="light"] .ticker-badge { color: var(--red); border-color: var(--red); }

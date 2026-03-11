@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import logoImg from '../assets/logo.svg'
+import logoImg from '../assets/pfp1.png'
 
 export default function LoadingScreen({ onDone }) {
   const [phase, setPhase] = useState('enter') // enter → loaded → exit
@@ -21,7 +21,7 @@ export default function LoadingScreen({ onDone }) {
         <div className="loading-title">
           <span className="loading-crypto">CRYPTO</span><span className="loading-ripz">RIPZ</span>
         </div>
-        <div className="loading-tagline">Memecoins // Own. Trade. Play.</div>
+        <div className="loading-tagline">Crypto // Own. Trade. Play.</div>
         <div className="loading-bar-wrap">
           <div className={`loading-bar loading-bar-${phase}`} />
         </div>
