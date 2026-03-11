@@ -695,10 +695,10 @@ main {
 /* Rarity badge */
 .card-rarity-badge {
   font-family: 'Orbitron', monospace;
-  font-size: 0.48rem;
+  font-size: 0.40rem;
   font-weight: 900;
-  letter-spacing: 0.12em;
-  padding: 2px 6px;
+  letter-spacing: 0.10em;
+  padding: 1px 5px;
   border-radius: 2px;
   border: 1px solid transparent;
   line-height: 1.4;
@@ -721,10 +721,10 @@ main {
 /* Golden tag pill — shown alongside the base rarity badge */
 .card-golden-tag {
   font-family: 'Orbitron', monospace;
-  font-size: 0.42rem;
+  font-size: 0.35rem;
   font-weight: 900;
-  letter-spacing: 0.1em;
-  padding: 2px 5px;
+  letter-spacing: 0.08em;
+  padding: 1px 4px;
   border-radius: 2px;
   background: rgba(255, 215, 0, 0.15);
   color: var(--gold);
@@ -906,6 +906,48 @@ main {
   border-color: var(--green);
   color: var(--green);
   background: rgba(0, 255, 153, 0.05);
+}
+
+/* ── PAGINATION ── */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  min-width: 26px;
+  text-align: center;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(0, 255, 153, 0.05);
+}
+
+.page-btn.active {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(0, 255, 153, 0.08);
+}
+
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
 }
 
 /* ── NOTIFICATION ── */

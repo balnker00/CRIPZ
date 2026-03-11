@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import Card from './Card'
 
 const FILTERS = [
@@ -9,13 +10,23 @@ const FILTERS = [
   { label: '★ Golden',  value: 'GOLDEN'    },
 ]
 
+const PAGE_SIZE = 20
+
 export default function Collection({ collection, filter, setFilter }) {
+  const [page, setPage] = useState(1)
+
   const items = (() => {
     const list = [...collection].reverse()
     if (filter === 'ALL')    return list
     if (filter === 'GOLDEN') return list.filter(c => c.rarity.startsWith('GOLDEN_'))
     return list.filter(c => c.rarity === filter)
   })()
+
+  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
+  const paged = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+  // Reset to page 1 whenever filter changes
+  useEffect(() => { setPage(1) }, [filter])
 
   return (
     <>
@@ -42,11 +53,37 @@ export default function Collection({ collection, filter, setFilter }) {
             </div>
           </div>
         ) : (
-          items.map(({ id, coin, rarity }) => (
+          paged.map(({ id, coin, rarity }) => (
             <Card key={id} coin={coin} rarity={rarity} />
           ))
         )}
       </div>
+
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            className="page-btn"
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+          >‹</button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
+            <button
+              key={n}
+              className={`page-btn${page === n ? ' active' : ''}`}
+              onClick={() => setPage(n)}
+            >
+              {n}
+            </button>
+          ))}
+
+          <button
+            className="page-btn"
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+          >›</button>
+        </div>
+      )}
     </>
   )
 }
