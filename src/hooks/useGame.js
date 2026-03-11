@@ -39,6 +39,15 @@ export function useGame(user) {
       })
   }, [])
 
+  // Clear all state on logout
+  useEffect(() => {
+    if (!user) {
+      setRevealedCards([])
+      setCollFilter('ALL')
+      setActiveTab('collection')
+    }
+  }, [user])
+
   // Load user's collection (single row with cards array) when user + coins are ready
   useEffect(() => {
     setCollection([])

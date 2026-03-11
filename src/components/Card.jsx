@@ -10,22 +10,22 @@ function computeAge(createdAt) {
   return `${Math.floor(days / 365)}y`
 }
 
-function rarityLabel(rarity) {
-  if (rarity.startsWith('GOLDEN_')) return `★ ${rarity.replace('GOLDEN_', '')}`
-  return rarity
-}
-
 function rarityClass(rarity) {
   return rarity.toLowerCase().replace('_', '-')
 }
 
 function dexscreenerUrl(coin) {
+  const contract = coin['CONTRACT ADDRESS'] || coin['CONTRACT']
+  if (contract) return `https://dexscreener.com/solana/${contract}`
   return `https://dexscreener.com/search?q=${encodeURIComponent(coin['TICKER'] ?? coin['NAME'] ?? '')}`
 }
 
 export default function Card({ coin, rarity, animate = false, delay = 0 }) {
   const [revealed, setRevealed] = useState(!animate)
   const [imgErr, setImgErr]     = useState(false)
+
+  const isGolden   = rarity.startsWith('GOLDEN_')
+  const baseRarity = isGolden ? rarity.replace('GOLDEN_', '') : rarity
 
   useEffect(() => {
     if (!animate) return
@@ -45,7 +45,10 @@ export default function Card({ coin, rarity, animate = false, delay = 0 }) {
     >
       <div className="card-bg" />
       <div className="card-content">
-        <div className="card-rarity-badge">{rarityLabel(rarity)}</div>
+        <div style={{ display: 'flex', gap: '4px', alignItems: 'center', marginBottom: '6px', flexWrap: 'wrap' }}>
+          <div className="card-rarity-badge">{baseRarity}</div>
+          {isGolden && <div className="card-golden-tag">GOLDEN</div>}
+        </div>
 
         <div className="card-image">
           {coin['IMAGE URL'] && !imgErr

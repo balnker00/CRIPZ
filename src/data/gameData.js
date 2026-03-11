@@ -1,13 +1,15 @@
-// Base rarities with weights (must sum to 100)
+// Base rarities — high common/rare rates, very hard epic/legendary
 export const BASE_RARITIES = [
-  { rarity: 'LEGENDARY', weight: 2  },
-  { rarity: 'EPIC',      weight: 10 },
-  { rarity: 'RARE',      weight: 25 },
-  { rarity: 'COMMON',    weight: 63 },
+  { rarity: 'LEGENDARY', weight: 1  }, //  ~0.98% base
+  { rarity: 'EPIC',      weight: 4  }, //  ~3.92% base
+  { rarity: 'RARE',      weight: 20 }, // ~19.61% base
+  { rarity: 'COMMON',    weight: 77 }, // ~75.49% base
 ]
+// Total = 102 (normalised internally)
 
-// 12% chance any pull becomes a golden copy
-export const GOLDEN_CHANCE = 0.12
+// Golden: ~2% of all pulls — sits between Epic and Legendary in rarity
+// After rolling base rarity, there is a 2% flat chance it becomes a golden copy
+export const GOLDEN_CHANCE = 0.02
 
 export function rollRarity() {
   const total = BASE_RARITIES.reduce((s, r) => s + r.weight, 0)
