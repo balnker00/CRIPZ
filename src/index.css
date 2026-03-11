@@ -713,9 +713,149 @@ main {
   100% { opacity: 0; }
 }
 
+/* ── REVEAL WRAPPER (share button) ── */
+.reveal-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.reveal-actions {
+  margin-top: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.share-btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  padding: 0.5rem 1.6rem;
+  background: transparent;
+  border: 1px solid rgba(0, 255, 153, 0.45);
+  color: rgba(0, 255, 153, 0.7);
+  cursor: pointer;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.share-btn:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(0, 255, 153, 0.06);
+}
+
+/* ── ABOUT PANEL ── */
+.about-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 680px;
+}
+
+.about-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.about-section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--green);
+  text-transform: uppercase;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(0, 255, 153, 0.12);
+}
+
+.about-desc {
+  font-size: 0.75rem;
+  color: var(--text);
+  line-height: 1.7;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.about-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-left: 0;
+}
+
+.about-list li {
+  font-size: 0.75rem;
+  color: var(--text);
+  line-height: 1.7;
+  font-family: 'Share Tech Mono', monospace;
+  padding-left: 1.2em;
+  position: relative;
+}
+
+.about-list li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--green);
+  opacity: 0.7;
+}
+
+.about-list strong {
+  color: #fff;
+  font-weight: bold;
+}
+
+.about-green { color: var(--green); }
+.about-red   { color: var(--red);   }
+.about-dim   { color: var(--text);  opacity: 0.5; }
+
+.about-dim-text {
+  opacity: 0.5;
+  font-size: 0.68rem;
+}
+
+/* About rarity table */
+.about-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem;
+}
+
+.about-table th {
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+  color: rgba(0, 255, 153, 0.5);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.58rem;
+  border-bottom: 1px solid rgba(0, 255, 153, 0.12);
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+}
+
+.about-table td {
+  padding: 0.45rem 0.6rem;
+  color: var(--text);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+
+.rarity-row.legendary td:first-child { color: var(--red);    font-weight: bold; font-family: 'Orbitron', monospace; }
+.rarity-row.ur        td:first-child { color: var(--gold);   font-weight: bold; font-family: 'Orbitron', monospace; }
+.rarity-row.sr        td:first-child { color: var(--purple); font-weight: bold; font-family: 'Orbitron', monospace; }
+.rarity-row.r         td:first-child { color: var(--blue);   font-weight: bold; font-family: 'Orbitron', monospace; }
+.rarity-row.c         td:first-child { color: #666;          font-weight: bold; font-family: 'Orbitron', monospace; }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 600px) {
   .card        { width: 130px; }
   .reveal-area { gap: 0.5rem; }
   .logo        { font-size: clamp(1.8rem, 10vw, 3rem); }
+  .about-table { font-size: 0.6rem; }
+  .about-table th,
+  .about-table td { padding: 0.35rem 0.4rem; }
 }
