@@ -1,3 +1,5 @@
+import logoImg from '../assets/logo.svg'
+
 const COUNTS = [5, 10, 1]
 
 export default function PackSection({ pullCount, setPullCount, onOpen, pulling }) {
@@ -8,7 +10,7 @@ export default function PackSection({ pullCount, setPullCount, onOpen, pulling }
       <div className="pack-wrapper" onClick={pulling ? undefined : onOpen}>
         <div className="pack">
           <div className="pack-bg-flower" />
-          <div className="pack-icon">🎰</div>
+          <img src={logoImg} alt="Pack" className="pack-logo-img" />
           <div className="pack-name">CHAOS PACK</div>
           <div className="pack-sub">$RIPZ · random rarity</div>
         </div>
