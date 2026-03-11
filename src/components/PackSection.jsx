@@ -1,8 +1,6 @@
 import logoImg from '../assets/pfp1.png'
 
-const COUNTS = [5, 10, 1]
-
-export default function PackSection({ pullCount, setPullCount, onOpen, pulling, coinsLoading, coinsError }) {
+export default function PackSection({ onOpen, pulling, coinsLoading, coinsError }) {
   const btnDisabled = pulling || coinsLoading || !!coinsError
   const btnLabel = pulling
     ? 'PULLING...'
@@ -35,18 +33,6 @@ export default function PackSection({ pullCount, setPullCount, onOpen, pulling, 
       <button className="pull-btn" onClick={onOpen} disabled={btnDisabled}>
         {btnLabel}
       </button>
-
-      <div className="count-btns">
-        {COUNTS.map(n => (
-          <button
-            key={n}
-            className={`count-btn${pullCount === n ? ' active' : ''}`}
-            onClick={() => setPullCount(n)}
-          >
-            x{n}
-          </button>
-        ))}
-      </div>
     </div>
   )
 }

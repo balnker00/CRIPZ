@@ -8,7 +8,6 @@ export function useGame(user) {
   const [coinsLoading, setCoinsLoading] = useState(true)
   const [coinsError, setCoinsError]     = useState(null)
   const [collection, setCollection]     = useState([])
-  const [pullCount, setPullCount]       = useState(5)
   const [revealedCards, setRevealedCards] = useState([])
   const [collFilter, setCollFilter]     = useState('ALL')
   const [activeTab, setActiveTab]       = useState('collection')
@@ -115,7 +114,7 @@ export function useGame(user) {
     setFlash(true)
     setTimeout(() => setFlash(false), 650)
 
-    const pulls = Array.from({ length: pullCount }, (_, i) => {
+    const pulls = Array.from({ length: 1 }, (_, i) => {
       const baseRarity = rollBaseRarity()
       const pool = rarityPoolsRef.current[baseRarity] ?? []
       let coin
@@ -165,8 +164,8 @@ export function useGame(user) {
       showNotif(`★ GOLDEN ${baseRarity}: ${best.coin['NAME']}`, false)
     }
 
-    setTimeout(() => setPulling(false), pullCount * 140 + 500)
-  }, [pulling, pullCount, coins, user, showNotif])
+    setTimeout(() => setPulling(false), 640)
+  }, [pulling, coins, user, showNotif])
 
   function parseNum(val) {
     if (!val && val !== 0) return 0
@@ -199,8 +198,6 @@ export function useGame(user) {
     coinsLoading,
     coinsError,
     collection,
-    pullCount,
-    setPullCount,
     revealedCards,
     collFilter,
     setCollFilter,

@@ -1,9 +1,10 @@
-// Base rarities — high common/rare rates, very hard epic/legendary
+// Base rarities — 4 tiers matching the rarities table schema (no golden rows in DB)
+// Total weight = 100 for clean percentages
 export const BASE_RARITIES = [
-  { rarity: 'LEGENDARY', weight: 1  }, //  ~0.98% base
-  { rarity: 'EPIC',      weight: 4  }, //  ~3.92% base
-  { rarity: 'RARE',      weight: 20 }, // ~19.61% base
-  { rarity: 'COMMON',    weight: 77 }, // ~75.49% base
+  { rarity: 'LEGENDARY', weight:  1 }, //  1% base
+  { rarity: 'EPIC',      weight:  4 }, //  4% base
+  { rarity: 'RARE',      weight: 20 }, // 20% base
+  { rarity: 'COMMON',    weight: 75 }, // 75% base
 ]
 
 // Golden: ~2% of all pulls — sits between Epic and Legendary in rarity

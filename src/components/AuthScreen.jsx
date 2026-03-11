@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import logoImg from '../assets/pfp1.png'
 
-export default function AuthScreen({ onAuth }) {
+export default function AuthScreen({ onAuth, onClose }) {
   const [mode, setMode]         = useState('signin')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -22,10 +22,24 @@ export default function AuthScreen({ onAuth }) {
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 200,
-      background: '#050a05',
+      background: 'rgba(5,10,5,0.94)',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       fontFamily: "'Share Tech Mono', 'Courier New', monospace",
     }}>
+      {onClose && (
+        <button
+          onClick={onClose}
+          style={{
+            position: 'absolute', top: '16px', right: '16px',
+            background: 'transparent', border: '1px solid #1a3a1a',
+            color: '#555', fontSize: '0.8rem', cursor: 'pointer',
+            padding: '4px 10px', borderRadius: '4px', fontFamily: 'inherit',
+            letterSpacing: '0.1em', transition: 'color 0.15s, border-color 0.15s',
+          }}
+          onMouseEnter={e => { e.target.style.color='#00ff88'; e.target.style.borderColor='#00ff88' }}
+          onMouseLeave={e => { e.target.style.color='#555';   e.target.style.borderColor='#1a3a1a' }}
+        >✕</button>
+      )}
       <div style={{ textAlign: 'center', marginBottom: '32px' }}>
         <img src={logoImg} alt="CryptoRipz" style={{ width: '88px', height: '88px', borderRadius: '50%', marginBottom: '14px' }} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '1.6rem', letterSpacing: '0.15em' }}>
