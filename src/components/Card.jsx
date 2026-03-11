@@ -1,7 +1,18 @@
 import { useState, useEffect } from 'react'
 
+function computeAge(createdAt) {
+  if (!createdAt) return '?'
+  const diff = Date.now() - new Date(createdAt).getTime()
+  const days = Math.floor(diff / 86400000)
+  if (days < 1) return '<1d'
+  if (days < 30) return `${days}d`
+  if (days < 365) return `${Math.floor(days / 30)}mo`
+  return `${Math.floor(days / 365)}y`
+}
+
 export default function Card({ coin, rarity, animate = false, delay = 0 }) {
   const [revealed, setRevealed] = useState(!animate)
+  const [imgErr, setImgErr]     = useState(false)
 
   useEffect(() => {
     if (!animate) return
@@ -9,36 +20,40 @@ export default function Card({ coin, rarity, animate = false, delay = 0 }) {
     return () => clearTimeout(t)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const isPos       = coin.change.startsWith('+')
-  const isInf       = coin.change.includes('∞')
-  const changeClass = isInf ? 'neutral' : isPos ? 'positive' : 'negative'
-
   return (
     <div className={`card rarity-${rarity}${revealed ? ' revealed' : ''}`}>
       <div className="card-bg" />
       <div className="card-content">
         <div className="card-rarity-badge">{rarity}</div>
-        <div className="card-emoji">{coin.icon}</div>
+
+        <div className="card-emoji">
+          {coin.image_url && !imgErr
+            ? <img
+                src={coin.image_url}
+                alt={coin.name}
+                onError={() => setImgErr(true)}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
+              />
+            : <span style={{ fontSize: '1.8rem' }}>🪙</span>
+          }
+        </div>
+
         <div className="card-name">{coin.name}</div>
         <div className="card-ticker">${coin.ticker}</div>
         <div className="card-divider" />
+
         <div className="card-stat">
           <span className="card-stat-label">MCAP</span>
-          <span className="card-stat-val neutral">{coin.mcap}</span>
+          <span className="card-stat-val neutral">{coin.market_cap ?? '?'}</span>
         </div>
         <div className="card-stat">
-          <span className="card-stat-label">VOL</span>
-          <span className="card-stat-val neutral">{coin.vol}</span>
+          <span className="card-stat-label">HOLDERS</span>
+          <span className="card-stat-val neutral">{coin.holders ?? '?'}</span>
         </div>
         <div className="card-stat">
           <span className="card-stat-label">AGE</span>
-          <span className="card-stat-val neutral">{coin.age}</span>
+          <span className="card-stat-val neutral">{computeAge(coin.created_at)}</span>
         </div>
-        <div className="card-stat">
-          <span className="card-stat-label">24H</span>
-          <span className={`card-stat-val ${changeClass}`}>{coin.change}</span>
-        </div>
-        <div className="card-chain">{coin.chain}</div>
       </div>
     </div>
   )

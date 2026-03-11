@@ -1,5 +1,6 @@
-import { useState, useCallback, useRef } from 'react'
-import { COINS, RARITIES, RARITY_ORDER } from '../data/gameData'
+import { useState, useCallback, useRef, useEffect } from 'react'
+import { RARITIES, RARITY_ORDER } from '../data/gameData'
+import { supabase } from '../lib/supabase'
 
 function rollRarity() {
   const total = RARITIES.reduce((s, r) => s + r.weight, 0)
@@ -12,6 +13,7 @@ function rollRarity() {
 }
 
 export function useGame() {
+  const [coins, setCoins]               = useState([])
   const [collection, setCollection]     = useState([])
   const [pullCount, setPullCount]       = useState(5)
   const [revealedCards, setRevealedCards] = useState([])
@@ -21,6 +23,16 @@ export function useGame() {
   const [flash, setFlash]               = useState(false)
   const [pulling, setPulling]           = useState(false)
   const notifTimer = useRef(null)
+
+  useEffect(() => {
+    supabase
+      .from('coinz')
+      .select('*')
+      .then(({ data, error }) => {
+        if (error) console.error('Failed to load coins:', error)
+        else setCoins(data ?? [])
+      })
+  }, [])
 
   const showNotif = useCallback((msg, rare = false) => {
     setNotif({ msg, rare, show: true })
@@ -32,23 +44,21 @@ export function useGame() {
   }, [])
 
   const openPack = useCallback(() => {
-    if (pulling) return
+    if (pulling || coins.length === 0) return
     setPulling(true)
 
-    // Flash
     setFlash(true)
     setTimeout(() => setFlash(false), 650)
 
     const pulls = Array.from({ length: pullCount }, (_, i) => ({
       id:     `${Date.now()}-${i}`,
-      coin:   COINS[Math.floor(Math.random() * COINS.length)],
+      coin:   coins[Math.floor(Math.random() * coins.length)],
       rarity: rollRarity(),
     }))
 
     setRevealedCards(pulls)
     setCollection(prev => [...prev, ...pulls])
 
-    // Best pull notification
     const best = pulls.reduce(
       (b, p) => RARITY_ORDER.indexOf(p.rarity) > RARITY_ORDER.indexOf(b.rarity) ? p : b,
       pulls[0]
@@ -62,7 +72,7 @@ export function useGame() {
     }
 
     setTimeout(() => setPulling(false), pullCount * 140 + 500)
-  }, [pulling, pullCount, showNotif])
+  }, [pulling, pullCount, coins, showNotif])
 
   const stats = {
     totalPulls: collection.length,
@@ -77,6 +87,7 @@ export function useGame() {
   }
 
   return {
+    coins,
     collection,
     pullCount,
     setPullCount,

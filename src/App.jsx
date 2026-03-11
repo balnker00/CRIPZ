@@ -12,6 +12,7 @@ export default function App() {
   const [loading, setLoading] = useState(true)
 
   const {
+    coins,
     collection,
     pullCount, setPullCount,
     revealedCards,
@@ -47,6 +48,7 @@ export default function App() {
           <TabsPanel
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            coins={coins}
             collection={collection}
             collFilter={collFilter}
             setCollFilter={setCollFilter}

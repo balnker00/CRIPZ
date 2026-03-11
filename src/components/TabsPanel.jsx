@@ -1,10 +1,10 @@
 import Collection from './Collection'
 import Codex from './Codex'
 import About from './About'
-import { COINS } from '../data/gameData'
 
 export default function TabsPanel({
   activeTab, setActiveTab,
+  coins,
   collection, collFilter, setCollFilter,
 }) {
   const uniqueCount = new Set(collection.map(c => c.coin.ticker)).size
@@ -24,7 +24,7 @@ export default function TabsPanel({
           onClick={() => setActiveTab('codex')}
         >
           Codex
-          <span className="tab-badge">{uniqueCount}/{COINS.length}</span>
+          <span className="tab-badge">{uniqueCount}/{coins.length}</span>
         </button>
         <button
           className={`tab-btn${activeTab === 'about' ? ' active' : ''}`}
@@ -42,7 +42,7 @@ export default function TabsPanel({
             setFilter={setCollFilter}
           />
         ) : activeTab === 'codex' ? (
-          <Codex collection={collection} />
+          <Codex coins={coins} collection={collection} />
         ) : (
           <About />
         )}

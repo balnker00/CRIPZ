@@ -1,17 +1,16 @@
 import Card from './Card'
-import { COINS } from '../data/gameData'
 
-export default function Codex({ collection }) {
+export default function Codex({ coins, collection }) {
   return (
     <div className="collection-grid">
-      {COINS.map(coin => {
-        const found = collection.find(c => c.coin.ticker === coin.ticker)
+      {coins.map(coin => {
+        const found = collection.find(c => c.coin.id === coin.id)
         if (found) {
-          return <Card key={coin.ticker} coin={found.coin} rarity={found.rarity} />
+          return <Card key={coin.id} coin={found.coin} rarity={found.rarity} />
         }
         return (
           <div
-            key={coin.ticker}
+            key={coin.id}
             className="card rarity-C codex-unknown"
           >
             <div className="card-bg" />
