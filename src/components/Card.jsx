@@ -12,7 +12,7 @@ export default function Card({ coin, rarity, animate = false, delay = 0 }) {
   const isPos       = coin.change.startsWith('+')
   const isInf       = coin.change.includes('∞')
   const changeClass = isInf ? 'neutral' : isPos ? 'positive' : 'negative'
-  const corner      = rarity === 'LEGENDARY' ? '💀' : '🌸'
+  const corner      = rarity === 'LEGENDARY' ? '💀' : '◆'
 
   return (
     <div className={`card rarity-${rarity}${revealed ? ' revealed' : ''}`}>
