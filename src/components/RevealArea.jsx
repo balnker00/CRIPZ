@@ -5,8 +5,8 @@ export default function RevealArea({ cards }) {
     return (
       <div className="reveal-area">
         <div className="empty-state">
-          <div className="empty-icon">🌸</div>
-          <div className="empty-text">open a pack to pull your first $RIPZ cards</div>
+          <div className="empty-icon">🃏</div>
+          <div className="empty-text">open a pack to pull your first cards</div>
         </div>
       </div>
     )

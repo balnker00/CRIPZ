@@ -14,12 +14,10 @@ export default function Codex({ collection }) {
             key={coin.ticker}
             className="card rarity-C codex-unknown"
           >
-            <div className="card-art" style={{ height: 108, background: '#E8E8E8' }}>
-              <span style={{ fontSize: '2.4rem', opacity: 0.18 }}>?</span>
-            </div>
-            <div className="card-body">
-              <div className="card-name" style={{ color: '#aaa' }}>???</div>
-              <div className="card-ticker" style={{ color: '#bbb' }}>UNDISCOVERED</div>
+            <div className="card-bg" />
+            <div className="card-content" style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ fontSize: '2rem', opacity: 0.3, color: '#fff' }}>?</div>
+              <div style={{ fontSize: '0.55rem', color: '#333', marginTop: '4px', letterSpacing: '0.1em' }}>UNDISCOVERED</div>
             </div>
           </div>
         )
