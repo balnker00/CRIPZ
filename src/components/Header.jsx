@@ -13,7 +13,7 @@ export default function Header({ username, onSignOut }) {
               <span className="logo-ripz">RIPZ</span>
               <span className="ticker-badge">$RIPZ</span>
             </div>
-            <div className="tagline">CRYPTO</div>
+            <div className="tagline">Crypto // Own. Trade. Play.</div>
           </div>
         </div>
 

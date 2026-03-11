@@ -21,7 +21,7 @@ export default function LoadingScreen({ onDone }) {
         <div className="loading-title">
           <span className="loading-crypto">CRYPTO</span><span className="loading-ripz">RIPZ</span>
         </div>
-        <div className="loading-tagline">CRYPTO</div>
+        <div className="loading-tagline">Crypto // Own. Trade. Play.</div>
         <div className="loading-bar-wrap">
           <div className={`loading-bar loading-bar-${phase}`} />
         </div>
