@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useAuth } from './hooks/useAuth'
 import { useGame } from './hooks/useGame'
 import Header from './components/Header'
 import StatsBar from './components/StatsBar'
@@ -7,9 +8,12 @@ import RevealArea from './components/RevealArea'
 import TabsPanel from './components/TabsPanel'
 import Notification from './components/Notification'
 import LoadingScreen from './components/LoadingScreen'
+import AuthScreen from './components/AuthScreen'
 
 export default function App() {
-  const [loading, setLoading] = useState(true)
+  const [appLoading, setAppLoading] = useState(true)
+
+  const { user, authLoading, username, handleAuth, signOut } = useAuth()
 
   const {
     coins,
@@ -25,16 +29,24 @@ export default function App() {
     stats,
     pulling,
     openPack,
-  } = useGame()
+  } = useGame(user)
+
+  const showGame = !appLoading && !authLoading && !!user
 
   return (
     <>
-      {loading && <LoadingScreen onDone={() => setLoading(false)} />}
+      {(appLoading || authLoading) && (
+        <LoadingScreen onDone={() => setAppLoading(false)} />
+      )}
 
-      <div className={`app-content${loading ? ' app-content-hidden' : ''}`}>
+      {!appLoading && !authLoading && !user && (
+        <AuthScreen onAuth={handleAuth} />
+      )}
+
+      <div className={`app-content${!showGame ? ' app-content-hidden' : ''}`}>
         {flash && <div className="flash" />}
 
-        <Header />
+        <Header username={username} onSignOut={signOut} />
         <StatsBar stats={stats} />
 
         <main>

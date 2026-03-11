@@ -12,8 +12,9 @@ function rollRarity() {
   return 'C'
 }
 
-export function useGame() {
+export function useGame(user) {
   const [coins, setCoins]               = useState([])
+  const [coinsReady, setCoinsReady]     = useState(false)
   const [coinsLoading, setCoinsLoading] = useState(true)
   const [coinsError, setCoinsError]     = useState(null)
   const [collection, setCollection]     = useState([])
@@ -25,7 +26,9 @@ export function useGame() {
   const [flash, setFlash]               = useState(false)
   const [pulling, setPulling]           = useState(false)
   const notifTimer = useRef(null)
+  const coinsRef = useRef([])
 
+  // Fetch coins once on mount
   useEffect(() => {
     supabase
       .from('coinz')
@@ -36,13 +39,36 @@ export function useGame() {
           console.error('Supabase error loading coins:', error)
           setCoinsError(error.message)
         } else {
-          console.log(`Loaded ${data?.length ?? 0} coins from Supabase`)
-          if (data?.length) console.log('First coin object:', JSON.stringify(data[0], null, 2))
+          coinsRef.current = data ?? []
           setCoins(data ?? [])
+          setCoinsReady(true)
           if (!data?.length) setCoinsError('No coins found — check RLS policies on the coinz table')
         }
       })
   }, [])
+
+  // Load user's saved collection when user + coins are ready
+  useEffect(() => {
+    setCollection([])
+    if (!user || !coinsReady) return
+
+    supabase
+      .from('user_collection')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('pulled_at', { ascending: true })
+      .then(({ data, error }) => {
+        if (error) { console.error('Failed to load collection:', error); return }
+        const loaded = (data ?? [])
+          .map(row => ({
+            id:     row.id,
+            coin:   coinsRef.current.find(c => c.id === row.coin_id),
+            rarity: row.rarity,
+          }))
+          .filter(item => item.coin)
+        setCollection(loaded)
+      })
+  }, [user?.id, coinsReady]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const showNotif = useCallback((msg, rare = false) => {
     setNotif({ msg, rare, show: true })
@@ -69,6 +95,20 @@ export function useGame() {
     setRevealedCards(pulls)
     setCollection(prev => [...prev, ...pulls])
 
+    // Persist to DB if logged in
+    if (user) {
+      supabase
+        .from('user_collection')
+        .insert(pulls.map(p => ({
+          user_id: user.id,
+          coin_id: p.coin.id,
+          rarity:  p.rarity,
+        })))
+        .then(({ error }) => {
+          if (error) console.error('Failed to save pulls:', error)
+        })
+    }
+
     const best = pulls.reduce(
       (b, p) => RARITY_ORDER.indexOf(p.rarity) > RARITY_ORDER.indexOf(b.rarity) ? p : b,
       pulls[0]
@@ -82,7 +122,7 @@ export function useGame() {
     }
 
     setTimeout(() => setPulling(false), pullCount * 140 + 500)
-  }, [pulling, pullCount, coins, showNotif])
+  }, [pulling, pullCount, coins, user, showNotif])
 
   const stats = {
     totalPulls: collection.length,
