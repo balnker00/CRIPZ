@@ -7,6 +7,7 @@ export default function TabsPanel({
   coins,
   collection, collFilter, setCollFilter,
 }) {
+  const totalPulled = collection.reduce((s, c) => s + (c.count ?? 1), 0)
   const uniqueCount = new Set(collection.map(c => c.coin?.['TICKER']).filter(Boolean)).size
 
   return (
@@ -17,7 +18,7 @@ export default function TabsPanel({
           onClick={() => setActiveTab('collection')}
         >
           Collection
-          <span className="tab-badge">{collection.length}</span>
+          <span className="tab-badge">{totalPulled}</span>
         </button>
         <button
           className={`tab-btn${activeTab === 'codex' ? ' active' : ''}`}

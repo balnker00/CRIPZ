@@ -24,7 +24,7 @@ export function useGame(user) {
   const coinsRef        = useRef([])
   const rarityPoolsRef  = useRef({}) // { COMMON: [coinId,...], RARE: [...], ... }
   const coinRarityRef   = useRef({}) // { coinId: 'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' }
-  // Stores DB-format cards: [{coin_id, is_golden}] — one row per user
+  // Stores DB-format cards: [{coin_id, is_golden, count}] — one row per user
   const userCardsRef = useRef([])
 
   // Fetch coins once on mount
@@ -100,7 +100,7 @@ export function useGame(user) {
               const base = coinRarityRef.current[c.coin_id] ?? 'COMMON'
               rarity = c.is_golden ? `GOLDEN_${base}` : base
             }
-            return { id: `db-${i}-${c.coin_id}`, coin, rarity }
+            return { id: `db-${i}-${c.coin_id}`, coin, rarity, count: c.count ?? 1 }
           })
           .filter(item => item.coin)
         setCollection(loaded)
@@ -137,12 +137,33 @@ export function useGame(user) {
     })
 
     setRevealedCards(pulls)
-    setCollection(prev => [...prev, ...pulls])
 
-    // Persist as single row with cards array: {coin_id, is_golden}
+    // De-dup optimistic collection state: increment count for existing entries
+    setCollection(prev => {
+      const next = prev.map(c => ({ ...c }))
+      for (const pull of pulls) {
+        const idx = next.findIndex(c => c.coin?.id === pull.coin.id && c.rarity === pull.rarity)
+        if (idx >= 0) {
+          next[idx] = { ...next[idx], count: (next[idx].count ?? 1) + 1 }
+        } else {
+          next.push({ ...pull, count: 1 })
+        }
+      }
+      return next
+    })
+
+    // Persist as single row with cards array: {coin_id, is_golden, count}
     if (user) {
-      const newDbCards = pulls.map(p => ({ coin_id: p.coin.id, is_golden: p.isGolden }))
-      userCardsRef.current = [...userCardsRef.current, ...newDbCards]
+      const merged = userCardsRef.current.map(c => ({ ...c }))
+      for (const p of pulls) {
+        const existing = merged.find(c => c.coin_id === p.coin.id && !!c.is_golden === p.isGolden)
+        if (existing) {
+          existing.count = (existing.count ?? 1) + 1
+        } else {
+          merged.push({ coin_id: p.coin.id, is_golden: p.isGolden, count: 1 })
+        }
+      }
+      userCardsRef.current = merged
       supabase
         .from('user_collection')
         .upsert({ user_id: user.id, cards: userCardsRef.current }, { onConflict: 'user_id' })
@@ -182,9 +203,11 @@ export function useGame(user) {
     return n
   }
 
+  const totalPulled = collection.reduce((s, c) => s + (c.count ?? 1), 0)
+
   const stats = {
-    totalPulls:    collection.length,
-    totalCards:    collection.length,
+    totalPulls:    totalPulled,
+    totalCards:    totalPulled,
     unique:        new Set(collection.map(c => c.coin?.['TICKER']).filter(Boolean)).size,
     totalHolders:  collection.reduce((s, c) => s + parseNum(c.coin?.['HOLDERS']), 0),
     totalMC:       collection.reduce((s, c) => s + parseNum(c.coin?.['MARKET CAP']), 0),

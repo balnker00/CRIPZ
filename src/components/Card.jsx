@@ -20,7 +20,7 @@ function dexscreenerUrl(coin) {
   return `https://dexscreener.com/search?q=${encodeURIComponent(coin['TICKER'] ?? coin['NAME'] ?? '')}`
 }
 
-const Card = memo(function Card({ coin, rarity, animate = false, delay = 0 }) {
+const Card = memo(function Card({ coin, rarity, animate = false, delay = 0, count = 1 }) {
   const [revealed, setRevealed] = useState(!animate)
   const [imgErr, setImgErr]     = useState(false)
 
@@ -45,6 +45,7 @@ const Card = memo(function Card({ coin, rarity, animate = false, delay = 0 }) {
       title={`View ${coin['NAME']} on DexScreener`}
     >
       <div className="card-bg" />
+      {count > 1 && <div className="card-count-badge">×{count}</div>}
       <div className="card-content">
         <div style={{ display: 'flex', gap: '4px', alignItems: 'center', marginBottom: '6px', overflow: 'hidden' }}>
           <div className="card-rarity-badge">{baseRarity}</div>
