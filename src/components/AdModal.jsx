@@ -9,13 +9,7 @@ export default function AdModal({ onReward }) {
 
   useEffect(() => {
     const id = setInterval(() => {
-      setSecs(prev => {
-        if (prev <= 1) {
-          clearInterval(id)
-          return 0
-        }
-        return prev - 1
-      })
+      setSecs(prev => (prev <= 1 ? 0 : prev - 1))
     }, 1000)
     return () => clearInterval(id)
   }, [])
