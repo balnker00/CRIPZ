@@ -1,75 +1,145 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { supabase } from '../lib/supabase'
 
-export const FREE_PACKS    = 10
-export const AD_REWARD     = 3
-export const SHARE_REWARD  = 2
-const COOLDOWN_MS          = 15 * 60 * 1000          // 15 min
-const LS_KEY             = 'cripz-packs'
+export const FREE_PACKS   = 10
+export const AD_REWARD    = 3
+export const SHARE_REWARD = 2
+const COOLDOWN_MS         = 15 * 60 * 1000
+const LS_KEY              = 'cripz-packs'
 
-function loadSaved() {
-  try { return JSON.parse(localStorage.getItem(LS_KEY)) }
-  catch { return null }
+/*
+  Supabase table required (run once in SQL editor):
+
+  CREATE TABLE user_packs (
+    user_id    uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    packs_left smallint NOT NULL DEFAULT 10,
+    reset_at   timestamptz
+  );
+  ALTER TABLE user_packs ENABLE ROW LEVEL SECURITY;
+  CREATE POLICY "Users manage own packs" ON user_packs
+    USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+*/
+
+function loadLS() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) } catch { return null }
 }
 
-export function usePacks() {
-  const [left, setLeft] = useState(() => {
-    const s = loadSaved()
-    if (!s) return FREE_PACKS
-    if (s.resetAt && Date.now() >= s.resetAt) return FREE_PACKS
-    return s.left ?? FREE_PACKS
-  })
+function parseLS() {
+  const s = loadLS()
+  if (!s) return { left: FREE_PACKS, resetAt: null }
+  if (s.resetAt && Date.now() >= s.resetAt) return { left: FREE_PACKS, resetAt: null }
+  return { left: s.left ?? FREE_PACKS, resetAt: s.resetAt ?? null }
+}
 
-  const [resetAt, setResetAt] = useState(() => {
-    const s = loadSaved()
-    if (!s) return null
-    if (s.resetAt && Date.now() >= s.resetAt) return null
-    return s.resetAt ?? null
-  })
+export function usePacks(user) {
+  const [left, setLeft]       = useState(FREE_PACKS)
+  const [resetAt, setResetAt] = useState(null)
+  const [packsReady, setPacksReady] = useState(false)
 
-  // Persist whenever left/resetAt changes
+  // Refs so persist callback always has fresh values without stale closures
+  const leftRef    = useRef(FREE_PACKS)
+  const resetAtRef = useRef(null)
+  const userRef    = useRef(user)
+  useEffect(() => { userRef.current = user }, [user])
+
+  // ── Load state from server (logged-in) or localStorage (anonymous) ──────────
   useEffect(() => {
-    if (left === FREE_PACKS && !resetAt) {
-      localStorage.removeItem(LS_KEY)
-    } else {
-      localStorage.setItem(LS_KEY, JSON.stringify({ left, resetAt }))
-    }
-  }, [left, resetAt])
+    setPacksReady(false)
 
-  // Auto-reset when cooldown timer fires
+    if (user) {
+      supabase
+        .from('user_packs')
+        .select('packs_left, reset_at')
+        .eq('user_id', user.id)
+        .maybeSingle()
+        .then(({ data }) => {
+          let l = FREE_PACKS, r = null
+          if (data) {
+            const rMs = data.reset_at ? new Date(data.reset_at).getTime() : null
+            if (!rMs || Date.now() < rMs) {
+              l = data.packs_left ?? FREE_PACKS
+              r = rMs
+            }
+          }
+          leftRef.current    = l
+          resetAtRef.current = r
+          setLeft(l)
+          setResetAt(r)
+          setPacksReady(true)
+        })
+    } else {
+      const { left: l, resetAt: r } = parseLS()
+      leftRef.current    = l
+      resetAtRef.current = r
+      setLeft(l)
+      setResetAt(r)
+      setPacksReady(true)
+    }
+  }, [user?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Persist helper ───────────────────────────────────────────────────────────
+  const persist = useCallback((newLeft, newResetAt) => {
+    leftRef.current    = newLeft
+    resetAtRef.current = newResetAt
+    const u = userRef.current
+    if (u) {
+      supabase.from('user_packs').upsert({
+        user_id:    u.id,
+        packs_left: newLeft,
+        reset_at:   newResetAt ? new Date(newResetAt).toISOString() : null,
+      }, { onConflict: 'user_id' })
+        .then(({ error }) => { if (error) console.error('Pack sync error:', error) })
+    } else {
+      if (newLeft === FREE_PACKS && !newResetAt) {
+        localStorage.removeItem(LS_KEY)
+      } else {
+        localStorage.setItem(LS_KEY, JSON.stringify({ left: newLeft, resetAt: newResetAt }))
+      }
+    }
+  }, [])
+
+  // ── Auto-reset when cooldown timer fires ─────────────────────────────────────
   useEffect(() => {
     if (!resetAt) return
     const ms = resetAt - Date.now()
     if (ms <= 0) {
-      setLeft(prev => Math.max(prev, FREE_PACKS))
-      setResetAt(null)
+      setLeft(FREE_PACKS); setResetAt(null)
+      persist(FREE_PACKS, null)
       return
     }
-    // clamp to JS max timeout (~24.8 days)
     const t = setTimeout(() => {
-      setLeft(prev => Math.max(prev, FREE_PACKS))
-      setResetAt(null)
+      setLeft(FREE_PACKS); setResetAt(null)
+      persist(FREE_PACKS, null)
     }, Math.min(ms, 2_147_483_647))
     return () => clearTimeout(t)
-  }, [resetAt])
+  }, [resetAt, persist])
 
+  // ── Actions ──────────────────────────────────────────────────────────────────
   const consumePack = useCallback(() => {
-    setLeft(prev => Math.max(0, prev - 1))
-    // Set the 24 h reset window on the first consumption of the day
-    setResetAt(r => r ?? Date.now() + COOLDOWN_MS)
-  }, [])
+    const newLeft  = Math.max(0, leftRef.current - 1)
+    const newReset = resetAtRef.current ?? Date.now() + COOLDOWN_MS
+    setLeft(newLeft)
+    if (!resetAtRef.current) setResetAt(newReset)
+    persist(newLeft, newReset)
+  }, [persist])
 
   const rewardAd = useCallback(() => {
-    setLeft(prev => prev + AD_REWARD)
-  }, [])
+    const newLeft = leftRef.current + AD_REWARD
+    setLeft(newLeft)
+    persist(newLeft, resetAtRef.current)
+  }, [persist])
 
   const rewardShare = useCallback(() => {
-    setLeft(prev => prev + SHARE_REWARD)
-  }, [])
+    const newLeft = leftRef.current + SHARE_REWARD
+    setLeft(newLeft)
+    persist(newLeft, resetAtRef.current)
+  }, [persist])
 
   return {
     packsLeft:  left,
     onCooldown: left === 0,
     resetAt,
+    packsReady,
     rewardAd,
     rewardShare,
     consumePack,
