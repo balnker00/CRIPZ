@@ -123,16 +123,22 @@ export default function PackSection({
       {onCooldown && (
         adOpen ? (
           <div className="ad-popup">
-            {adSecs > 0 ? (
-              <>
-                <div className="ad-popup-secs" key={adSecs}>{adSecs}</div>
-                <div className="ad-popup-label">packs unlocking…</div>
-              </>
-            ) : (
-              <button className="ad-claim-btn" onClick={handleAdReward}>
-                ✓ CLAIM +{AD_REWARD} PACKS
-              </button>
-            )}
+            <div className="ad-popup-header">// ADVERTISEMENT //</div>
+            <div className="ad-popup-logo">
+              <img src={logoImg} alt="CryptoRipz" />
+            </div>
+            <div className="ad-popup-timer">
+              {adSecs > 0 ? (
+                <>
+                  <div className="ad-popup-secs" key={adSecs}>{adSecs}</div>
+                  <div className="ad-popup-label">packs unlocking…</div>
+                </>
+              ) : (
+                <button className="ad-claim-btn" onClick={handleAdReward}>
+                  ✓ CLAIM +{AD_REWARD} PACKS
+                </button>
+              )}
+            </div>
           </div>
         ) : (
           <button className="watch-ad-btn" onClick={() => setAdOpen(true)}>
