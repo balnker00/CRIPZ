@@ -9,16 +9,13 @@ import TabsPanel from './components/TabsPanel'
 import Notification from './components/Notification'
 import LoadingScreen from './components/LoadingScreen'
 import AuthScreen from './components/AuthScreen'
-import AdPermission from './components/AdPermission'
 import AdModal from './components/AdModal'
 
 export default function App() {
   const [appLoading, setAppLoading] = useState(true)
   const [theme, setTheme] = useState(() => localStorage.getItem('cripz-theme') || 'dark')
   const [showAuth, setShowAuth] = useState(false)
-
-  // Ad flow state machine: null → 'confirm' → 'watching' → null
-  const [adStep, setAdStep] = useState(null)
+  const [adOpen, setAdOpen] = useState(false)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -48,6 +45,7 @@ export default function App() {
     onCooldown,
     resetAt,
     rewardAd,
+    rewardShare,
   } = useGame(user)
 
   const appReady = !appLoading && !authLoading
@@ -60,6 +58,13 @@ export default function App() {
     }
   }
 
+  async function handleWatchAd() {
+    if ('Notification' in window && Notification.permission === 'default') {
+      try { await Notification.requestPermission() } catch (_) {}
+    }
+    setAdOpen(true)
+  }
+
   return (
     <>
       {(appLoading || authLoading) && (
@@ -70,18 +75,9 @@ export default function App() {
         <AuthScreen onAuth={handleAuth} onClose={() => setShowAuth(false)} />
       )}
 
-      {/* Step 1: permission prompt */}
-      {adStep === 'confirm' && (
-        <AdPermission
-          onConfirm={() => setAdStep('watching')}
-          onCancel={() => setAdStep(null)}
-        />
-      )}
-
-      {/* Step 2: ad player */}
-      {adStep === 'watching' && (
+      {adOpen && (
         <AdModal
-          onReward={() => { rewardAd(); setAdStep(null) }}
+          onReward={() => { rewardAd(); setAdOpen(false) }}
         />
       )}
 
@@ -100,10 +96,14 @@ export default function App() {
             packsLeft={packsLeft}
             onCooldown={onCooldown}
             resetAt={resetAt}
-            onWatchAd={() => setAdStep('confirm')}
+            onWatchAd={handleWatchAd}
           />
 
-          <RevealArea cards={revealedCards} />
+          <RevealArea
+            cards={revealedCards}
+            onShare={rewardShare}
+            totalCards={stats.totalCards}
+          />
 
           <TabsPanel
             activeTab={activeTab}

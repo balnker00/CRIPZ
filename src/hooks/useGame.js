@@ -18,7 +18,7 @@ export function useGame(user) {
   const [rarityPoolsReady, setRarityPoolsReady] = useState(false)
   const {
     packsLeft, onCooldown, resetAt,
-    rewardAd, consumePack,
+    rewardAd, rewardShare, consumePack,
   } = usePacks()
   const notifTimer      = useRef(null)
   const coinsRef        = useRef([])
@@ -218,5 +218,6 @@ export function useGame(user) {
     onCooldown,
     resetAt,
     rewardAd,
+    rewardShare,
   }
 }

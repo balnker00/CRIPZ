@@ -1460,11 +1460,10 @@ main {
 
   header {
     padding: 0.9rem 1rem 0.75rem;
-    grid-template-columns: 0 auto 1fr; /* logo left-ish, user right */
+    grid-template-columns: 1fr auto 1fr; /* keep logo centred */
   }
-  .header-spacer { display: none; }
-  .logo-img { height: 80px; width: 80px; }
-  .logo-wordmark { font-size: clamp(1.5rem, 8vw, 2.8rem); }
+  .logo-img { height: 72px; width: 72px; }
+  .logo-wordmark { font-size: clamp(1.4rem, 7vw, 2.4rem); }
 
   main { padding: 1.5rem 0.75rem; }
 
@@ -1495,14 +1494,14 @@ main {
 
   header {
     padding: 0.75rem 0.75rem 0.6rem;
-    grid-template-columns: 0 auto 1fr;
+    grid-template-columns: 1fr auto 1fr;
   }
-  .header-spacer { display: none; }
-  .logo { gap: 0.6rem; }
-  .logo-img { height: 62px; width: 62px; }
-  .logo-wordmark { font-size: clamp(1.3rem, 9vw, 2.2rem); }
+  .header-spacer { display: block; }
+  .logo { gap: 0.45rem; justify-content: center; }
+  .logo-img { height: 44px; width: 44px; }
+  .logo-wordmark { font-size: clamp(1.15rem, 6.5vw, 1.8rem); }
   .ticker-badge  { display: none; }         /* hide $RIPZ badge on tiny screens */
-  .tagline       { font-size: 0.5rem; }
+  .tagline       { font-size: 0.46rem; }
 
   main { padding: 1rem 0.5rem; }
 

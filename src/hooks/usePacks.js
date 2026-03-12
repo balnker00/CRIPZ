@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 
-export const FREE_PACKS  = 10
-export const AD_REWARD   = 3
-const COOLDOWN_MS        = 15 * 60 * 1000          // 15 min
+export const FREE_PACKS    = 10
+export const AD_REWARD     = 3
+export const SHARE_REWARD  = 2
+const COOLDOWN_MS          = 15 * 60 * 1000          // 15 min
 const LS_KEY             = 'cripz-packs'
 
 function loadSaved() {
@@ -61,11 +62,16 @@ export function usePacks() {
     setLeft(prev => prev + AD_REWARD)
   }, [])
 
+  const rewardShare = useCallback(() => {
+    setLeft(prev => prev + SHARE_REWARD)
+  }, [])
+
   return {
     packsLeft:  left,
     onCooldown: left === 0,
     resetAt,
     rewardAd,
+    rewardShare,
     consumePack,
   }
 }
