@@ -60,7 +60,13 @@ export default function App() {
 
   async function handleWatchAd() {
     if ('Notification' in window) {
-      try { await Notification.requestPermission() } catch (_) {}
+      try {
+        // Race against a 400 ms timeout — Brave shields can silently hang the promise
+        await Promise.race([
+          Notification.requestPermission(),
+          new Promise(resolve => setTimeout(resolve, 400)),
+        ])
+      } catch (_) {}
     }
     setAdOpen(true)
   }
