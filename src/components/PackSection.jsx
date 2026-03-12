@@ -56,7 +56,7 @@ export default function PackSection({
 
   return (
     <>
-    {adOpen && createPortal(<AdModal onReward={handleAdReward} />, document.body)}
+    {createPortal(<AdModal open={adOpen} onReward={handleAdReward} />, document.body)}
     <div className="pack-section">
       <div className="section-label">// Season 1 - the memes //</div>
 
