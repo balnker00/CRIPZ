@@ -33,6 +33,18 @@ export default function TabsPanel({
         >
           About
         </button>
+        <button
+          className={`tab-btn${activeTab === 'market' ? ' active' : ''}`}
+          onClick={() => setActiveTab('market')}
+        >
+          Market
+        </button>
+        <button
+          className={`tab-btn${activeTab === 'battle' ? ' active' : ''}`}
+          onClick={() => setActiveTab('battle')}
+        >
+          Battle
+        </button>
       </div>
 
       <div className="tab-panel active">
@@ -44,8 +56,16 @@ export default function TabsPanel({
           />
         ) : activeTab === 'codex' ? (
           <Codex coins={coins} collection={collection} />
-        ) : (
+        ) : activeTab === 'about' ? (
           <About />
+        ) : (
+          <div className="coming-soon">
+            <div className="coming-soon-inner">
+              <span className="coming-soon-icon">🔒</span>
+              <h2>{activeTab === 'market' ? 'Market' : 'Battle'}</h2>
+              <p>Coming Soon</p>
+            </div>
+          </div>
         )}
       </div>
     </div>
