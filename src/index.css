@@ -1138,6 +1138,24 @@ main {
   white-space: nowrap;
 }
 
+/* Duplicate count badge — top-right corner */
+.card-count-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.45rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.18);
+  z-index: 2;
+  pointer-events: none;
+}
+
 /* ── Card image — fixed uniform size ── */
 .card-image {
   width: 100%;

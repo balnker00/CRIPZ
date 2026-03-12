@@ -65,8 +65,8 @@ export default function Collection({ collection, filter, setFilter }) {
             </div>
           </div>
         ) : (
-          paged.map(({ id, coin, rarity }) => (
-            <Card key={id} coin={coin} rarity={rarity} />
+          paged.map(({ id, coin, rarity, count }) => (
+            <Card key={id} coin={coin} rarity={rarity} count={count} />
           ))
         )}
       </div>
