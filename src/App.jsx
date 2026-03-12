@@ -9,14 +9,10 @@ import TabsPanel from './components/TabsPanel'
 import Notification from './components/Notification'
 import LoadingScreen from './components/LoadingScreen'
 import AuthScreen from './components/AuthScreen'
-import AdModal from './components/AdModal'
-import { AD_REWARD } from './hooks/usePacks'
-
 export default function App() {
   const [appLoading, setAppLoading] = useState(true)
   const [theme, setTheme] = useState(() => localStorage.getItem('cripz-theme') || 'dark')
   const [showAuth, setShowAuth] = useState(false)
-  const [adOpen, setAdOpen] = useState(false)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -60,16 +56,6 @@ export default function App() {
     }
   }
 
-  function handleWatchAd() {
-    setAdOpen(true)
-  }
-
-  function handleAdReward() {
-    rewardAd()
-    setAdOpen(false)
-    showNotif(`+${AD_REWARD} PACKS FROM AD`)
-  }
-
   return (
     <>
       {(appLoading || authLoading) && (
@@ -78,10 +64,6 @@ export default function App() {
 
       {appReady && showAuth && (
         <AuthScreen onAuth={handleAuth} onClose={() => setShowAuth(false)} />
-      )}
-
-      {adOpen && (
-        <AdModal onReward={handleAdReward} />
       )}
 
       <div className={`app-content${!appReady ? ' app-content-hidden' : ''}`}>
@@ -99,7 +81,8 @@ export default function App() {
             packsLeft={packsLeft}
             onCooldown={onCooldown}
             resetAt={resetAt}
-            onWatchAd={handleWatchAd}
+            rewardAd={rewardAd}
+            showNotif={showNotif}
           />
 
           <RevealArea

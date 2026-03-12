@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import logoImg from '../assets/pfp1.png'
 import { FREE_PACKS, AD_REWARD } from '../hooks/usePacks'
+import AdModal from './AdModal'
 
 function useCountdown(resetAt) {
   const [display, setDisplay] = useState('')
@@ -29,8 +30,9 @@ function useCountdown(resetAt) {
 
 export default function PackSection({
   onOpen, pulling, coinsLoading, coinsError,
-  packsLeft, onCooldown, resetAt, onWatchAd,
+  packsLeft, onCooldown, resetAt, rewardAd, showNotif,
 }) {
+  const [adOpen, setAdOpen] = useState(false)
   const countdown   = useCountdown(resetAt)
   const packLocked  = pulling || coinsLoading || !!coinsError || onCooldown
   const btnDisabled = packLocked
@@ -45,7 +47,15 @@ export default function PackSection({
           ? 'NO PACKS LEFT'
           : 'OPEN PACK'
 
+  function handleAdReward() {
+    rewardAd()
+    setAdOpen(false)
+    showNotif(`+${AD_REWARD} PACKS FROM AD`)
+  }
+
   return (
+    <>
+    {adOpen && <AdModal onReward={handleAdReward} />}
     <div className="pack-section">
       <div className="section-label">// Season 1 - the memes //</div>
 
@@ -103,10 +113,11 @@ export default function PackSection({
       </button>
 
       {onCooldown && (
-        <button className="watch-ad-btn" onClick={onWatchAd}>
+        <button className="watch-ad-btn" onClick={() => setAdOpen(true)}>
           ▶ WATCH AD · +{AD_REWARD} PACKS
         </button>
       )}
     </div>
+    </>
   )
 }
