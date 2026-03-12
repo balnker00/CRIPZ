@@ -49,26 +49,26 @@ export default function PackSection({
     <div className="pack-section">
       <div className="section-label">// Season 1 - the memes //</div>
 
+      {/* Full-screen rip overlay — rendered outside .pack so overflow:hidden doesn't clip it */}
+      {pulling && (
+        <div className="pack-logo-rip">
+          <div className="pack-rip-half pack-rip-top">
+            <img src={logoImg} alt="" />
+          </div>
+          <div className="pack-rip-tear" />
+          <div className="pack-rip-half pack-rip-bottom">
+            <img src={logoImg} alt="" />
+          </div>
+        </div>
+      )}
+
       <div
         className={`pack-wrapper${packLocked ? ' pack-locked' : ''}`}
         onClick={packLocked ? undefined : onOpen}
       >
         <div className="pack">
           <div className="pack-bg-flower" />
-          {pulling ? (
-            /* Rip animation: logo split at 25% from top — both halves fly apart */
-            <div className="pack-logo-rip">
-              <div className="pack-rip-half pack-rip-top">
-                <img src={logoImg} alt="" />
-              </div>
-              <div className="pack-rip-tear" />
-              <div className="pack-rip-half pack-rip-bottom">
-                <img src={logoImg} alt="" />
-              </div>
-            </div>
-          ) : (
-            <img src={logoImg} alt="Pack" className="pack-logo-img" />
-          )}
+          <img src={logoImg} alt="Pack" className="pack-logo-img" />
           <div className="pack-name">MEMES PACK</div>
           <div className="pack-sub">RIPZ · random rarity</div>
         </div>
