@@ -13,6 +13,7 @@ import AuthScreen from './components/AuthScreen'
 export default function App() {
   const [appLoading, setAppLoading] = useState(true)
   const [theme, setTheme] = useState(() => localStorage.getItem('cripz-theme') || 'dark')
+  const [showAuth, setShowAuth] = useState(false)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -21,12 +22,16 @@ export default function App() {
 
   const { user, authLoading, username, handleAuth, signOut } = useAuth()
 
+  // Close auth modal automatically once signed in
+  useEffect(() => {
+    if (user) setShowAuth(false)
+  }, [user])
+
   const {
     coins,
     coinsLoading,
     coinsError,
     collection,
-    pullCount, setPullCount,
     revealedCards,
     collFilter, setCollFilter,
     activeTab, setActiveTab,
@@ -37,7 +42,15 @@ export default function App() {
     openPack,
   } = useGame(user)
 
-  const showGame = !appLoading && !authLoading && !!user
+  const appReady = !appLoading && !authLoading
+
+  function handleOpenPack() {
+    if (!user) {
+      setShowAuth(true)
+    } else {
+      openPack()
+    }
+  }
 
   return (
     <>
@@ -45,11 +58,11 @@ export default function App() {
         <LoadingScreen onDone={() => setAppLoading(false)} />
       )}
 
-      {!appLoading && !authLoading && !user && (
-        <AuthScreen onAuth={handleAuth} />
+      {appReady && showAuth && (
+        <AuthScreen onAuth={handleAuth} onClose={() => setShowAuth(false)} />
       )}
 
-      <div className={`app-content${!showGame ? ' app-content-hidden' : ''}`}>
+      <div className={`app-content${!appReady ? ' app-content-hidden' : ''}`}>
         {flash && <div className="flash" />}
 
         <Header username={username} onSignOut={signOut} />
@@ -57,9 +70,7 @@ export default function App() {
 
         <main>
           <PackSection
-            pullCount={pullCount}
-            setPullCount={setPullCount}
-            onOpen={openPack}
+            onOpen={handleOpenPack}
             pulling={pulling}
             coinsLoading={coinsLoading}
             coinsError={coinsError}

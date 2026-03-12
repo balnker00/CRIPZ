@@ -7,7 +7,7 @@ export default function TabsPanel({
   coins,
   collection, collFilter, setCollFilter,
 }) {
-  const uniqueCount = new Set(collection.map(c => c.coin.ticker)).size
+  const uniqueCount = new Set(collection.map(c => c.coin?.['TICKER']).filter(Boolean)).size
 
   return (
     <div className="tabs-wrapper">
@@ -24,7 +24,7 @@ export default function TabsPanel({
           onClick={() => setActiveTab('codex')}
         >
           Codex
-          <span className="tab-badge">{uniqueCount}/{coins.length}</span>
+          <span className="tab-badge">{uniqueCount}</span>
         </button>
         <button
           className={`tab-btn${activeTab === 'about' ? ' active' : ''}`}
