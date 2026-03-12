@@ -648,54 +648,18 @@ main {
   border-color: #555;
 }
 
-/* ── AD MODAL (player) ── */
-.ad-modal {
-  background: #0d0d0d;
-  border: 1px solid #2a2a2a;
-  border-top: 2px solid var(--gold);
-  width: min(300px, 88vw);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-bottom: 1.6rem;
-}
-
-.ad-label {
-  width: 100%;
-  font-family: 'Orbitron', monospace;
-  font-size: 0.48rem;
-  letter-spacing: 0.2em;
-  color: var(--gold);
-  opacity: 0.5;
-  padding: 0.5rem 1rem 0.4rem;
-  border-bottom: 1px solid #1e1e1e;
-  text-align: center;
-  margin-bottom: 1.2rem;
-}
-
-/* Static logo in the ad modal */
-.ad-static-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.6rem 0 1rem;
-}
-
-.ad-static-logo img {
-  width: 68px;
-  height: 68px;
-  object-fit: contain;
-  opacity: 0.65;
-  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.35));
-}
-
-/* Countdown area */
-.ad-timer-area {
+/* ── AD POPUP (inline countdown) ── */
+.ad-popup {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.3rem;
-  min-height: 4rem;
+  margin: 0.6rem auto 0;
+  padding: 0.9rem 2rem;
+  background: #0d0d0d;
+  border: 1px solid #2a2a2a;
+  border-top: 2px solid var(--gold);
+  min-width: 160px;
 }
 
 @keyframes sec-pop {
@@ -703,17 +667,17 @@ main {
   to   { transform: scale(1);   opacity: 1; }
 }
 
-.ad-secs {
+.ad-popup-secs {
   font-family: 'Orbitron', monospace;
-  font-size: 2.8rem;
+  font-size: 2.4rem;
   font-weight: 700;
   color: var(--green);
-  text-shadow: 0 0 20px rgba(0, 255, 153, 0.5);
+  text-shadow: 0 0 16px rgba(0, 255, 153, 0.5);
   line-height: 1;
-  animation: sec-pop 0.35s ease-out forwards;
+  animation: sec-pop 0.3s ease-out forwards;
 }
 
-.ad-secs-label {
+.ad-popup-label {
   font-family: 'Share Tech Mono', monospace;
   font-size: 0.58rem;
   color: var(--text);
@@ -1809,9 +1773,8 @@ main {
 [data-theme="light"] .ad-perm-message { color: var(--text); }
 [data-theme="light"] .ad-perm-allow   { border-color: var(--green); color: var(--green); }
 [data-theme="light"] .ad-perm-allow:hover { background: rgba(0,119,68,0.08); }
-[data-theme="light"] .ad-modal        { background: #f0ece0; border-color: #d0ccc0; border-top-color: #aa8800; }
-[data-theme="light"] .ad-label        { color: #aa8800; border-bottom-color: #d0ccc0; }
-[data-theme="light"] .ad-secs         { color: var(--green); text-shadow: 0 0 16px rgba(0,119,68,0.4); }
+[data-theme="light"] .ad-popup        { background: #f0ece0; border-color: #d0ccc0; border-top-color: #aa8800; }
+[data-theme="light"] .ad-popup-secs   { color: var(--green); text-shadow: 0 0 16px rgba(0,119,68,0.4); }
 [data-theme="light"] .ad-claim-btn    { border-color: #aa8800; color: #aa8800; }
 [data-theme="light"] .ad-claim-btn:hover { background: rgba(170,136,0,0.08); }
 [data-theme="light"] .pack-rip-tear   { background: var(--green); box-shadow: 0 0 6px var(--green); }
