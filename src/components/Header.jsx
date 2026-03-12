@@ -1,6 +1,6 @@
 import logoImg from '../assets/pfp1.png'
 
-export default function Header({ username, onSignOut }) {
+export default function Header({ username, onSignOut, onLogin }) {
   return (
     <>
       <div className="rainbow-bar" />
@@ -21,7 +21,7 @@ export default function Header({ username, onSignOut }) {
         </div>
 
         <div className="header-user">
-          {username && (
+          {username ? (
             <>
               <span style={{ color: '#00ff88', fontSize: '0.6rem', letterSpacing: '0.15em', opacity: 0.7 }}>
                 {username.toUpperCase()}
@@ -43,6 +43,23 @@ export default function Header({ username, onSignOut }) {
                 LOGOUT
               </button>
             </>
+          ) : (
+            <button
+              onClick={onLogin}
+              style={{
+                background: 'transparent',
+                border: '1px solid #1a3a1a',
+                color: '#00ff88',
+                padding: '4px 10px',
+                borderRadius: '4px',
+                fontSize: '0.55rem',
+                letterSpacing: '0.15em',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}
+            >
+              LOGIN
+            </button>
           )}
         </div>
       </header>

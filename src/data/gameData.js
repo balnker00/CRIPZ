@@ -1,14 +1,14 @@
-// Base rarities — 4 tiers matching the rarities table schema (no golden rows in DB)
-// Total weight = 100 for clean percentages
+// Base rarities — heavy common pool drives duplicates; legendary/epic extremely scarce
+// Total weight = 1000
 export const BASE_RARITIES = [
-  { rarity: 'LEGENDARY', weight:  1 }, //  1% base
-  { rarity: 'EPIC',      weight:  4 }, //  4% base
-  { rarity: 'RARE',      weight: 20 }, // 20% base
-  { rarity: 'COMMON',    weight: 75 }, // 75% base
+  { rarity: 'LEGENDARY', weight:   2 }, //  0.2%
+  { rarity: 'EPIC',      weight:   8 }, //  0.8%
+  { rarity: 'RARE',      weight:  90 }, //  9%
+  { rarity: 'COMMON',    weight: 900 }, // 90%
 ]
 
-// Golden: ~2% of all pulls — sits between Epic and Legendary in rarity
-export const GOLDEN_CHANCE = 0.02
+// Golden: 0.3% — extremely rare overlay
+export const GOLDEN_CHANCE = 0.003
 
 export function rollRarity() {
   const total = BASE_RARITIES.reduce((s, r) => s + r.weight, 0)
