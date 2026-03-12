@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { rollBaseRarity, GOLDEN_CHANCE, RARITY_ORDER, RARITY_BY_ID } from '../data/gameData'
 import { supabase } from '../lib/supabase'
+import { usePacks } from './usePacks'
 
 export function useGame(user) {
   const [coins, setCoins]               = useState([])
@@ -15,6 +16,10 @@ export function useGame(user) {
   const [flash, setFlash]               = useState(false)
   const [pulling, setPulling]           = useState(false)
   const [rarityPoolsReady, setRarityPoolsReady] = useState(false)
+  const {
+    packsLeft, onCooldown, resetAt,
+    rewardAd, rewardShare, consumePack,
+  } = usePacks()
   const notifTimer      = useRef(null)
   const coinsRef        = useRef([])
   const rarityPoolsRef  = useRef({}) // { COMMON: [coinId,...], RARE: [...], ... }
@@ -108,7 +113,8 @@ export function useGame(user) {
   }, [])
 
   const openPack = useCallback(() => {
-    if (pulling || coinsLoading || coins.length === 0) return
+    if (pulling || coinsLoading || coins.length === 0 || packsLeft === 0) return
+    consumePack()
     setPulling(true)
 
     setFlash(true)
@@ -165,7 +171,7 @@ export function useGame(user) {
     }
 
     setTimeout(() => setPulling(false), 4 * 140 + 500)
-  }, [pulling, coins, user, showNotif])
+  }, [pulling, coins, user, showNotif, packsLeft, consumePack])
 
   function parseNum(val) {
     if (!val && val !== 0) return 0
@@ -208,5 +214,10 @@ export function useGame(user) {
     stats,
     pulling,
     openPack,
+    packsLeft,
+    onCooldown,
+    resetAt,
+    rewardAd,
+    rewardShare,
   }
 }

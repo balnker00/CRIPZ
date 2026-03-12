@@ -498,6 +498,335 @@ main {
 
 .pack-stripe { display: none; }
 
+/* ── PACK META (counter / cooldown) ── */
+.packs-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 2rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.packs-counter {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  opacity: 0.75;
+}
+
+.packs-reset {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--text);
+  opacity: 0.45;
+}
+
+.packs-reset--urgent {
+  opacity: 0.7;
+  color: var(--text);
+}
+
+.packs-timer {
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 0.08em;
+}
+
+/* ── WATCH AD BUTTON ── */
+.watch-ad-btn {
+  display: block;
+  margin: 0.6rem auto 0;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  padding: 0.55rem 1.4rem;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.watch-ad-btn:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+/* ── PACK LOCKED STATE ── */
+.pack-locked {
+  cursor: default;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ── AD OVERLAY (shared by AdPermission + AdModal) ── */
+.ad-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+/* ── AD PERMISSION PROMPT ── */
+.ad-permission {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-top: 2px solid var(--green);
+  width: min(300px, 88vw);
+  padding: 1.4rem 1.4rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ad-perm-site {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--green);
+  letter-spacing: 0.06em;
+}
+
+.ad-perm-message {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text);
+  opacity: 0.85;
+}
+
+.ad-perm-detail {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text);
+  opacity: 0.45;
+  margin-bottom: 0.5rem;
+}
+
+.ad-perm-reward {
+  color: var(--gold);
+  opacity: 1;
+}
+
+.ad-perm-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+.ad-perm-allow,
+.ad-perm-block {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.ad-perm-allow {
+  border: 1px solid var(--green);
+  color: var(--green);
+  flex: 1;
+}
+
+.ad-perm-allow:hover {
+  background: rgba(0, 255, 153, 0.1);
+}
+
+.ad-perm-block {
+  border: 1px solid #333;
+  color: var(--text);
+  opacity: 0.5;
+}
+
+.ad-perm-block:hover {
+  opacity: 0.8;
+  border-color: #555;
+}
+
+/* ── AD MODAL (player) ── */
+.ad-modal {
+  background: #0d0d0d;
+  border: 1px solid #2a2a2a;
+  border-top: 2px solid var(--gold);
+  width: min(300px, 88vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 1.6rem;
+}
+
+.ad-label {
+  width: 100%;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.48rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  opacity: 0.5;
+  padding: 0.5rem 1rem 0.4rem;
+  border-bottom: 1px solid #1e1e1e;
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+/* Static logo in the ad modal */
+.ad-static-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 0 1rem;
+}
+
+.ad-static-logo img {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  opacity: 0.65;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.35));
+}
+
+/* Countdown area */
+.ad-timer-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 4rem;
+}
+
+@keyframes sec-pop {
+  from { transform: scale(1.5); opacity: 0.4; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.ad-secs {
+  font-family: 'Orbitron', monospace;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--green);
+  text-shadow: 0 0 20px rgba(0, 255, 153, 0.5);
+  line-height: 1;
+  animation: sec-pop 0.35s ease-out forwards;
+}
+
+.ad-secs-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--text);
+  opacity: 0.35;
+  letter-spacing: 0.1em;
+}
+
+.ad-claim-btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  padding: 0.65rem 1.8rem;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ad-claim-btn:hover {
+  background: rgba(255, 215, 0, 0.12);
+}
+
+/* ── PACK LOGO RIP ANIMATION ── */
+/* Logo is 62 × 62 px. Cut at 25% = 15.5 px ≈ 16 px from top */
+
+.pack-logo-rip {
+  position: relative;
+  width: 62px;
+  height: 62px;
+  z-index: 1;
+}
+
+.pack-rip-half {
+  position: absolute;
+  left: 0;
+  width: 62px;
+  overflow: hidden;
+}
+
+.pack-rip-half img {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.5))
+          drop-shadow(0 0 24px rgba(0, 255, 153, 0.2));
+}
+
+/* Top section: 0 → 16 px (top 25%) */
+.pack-rip-top {
+  top: 0;
+  height: 16px;
+}
+
+/* Bottom section: 16 → 62 px (bottom 75%) — shift image up to reveal bottom portion */
+.pack-rip-bottom {
+  top: 16px;
+  height: 46px;
+}
+.pack-rip-bottom img {
+  margin-top: -16px;
+}
+
+/* Zigzag tear line at the cut */
+.pack-rip-tear {
+  position: absolute;
+  top: 15px;
+  left: -5px;
+  right: -5px;
+  height: 3px;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green), 0 0 18px rgba(0, 255, 153, 0.4);
+  clip-path: polygon(
+    0% 50%, 5% 0%, 10% 100%, 15% 0%, 20% 100%,
+    25% 0%, 30% 100%, 35% 0%, 40% 100%, 45% 0%,
+    50% 100%, 55% 0%, 60% 100%, 65% 0%, 70% 100%,
+    75% 0%, 80% 100%, 85% 0%, 90% 100%, 95% 0%,
+    100% 50%, 100% 100%, 0% 100%
+  );
+  animation: pack-tear-flash 0.5s ease-out forwards;
+}
+
+@keyframes pack-tear-flash {
+  0%   { opacity: 0; }
+  25%  { opacity: 1; }
+  70%  { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+/* Top sliver flies up-left */
+@keyframes pack-rip-top-fly {
+  0%   { transform: translateY(0)    translateX(0)    rotate(0deg);   opacity: 1; }
+  20%  { transform: translateY(-8px) translateX(-4px) rotate(-6deg);  opacity: 1; }
+  100% { transform: translateY(-90px) translateX(-45px) rotate(-30deg) scale(0.3); opacity: 0; }
+}
+
+/* Bottom body flies down-right */
+@keyframes pack-rip-bottom-fly {
+  0%   { transform: translateY(0)   translateX(0)   rotate(0deg);  opacity: 1; }
+  20%  { transform: translateY(6px) translateX(4px) rotate(4deg);  opacity: 1; }
+  100% { transform: translateY(80px) translateX(40px) rotate(22deg) scale(0.4); opacity: 0; }
+}
+
+.pack-rip-top {
+  animation: pack-rip-top-fly 0.65s cubic-bezier(0.4, 0, 0.8, 0.5) 0.05s forwards;
+}
+
+.pack-rip-bottom {
+  animation: pack-rip-bottom-fly 0.65s cubic-bezier(0.4, 0, 0.8, 0.5) 0.05s forwards;
+}
+
 /* ── BUTTONS ── */
 .pull-btn {
   display: inline-block;
@@ -1131,11 +1460,10 @@ main {
 
   header {
     padding: 0.9rem 1rem 0.75rem;
-    grid-template-columns: 0 auto 1fr; /* logo left-ish, user right */
+    grid-template-columns: 1fr auto 1fr; /* keep logo centred */
   }
-  .header-spacer { display: none; }
-  .logo-img { height: 80px; width: 80px; }
-  .logo-wordmark { font-size: clamp(1.5rem, 8vw, 2.8rem); }
+  .logo-img { height: 72px; width: 72px; }
+  .logo-wordmark { font-size: clamp(1.4rem, 7vw, 2.4rem); }
 
   main { padding: 1.5rem 0.75rem; }
 
@@ -1166,14 +1494,14 @@ main {
 
   header {
     padding: 0.75rem 0.75rem 0.6rem;
-    grid-template-columns: 0 auto 1fr;
+    grid-template-columns: 1fr auto 1fr;
   }
-  .header-spacer { display: none; }
-  .logo { gap: 0.6rem; }
-  .logo-img { height: 62px; width: 62px; }
-  .logo-wordmark { font-size: clamp(1.3rem, 9vw, 2.2rem); }
+  .header-spacer { display: block; }
+  .logo { gap: 0.45rem; justify-content: center; }
+  .logo-img { height: 44px; width: 44px; }
+  .logo-wordmark { font-size: clamp(1.15rem, 6.5vw, 1.8rem); }
   .ticker-badge  { display: none; }         /* hide $RIPZ badge on tiny screens */
-  .tagline       { font-size: 0.5rem; }
+  .tagline       { font-size: 0.46rem; }
 
   main { padding: 1rem 0.5rem; }
 
@@ -1374,6 +1702,24 @@ main {
 [data-theme="light"] .pull-btn         { border-color: var(--green); color: var(--green); }
 [data-theme="light"] .pull-btn::before { background: var(--green); }
 [data-theme="light"] .pull-btn:hover:not(:disabled) { color: #fff; }
+
+/* Pack meta + ad — light theme */
+[data-theme="light"] .packs-counter  { color: var(--green); }
+[data-theme="light"] .packs-reset    { color: var(--text); }
+[data-theme="light"] .watch-ad-btn   { border-color: #aa8800; color: #aa8800; }
+[data-theme="light"] .watch-ad-btn:hover { background: rgba(170,136,0,0.08); }
+[data-theme="light"] .ad-overlay       { background: rgba(200,196,180,0.88); }
+[data-theme="light"] .ad-permission   { background: #f0ece0; border-color: #d0ccc0; border-top-color: var(--green); }
+[data-theme="light"] .ad-perm-site    { color: var(--green); }
+[data-theme="light"] .ad-perm-message { color: var(--text); }
+[data-theme="light"] .ad-perm-allow   { border-color: var(--green); color: var(--green); }
+[data-theme="light"] .ad-perm-allow:hover { background: rgba(0,119,68,0.08); }
+[data-theme="light"] .ad-modal        { background: #f0ece0; border-color: #d0ccc0; border-top-color: #aa8800; }
+[data-theme="light"] .ad-label        { color: #aa8800; border-bottom-color: #d0ccc0; }
+[data-theme="light"] .ad-secs         { color: var(--green); text-shadow: 0 0 16px rgba(0,119,68,0.4); }
+[data-theme="light"] .ad-claim-btn    { border-color: #aa8800; color: #aa8800; }
+[data-theme="light"] .ad-claim-btn:hover { background: rgba(170,136,0,0.08); }
+[data-theme="light"] .pack-rip-tear   { background: var(--green); box-shadow: 0 0 6px var(--green); }
 
 [data-theme="light"] .count-btn        { border-color: rgba(0,119,68,0.35); color: rgba(0,119,68,0.65); }
 [data-theme="light"] .count-btn:hover,

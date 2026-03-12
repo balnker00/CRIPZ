@@ -73,7 +73,7 @@ export default function About() {
 
       <section className="about-section">
         <div className="about-section-title">⚠️ Disclaimer</div>
-        <p className="about-desc about-dim-text">CryptoRipz is a collectible card game for entertainment only. Card stats are approximate and for gameplay purposes. Nothing here is financial advice. Always DYOR. Rugs happen.</p>
+        <p className="about-desc about-dim-text">CryptoRipz is a collectible card game for entertainment only. Card stats are approximate and for gameplay purposes. Nothing here is financial advice. Always DYOR.</p>
       </section>
 
     </div>

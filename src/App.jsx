@@ -9,11 +9,13 @@ import TabsPanel from './components/TabsPanel'
 import Notification from './components/Notification'
 import LoadingScreen from './components/LoadingScreen'
 import AuthScreen from './components/AuthScreen'
+import AdModal from './components/AdModal'
 
 export default function App() {
   const [appLoading, setAppLoading] = useState(true)
   const [theme, setTheme] = useState(() => localStorage.getItem('cripz-theme') || 'dark')
   const [showAuth, setShowAuth] = useState(false)
+  const [adOpen, setAdOpen] = useState(false)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -22,7 +24,6 @@ export default function App() {
 
   const { user, authLoading, username, handleAuth, signOut } = useAuth()
 
-  // Close auth modal automatically once signed in
   useEffect(() => {
     if (user) setShowAuth(false)
   }, [user])
@@ -40,6 +41,11 @@ export default function App() {
     stats,
     pulling,
     openPack,
+    packsLeft,
+    onCooldown,
+    resetAt,
+    rewardAd,
+    rewardShare,
   } = useGame(user)
 
   const appReady = !appLoading && !authLoading
@@ -52,6 +58,13 @@ export default function App() {
     }
   }
 
+  async function handleWatchAd() {
+    if ('Notification' in window && Notification.permission === 'default') {
+      try { await Notification.requestPermission() } catch (_) {}
+    }
+    setAdOpen(true)
+  }
+
   return (
     <>
       {(appLoading || authLoading) && (
@@ -60,6 +73,12 @@ export default function App() {
 
       {appReady && showAuth && (
         <AuthScreen onAuth={handleAuth} onClose={() => setShowAuth(false)} />
+      )}
+
+      {adOpen && (
+        <AdModal
+          onReward={() => { rewardAd(); setAdOpen(false) }}
+        />
       )}
 
       <div className={`app-content${!appReady ? ' app-content-hidden' : ''}`}>
@@ -74,9 +93,17 @@ export default function App() {
             pulling={pulling}
             coinsLoading={coinsLoading}
             coinsError={coinsError}
+            packsLeft={packsLeft}
+            onCooldown={onCooldown}
+            resetAt={resetAt}
+            onWatchAd={handleWatchAd}
           />
 
-          <RevealArea cards={revealedCards} />
+          <RevealArea
+            cards={revealedCards}
+            onShare={rewardShare}
+            totalCards={stats.totalCards}
+          />
 
           <TabsPanel
             activeTab={activeTab}
@@ -91,7 +118,6 @@ export default function App() {
         <Notification msg={notif.msg} rare={notif.rare} show={notif.show} />
       </div>
 
-      {/* Theme switch — fixed bottom-left */}
       <button
         className="theme-switch"
         onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
