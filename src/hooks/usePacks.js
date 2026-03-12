@@ -25,8 +25,6 @@ export function usePacks() {
     return s.resetAt ?? null
   })
 
-  const [adOpen, setAdOpen] = useState(false)
-
   // Persist whenever left/resetAt changes
   useEffect(() => {
     if (left === FREE_PACKS && !resetAt) {
@@ -59,21 +57,14 @@ export function usePacks() {
     setResetAt(r => r ?? Date.now() + COOLDOWN_MS)
   }, [])
 
-  const openAdModal  = useCallback(() => setAdOpen(true),  [])
-  const closeAdModal = useCallback(() => setAdOpen(false), [])
-
   const rewardAd = useCallback(() => {
     setLeft(prev => prev + AD_REWARD)
-    setAdOpen(false)
   }, [])
 
   return {
     packsLeft:  left,
     onCooldown: left === 0,
     resetAt,
-    adOpen,
-    openAdModal,
-    closeAdModal,
     rewardAd,
     consumePack,
   }

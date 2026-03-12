@@ -28,6 +28,8 @@ export default function App() {
     if (user) setShowAuth(false)
   }, [user])
 
+  const [adOpen, setAdOpen] = useState(false)
+
   const {
     coins,
     coinsLoading,
@@ -44,8 +46,6 @@ export default function App() {
     packsLeft,
     onCooldown,
     resetAt,
-    adOpen,
-    openAdModal,
     rewardAd,
   } = useGame(user)
 
@@ -69,7 +69,11 @@ export default function App() {
         <AuthScreen onAuth={handleAuth} onClose={() => setShowAuth(false)} />
       )}
 
-      {adOpen && <AdModal onReward={rewardAd} />}
+      {adOpen && (
+        <AdModal
+          onReward={() => { rewardAd(); setAdOpen(false) }}
+        />
+      )}
 
       <div className={`app-content${!appReady ? ' app-content-hidden' : ''}`}>
         {flash && <div className="flash" />}
@@ -86,7 +90,7 @@ export default function App() {
             packsLeft={packsLeft}
             onCooldown={onCooldown}
             resetAt={resetAt}
-            onWatchAd={openAdModal}
+            onWatchAd={() => setAdOpen(true)}
           />
 
           <RevealArea cards={revealedCards} />
