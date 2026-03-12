@@ -219,5 +219,6 @@ export function useGame(user) {
     resetAt,
     rewardAd,
     rewardShare,
+    showNotif,
   }
 }

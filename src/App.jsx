@@ -10,6 +10,7 @@ import Notification from './components/Notification'
 import LoadingScreen from './components/LoadingScreen'
 import AuthScreen from './components/AuthScreen'
 import AdModal from './components/AdModal'
+import { AD_REWARD } from './hooks/usePacks'
 
 export default function App() {
   const [appLoading, setAppLoading] = useState(true)
@@ -46,6 +47,7 @@ export default function App() {
     resetAt,
     rewardAd,
     rewardShare,
+    showNotif,
   } = useGame(user)
 
   const appReady = !appLoading && !authLoading
@@ -59,13 +61,13 @@ export default function App() {
   }
 
   function handleWatchAd() {
-    if (adOpen) return
     setAdOpen(true)
   }
 
   function handleAdReward() {
     rewardAd()
     setAdOpen(false)
+    showNotif(`+${AD_REWARD} PACKS FROM AD`)
   }
 
   return (
