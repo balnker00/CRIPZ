@@ -58,17 +58,14 @@ export default function App() {
     }
   }
 
-  async function handleWatchAd() {
-    if ('Notification' in window) {
-      try {
-        // Race against a 400 ms timeout — Brave shields can silently hang the promise
-        await Promise.race([
-          Notification.requestPermission(),
-          new Promise(resolve => setTimeout(resolve, 400)),
-        ])
-      } catch (_) {}
-    }
+  function handleWatchAd() {
+    if (adOpen) return
     setAdOpen(true)
+  }
+
+  function handleAdReward() {
+    rewardAd()
+    setAdOpen(false)
   }
 
   return (
@@ -82,9 +79,7 @@ export default function App() {
       )}
 
       {adOpen && (
-        <AdModal
-          onReward={() => { rewardAd(); setAdOpen(false) }}
-        />
+        <AdModal onReward={handleAdReward} />
       )}
 
       <div className={`app-content${!appReady ? ' app-content-hidden' : ''}`}>

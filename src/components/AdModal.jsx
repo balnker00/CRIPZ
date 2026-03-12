@@ -6,13 +6,19 @@ const AD_DURATION = 10
 
 export default function AdModal({ onReward }) {
   const [secs, setSecs] = useState(AD_DURATION)
-  const done            = secs === 0
 
   useEffect(() => {
-    if (done) return
-    const t = setTimeout(() => setSecs(s => s - 1), 1000)
-    return () => clearTimeout(t)
-  }, [secs, done])
+    const id = setInterval(() => {
+      setSecs(prev => {
+        if (prev <= 1) {
+          clearInterval(id)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+    return () => clearInterval(id)
+  }, [])
 
   return (
     <div className="ad-overlay">
@@ -24,13 +30,12 @@ export default function AdModal({ onReward }) {
         </div>
 
         <div className="ad-timer-area">
-          {done ? (
+          {secs === 0 ? (
             <button className="ad-claim-btn" onClick={onReward}>
               ✓ CLAIM +{AD_REWARD} PACKS
             </button>
           ) : (
             <>
-              {/* key re-mounts the element each tick, re-triggering the pop animation */}
               <div className="ad-secs" key={secs}>{secs}</div>
               <div className="ad-secs-label">packs unlocking…</div>
             </>
