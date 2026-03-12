@@ -1303,6 +1303,39 @@ main {
 
 .tab-panel { padding: 1.5rem 0; }
 
+/* ── COMING SOON ── */
+.coming-soon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 1rem;
+}
+.coming-soon-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+.coming-soon-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.25rem;
+}
+.coming-soon-inner h2 {
+  font-size: 1.2rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0;
+}
+.coming-soon-inner p {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin: 0;
+}
+
 /* ── FILTER ROW ── */
 .filter-row {
   display: flex;
