@@ -9,12 +9,16 @@ import TabsPanel from './components/TabsPanel'
 import Notification from './components/Notification'
 import LoadingScreen from './components/LoadingScreen'
 import AuthScreen from './components/AuthScreen'
+import AdPermission from './components/AdPermission'
 import AdModal from './components/AdModal'
 
 export default function App() {
   const [appLoading, setAppLoading] = useState(true)
   const [theme, setTheme] = useState(() => localStorage.getItem('cripz-theme') || 'dark')
   const [showAuth, setShowAuth] = useState(false)
+
+  // Ad flow state machine: null → 'confirm' → 'watching' → null
+  const [adStep, setAdStep] = useState(null)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -23,12 +27,9 @@ export default function App() {
 
   const { user, authLoading, username, handleAuth, signOut } = useAuth()
 
-  // Close auth modal automatically once signed in
   useEffect(() => {
     if (user) setShowAuth(false)
   }, [user])
-
-  const [adOpen, setAdOpen] = useState(false)
 
   const {
     coins,
@@ -69,9 +70,18 @@ export default function App() {
         <AuthScreen onAuth={handleAuth} onClose={() => setShowAuth(false)} />
       )}
 
-      {adOpen && (
+      {/* Step 1: permission prompt */}
+      {adStep === 'confirm' && (
+        <AdPermission
+          onConfirm={() => setAdStep('watching')}
+          onCancel={() => setAdStep(null)}
+        />
+      )}
+
+      {/* Step 2: ad player */}
+      {adStep === 'watching' && (
         <AdModal
-          onReward={() => { rewardAd(); setAdOpen(false) }}
+          onReward={() => { rewardAd(); setAdStep(null) }}
         />
       )}
 
@@ -90,7 +100,7 @@ export default function App() {
             packsLeft={packsLeft}
             onCooldown={onCooldown}
             resetAt={resetAt}
-            onWatchAd={() => setAdOpen(true)}
+            onWatchAd={() => setAdStep('confirm')}
           />
 
           <RevealArea cards={revealedCards} />
@@ -108,7 +118,6 @@ export default function App() {
         <Notification msg={notif.msg} rare={notif.rare} show={notif.show} />
       </div>
 
-      {/* Theme switch — fixed bottom-left */}
       <button
         className="theme-switch"
         onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}

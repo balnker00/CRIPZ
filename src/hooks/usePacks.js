@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 
-export const FREE_PACKS  = 5
+export const FREE_PACKS  = 10
 export const AD_REWARD   = 3
-const COOLDOWN_MS        = 24 * 60 * 60 * 1000   // 24 h
+const COOLDOWN_MS        = 15 * 60 * 1000          // 15 min
 const LS_KEY             = 'cripz-packs'
 
 function loadSaved() {

@@ -55,7 +55,20 @@ export default function PackSection({
       >
         <div className="pack">
           <div className="pack-bg-flower" />
-          <img src={logoImg} alt="Pack" className="pack-logo-img" />
+          {pulling ? (
+            /* Rip animation: logo split at 25% from top — both halves fly apart */
+            <div className="pack-logo-rip">
+              <div className="pack-rip-half pack-rip-top">
+                <img src={logoImg} alt="" />
+              </div>
+              <div className="pack-rip-tear" />
+              <div className="pack-rip-half pack-rip-bottom">
+                <img src={logoImg} alt="" />
+              </div>
+            </div>
+          ) : (
+            <img src={logoImg} alt="Pack" className="pack-logo-img" />
+          )}
           <div className="pack-name">MEMES PACK</div>
           <div className="pack-sub">RIPZ · random rarity</div>
         </div>

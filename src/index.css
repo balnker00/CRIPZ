@@ -560,167 +560,136 @@ main {
   pointer-events: none;
 }
 
-/* ── AD MODAL ── */
+/* ── AD OVERLAY (shared by AdPermission + AdModal) ── */
 .ad-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.92);
+  background: rgba(0, 0, 0, 0.88);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10000;
 }
 
+/* ── AD PERMISSION PROMPT ── */
+.ad-permission {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-top: 2px solid var(--green);
+  width: min(300px, 88vw);
+  padding: 1.4rem 1.4rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ad-perm-site {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--green);
+  letter-spacing: 0.06em;
+}
+
+.ad-perm-message {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text);
+  opacity: 0.85;
+}
+
+.ad-perm-detail {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text);
+  opacity: 0.45;
+  margin-bottom: 0.5rem;
+}
+
+.ad-perm-reward {
+  color: var(--gold);
+  opacity: 1;
+}
+
+.ad-perm-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+.ad-perm-allow,
+.ad-perm-block {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.ad-perm-allow {
+  border: 1px solid var(--green);
+  color: var(--green);
+  flex: 1;
+}
+
+.ad-perm-allow:hover {
+  background: rgba(0, 255, 153, 0.1);
+}
+
+.ad-perm-block {
+  border: 1px solid #333;
+  color: var(--text);
+  opacity: 0.5;
+}
+
+.ad-perm-block:hover {
+  opacity: 0.8;
+  border-color: #555;
+}
+
+/* ── AD MODAL (player) ── */
 .ad-modal {
   background: #0d0d0d;
   border: 1px solid #2a2a2a;
   border-top: 2px solid var(--gold);
-  width: min(340px, 90vw);
+  width: min(300px, 88vw);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-bottom: 1.6rem;
-  overflow: hidden;
 }
 
 .ad-label {
   width: 100%;
   font-family: 'Orbitron', monospace;
-  font-size: 0.5rem;
+  font-size: 0.48rem;
   letter-spacing: 0.2em;
   color: var(--gold);
-  opacity: 0.55;
-  padding: 0.5rem 1rem 0.45rem;
+  opacity: 0.5;
+  padding: 0.5rem 1rem 0.4rem;
   border-bottom: 1px solid #1e1e1e;
   text-align: center;
-  margin-bottom: 1.6rem;
+  margin-bottom: 1.2rem;
 }
 
-/* ── Rip scene ── */
-.ad-rip-stage {
+/* Static logo in the ad modal */
+.ad-static-logo {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 1.4rem;
-  min-height: 130px;
+  justify-content: center;
+  padding: 0.6rem 0 1rem;
 }
 
-/* Logo wrapper: 96 × 96 box split into two halves */
-.ad-logo-wrap {
-  position: relative;
-  width: 96px;
-  height: 96px;
+.ad-static-logo img {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  opacity: 0.65;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.35));
 }
 
-/* Each half clips the image to top/bottom 50% */
-.ad-half {
-  position: absolute;
-  left: 0;
-  width: 96px;
-  overflow: hidden;
-}
-
-.ad-half img {
-  width: 96px;
-  height: 96px;
-  object-fit: cover;
-  display: block;
-  pointer-events: none;
-  user-select: none;
-}
-
-/* Top half: shows top 48 px of the image */
-.ad-half-top {
-  top: 0;
-  height: 48px;
-}
-
-/* Bottom half: shows bottom 48 px — shift image up by 48 px */
-.ad-half-bottom {
-  bottom: 0;
-  height: 48px;
-}
-.ad-half-bottom img {
-  margin-top: -48px;
-}
-
-/* Jagged tear line between halves */
-.ad-tear-line {
-  position: absolute;
-  top: 48px;
-  left: -6px;
-  right: -6px;
-  height: 4px;
-  background: var(--green);
-  box-shadow: 0 0 10px var(--green), 0 0 24px rgba(0, 255, 153, 0.5);
-  /* zigzag via clip-path */
-  clip-path: polygon(
-    0% 50%, 4% 0%, 8% 100%, 12% 0%, 16% 100%,
-    20% 0%, 24% 100%, 28% 0%, 32% 100%, 36% 0%,
-    40% 100%, 44% 0%, 48% 100%, 52% 0%, 56% 100%,
-    60% 0%, 64% 100%, 68% 0%, 72% 100%, 76% 0%,
-    80% 100%, 84% 0%, 88% 100%, 92% 0%, 96% 100%,
-    100% 50%, 100% 100%, 0% 100%
-  );
-  opacity: 0;
-  transition: opacity 0.1s;
-}
-
-/* ─── Rip triggered ─── */
-
-/* Top half: tear upward and off to the upper-right */
-@keyframes rip-fly {
-  0%   { transform: translateY(0)     translateX(0)    rotate(0deg)  scale(1);   opacity: 1; }
-  15%  { transform: translateY(-10px) translateX(4px)  rotate(-4deg) scale(1);   opacity: 1; }
-  60%  { transform: translateY(-90px) translateX(55px) rotate(28deg) scale(0.7); opacity: 0.7; }
-  100% { transform: translateY(-160px) translateX(90px) rotate(42deg) scale(0.4); opacity: 0; }
-}
-
-.is-torn .ad-half-top {
-  animation: rip-fly 0.75s cubic-bezier(0.4, 0, 0.8, 0.6) 0s forwards;
-}
-
-/* Tear line: flash in then fade */
-@keyframes tear-flash {
-  0%   { opacity: 0; }
-  20%  { opacity: 1; }
-  60%  { opacity: 0.8; }
-  100% { opacity: 0; }
-}
-
-.is-torn .ad-tear-line {
-  animation: tear-flash 0.6s ease-out 0.1s forwards;
-}
-
-/* Bottom half: subtle drop + settle */
-@keyframes rip-drop {
-  0%   { transform: translateY(0); }
-  40%  { transform: translateY(6px); }
-  70%  { transform: translateY(2px); }
-  100% { transform: translateY(4px); }
-}
-
-.is-torn .ad-half-bottom {
-  animation: rip-drop 0.6s ease-out 0.1s forwards;
-}
-
-/* RIPZ label that appears after the tear */
-@keyframes ripz-appear {
-  from { opacity: 0; letter-spacing: 0.5em; }
-  to   { opacity: 1; letter-spacing: 0.35em; }
-}
-
-.ad-rip-label {
-  font-family: 'Orbitron', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.35em;
-  color: var(--green);
-  text-shadow: 0 0 12px rgba(0, 255, 153, 0.6);
-  animation: ripz-appear 0.5s ease-out forwards;
-}
-
-/* ── Countdown ── */
+/* Countdown area */
 .ad-timer-area {
   display: flex;
   flex-direction: column;
@@ -729,7 +698,6 @@ main {
   min-height: 4rem;
 }
 
-/* Big number — key-based re-mount triggers the pulse each second */
 @keyframes sec-pop {
   from { transform: scale(1.5); opacity: 0.4; }
   to   { transform: scale(1);   opacity: 1; }
@@ -753,7 +721,6 @@ main {
   letter-spacing: 0.1em;
 }
 
-/* Claim button */
 .ad-claim-btn {
   font-family: 'Orbitron', monospace;
   font-size: 0.72rem;
@@ -763,20 +730,101 @@ main {
   border: 1px solid var(--gold);
   color: var(--gold);
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s;
 }
 
 .ad-claim-btn:hover {
   background: rgba(255, 215, 0, 0.12);
 }
 
-/* deprecated — keep for safety, no longer rendered */
-.ad-countdown {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.65rem;
-  color: var(--text);
-  opacity: 0.45;
-  letter-spacing: 0.1em;
+/* ── PACK LOGO RIP ANIMATION ── */
+/* Logo is 62 × 62 px. Cut at 25% = 15.5 px ≈ 16 px from top */
+
+.pack-logo-rip {
+  position: relative;
+  width: 62px;
+  height: 62px;
+  z-index: 1;
+}
+
+.pack-rip-half {
+  position: absolute;
+  left: 0;
+  width: 62px;
+  overflow: hidden;
+}
+
+.pack-rip-half img {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.5))
+          drop-shadow(0 0 24px rgba(0, 255, 153, 0.2));
+}
+
+/* Top section: 0 → 16 px (top 25%) */
+.pack-rip-top {
+  top: 0;
+  height: 16px;
+}
+
+/* Bottom section: 16 → 62 px (bottom 75%) — shift image up to reveal bottom portion */
+.pack-rip-bottom {
+  top: 16px;
+  height: 46px;
+}
+.pack-rip-bottom img {
+  margin-top: -16px;
+}
+
+/* Zigzag tear line at the cut */
+.pack-rip-tear {
+  position: absolute;
+  top: 15px;
+  left: -5px;
+  right: -5px;
+  height: 3px;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green), 0 0 18px rgba(0, 255, 153, 0.4);
+  clip-path: polygon(
+    0% 50%, 5% 0%, 10% 100%, 15% 0%, 20% 100%,
+    25% 0%, 30% 100%, 35% 0%, 40% 100%, 45% 0%,
+    50% 100%, 55% 0%, 60% 100%, 65% 0%, 70% 100%,
+    75% 0%, 80% 100%, 85% 0%, 90% 100%, 95% 0%,
+    100% 50%, 100% 100%, 0% 100%
+  );
+  animation: pack-tear-flash 0.5s ease-out forwards;
+}
+
+@keyframes pack-tear-flash {
+  0%   { opacity: 0; }
+  25%  { opacity: 1; }
+  70%  { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+/* Top sliver flies up-left */
+@keyframes pack-rip-top-fly {
+  0%   { transform: translateY(0)    translateX(0)    rotate(0deg);   opacity: 1; }
+  20%  { transform: translateY(-8px) translateX(-4px) rotate(-6deg);  opacity: 1; }
+  100% { transform: translateY(-90px) translateX(-45px) rotate(-30deg) scale(0.3); opacity: 0; }
+}
+
+/* Bottom body flies down-right */
+@keyframes pack-rip-bottom-fly {
+  0%   { transform: translateY(0)   translateX(0)   rotate(0deg);  opacity: 1; }
+  20%  { transform: translateY(6px) translateX(4px) rotate(4deg);  opacity: 1; }
+  100% { transform: translateY(80px) translateX(40px) rotate(22deg) scale(0.4); opacity: 0; }
+}
+
+.pack-rip-top {
+  animation: pack-rip-top-fly 0.65s cubic-bezier(0.4, 0, 0.8, 0.5) 0.05s forwards;
+}
+
+.pack-rip-bottom {
+  animation: pack-rip-bottom-fly 0.65s cubic-bezier(0.4, 0, 0.8, 0.5) 0.05s forwards;
 }
 
 /* ── BUTTONS ── */
@@ -1661,14 +1709,18 @@ main {
 [data-theme="light"] .packs-reset    { color: var(--text); }
 [data-theme="light"] .watch-ad-btn   { border-color: #aa8800; color: #aa8800; }
 [data-theme="light"] .watch-ad-btn:hover { background: rgba(170,136,0,0.08); }
-[data-theme="light"] .ad-overlay     { background: rgba(200,196,180,0.92); }
-[data-theme="light"] .ad-modal       { background: #f0ece0; border-color: #d0ccc0; border-top-color: #aa8800; }
-[data-theme="light"] .ad-label       { color: #aa8800; border-bottom-color: #d0ccc0; }
-[data-theme="light"] .ad-secs        { color: var(--green); text-shadow: 0 0 16px rgba(0,119,68,0.4); }
-[data-theme="light"] .ad-rip-label   { color: var(--green); text-shadow: 0 0 10px rgba(0,119,68,0.3); }
-[data-theme="light"] .ad-tear-line   { background: var(--green); box-shadow: 0 0 8px var(--green); }
-[data-theme="light"] .ad-claim-btn   { border-color: #aa8800; color: #aa8800; }
+[data-theme="light"] .ad-overlay       { background: rgba(200,196,180,0.88); }
+[data-theme="light"] .ad-permission   { background: #f0ece0; border-color: #d0ccc0; border-top-color: var(--green); }
+[data-theme="light"] .ad-perm-site    { color: var(--green); }
+[data-theme="light"] .ad-perm-message { color: var(--text); }
+[data-theme="light"] .ad-perm-allow   { border-color: var(--green); color: var(--green); }
+[data-theme="light"] .ad-perm-allow:hover { background: rgba(0,119,68,0.08); }
+[data-theme="light"] .ad-modal        { background: #f0ece0; border-color: #d0ccc0; border-top-color: #aa8800; }
+[data-theme="light"] .ad-label        { color: #aa8800; border-bottom-color: #d0ccc0; }
+[data-theme="light"] .ad-secs         { color: var(--green); text-shadow: 0 0 16px rgba(0,119,68,0.4); }
+[data-theme="light"] .ad-claim-btn    { border-color: #aa8800; color: #aa8800; }
 [data-theme="light"] .ad-claim-btn:hover { background: rgba(170,136,0,0.08); }
+[data-theme="light"] .pack-rip-tear   { background: var(--green); box-shadow: 0 0 6px var(--green); }
 
 [data-theme="light"] .count-btn        { border-color: rgba(0,119,68,0.35); color: rgba(0,119,68,0.65); }
 [data-theme="light"] .count-btn:hover,
