@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import logoImg from '../assets/pfp1.png'
 import { FREE_PACKS, AD_REWARD } from '../hooks/usePacks'
 import AdModal from './AdModal'
@@ -55,7 +56,7 @@ export default function PackSection({
 
   return (
     <>
-    {adOpen && <AdModal onReward={handleAdReward} />}
+    {adOpen && createPortal(<AdModal onReward={handleAdReward} />, document.body)}
     <div className="pack-section">
       <div className="section-label">// Season 1 - the memes //</div>
 
