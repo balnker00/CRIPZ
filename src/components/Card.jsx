@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, memo } from 'react'
 
 function computeAge(createdAt) {
   if (!createdAt) return '?'
@@ -20,12 +20,13 @@ function dexscreenerUrl(coin) {
   return `https://dexscreener.com/search?q=${encodeURIComponent(coin['TICKER'] ?? coin['NAME'] ?? '')}`
 }
 
-export default function Card({ coin, rarity, animate = false, delay = 0 }) {
+const Card = memo(function Card({ coin, rarity, animate = false, delay = 0 }) {
   const [revealed, setRevealed] = useState(!animate)
   const [imgErr, setImgErr]     = useState(false)
 
   const isGolden   = rarity.startsWith('GOLDEN_')
   const baseRarity = isGolden ? rarity.replace('GOLDEN_', '') : rarity
+  const age        = useMemo(() => computeAge(coin['CREATED AT']), [coin])
 
   useEffect(() => {
     if (!animate) return
@@ -55,6 +56,7 @@ export default function Card({ coin, rarity, animate = false, delay = 0 }) {
             ? <img
                 src={coin['IMAGE URL']}
                 alt={coin['NAME']}
+                loading="lazy"
                 onError={() => setImgErr(true)}
               />
             : <span style={{ fontSize: '1.8rem' }}>🪙</span>
@@ -75,9 +77,11 @@ export default function Card({ coin, rarity, animate = false, delay = 0 }) {
         </div>
         <div className="card-stat">
           <span className="card-stat-label">AGE</span>
-          <span className="card-stat-val neutral">{computeAge(coin['CREATED AT'])}</span>
+          <span className="card-stat-val neutral">{age}</span>
         </div>
       </div>
     </div>
   )
-}
+})
+
+export default Card

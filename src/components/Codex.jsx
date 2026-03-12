@@ -1,14 +1,41 @@
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Card from './Card'
+
+const PAGE_SIZE = 20
+
+function getPageRange(page, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const left  = Math.max(2, page - 2)
+  const right = Math.min(total - 1, page + 2)
+  const range = [1]
+  if (left > 2) range.push('...')
+  for (let i = left; i <= right; i++) range.push(i)
+  if (right < total - 1) range.push('...')
+  range.push(total)
+  return range
+}
 
 export default function Codex({ coins, collection }) {
   const [filter, setFilter] = useState('all')
+  const [page, setPage] = useState(1)
 
-  const ownedTickers = new Set(collection.map(c => c.coin?.['TICKER']).filter(Boolean))
+  const ownedMap = useMemo(() => {
+    const m = new Map()
+    collection.forEach(c => {
+      if (c.coin?.['TICKER']) m.set(c.coin['TICKER'], c)
+    })
+    return m
+  }, [collection])
 
-  const visibleCoins = filter === 'owned'
-    ? coins.filter(coin => ownedTickers.has(coin['TICKER']))
-    : coins
+  const visibleCoins = useMemo(
+    () => filter === 'owned' ? coins.filter(coin => ownedMap.has(coin['TICKER'])) : coins,
+    [filter, coins, ownedMap]
+  )
+
+  const totalPages = Math.max(1, Math.ceil(visibleCoins.length / PAGE_SIZE))
+  const paged = visibleCoins.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+  useEffect(() => { setPage(1) }, [filter])
 
   return (
     <>
@@ -19,7 +46,7 @@ export default function Codex({ coins, collection }) {
             className={`filter-btn${filter === f ? ' active' : ''}`}
             onClick={() => setFilter(f)}
           >
-            {f === 'all' ? 'All' : `Owned (${ownedTickers.size})`}
+            {f === 'all' ? 'All' : `Owned (${ownedMap.size})`}
           </button>
         ))}
       </div>
@@ -31,8 +58,8 @@ export default function Codex({ coins, collection }) {
             <div className="empty-text">no cards discovered yet — start pulling</div>
           </div>
         ) : (
-          visibleCoins.map(coin => {
-            const found = collection.find(c => c.coin['TICKER'] === coin['TICKER'])
+          paged.map(coin => {
+            const found = ownedMap.get(coin['TICKER'])
             if (found) {
               return <Card key={coin.id} coin={found.coin} rarity={found.rarity} />
             }
@@ -48,6 +75,34 @@ export default function Codex({ coins, collection }) {
           })
         )}
       </div>
+
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            className="page-btn"
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+          >‹</button>
+
+          {getPageRange(page, totalPages).map((n, i) =>
+            n === '...'
+              ? <span key={`dots-${i}`} className="page-dots">…</span>
+              : <button
+                  key={n}
+                  className={`page-btn${page === n ? ' active' : ''}`}
+                  onClick={() => setPage(n)}
+                >
+                  {n}
+                </button>
+          )}
+
+          <button
+            className="page-btn"
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+          >›</button>
+        </div>
+      )}
     </>
   )
 }

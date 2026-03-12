@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Card from './Card'
 
 const FILTERS = [
@@ -12,15 +12,27 @@ const FILTERS = [
 
 const PAGE_SIZE = 20
 
+function getPageRange(page, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const left  = Math.max(2, page - 2)
+  const right = Math.min(total - 1, page + 2)
+  const range = [1]
+  if (left > 2) range.push('...')
+  for (let i = left; i <= right; i++) range.push(i)
+  if (right < total - 1) range.push('...')
+  range.push(total)
+  return range
+}
+
 export default function Collection({ collection, filter, setFilter }) {
   const [page, setPage] = useState(1)
 
-  const items = (() => {
+  const items = useMemo(() => {
     const list = [...collection].reverse()
     if (filter === 'ALL')    return list
     if (filter === 'GOLDEN') return list.filter(c => c.rarity.startsWith('GOLDEN_'))
     return list.filter(c => c.rarity === filter)
-  })()
+  }, [collection, filter])
 
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
   const paged = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
@@ -67,15 +79,17 @@ export default function Collection({ collection, filter, setFilter }) {
             disabled={page === 1}
           >‹</button>
 
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
-            <button
-              key={n}
-              className={`page-btn${page === n ? ' active' : ''}`}
-              onClick={() => setPage(n)}
-            >
-              {n}
-            </button>
-          ))}
+          {getPageRange(page, totalPages).map((n, i) =>
+            n === '...'
+              ? <span key={`dots-${i}`} className="page-dots">…</span>
+              : <button
+                  key={n}
+                  className={`page-btn${page === n ? ' active' : ''}`}
+                  onClick={() => setPage(n)}
+                >
+                  {n}
+                </button>
+          )}
 
           <button
             className="page-btn"
