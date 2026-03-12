@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import logoImg from '../assets/pfp1.png'
 import { FREE_PACKS, AD_REWARD } from '../hooks/usePacks'
-import AdModal from './AdModal'
+
+const AD_DURATION = 10
 
 function useCountdown(resetAt) {
   const [display, setDisplay] = useState('')
@@ -33,6 +34,7 @@ export default function PackSection({
   packsLeft, onCooldown, resetAt, rewardAd, showNotif,
 }) {
   const [adOpen, setAdOpen] = useState(false)
+  const [adSecs, setAdSecs] = useState(AD_DURATION)
   const countdown   = useCountdown(resetAt)
   const packLocked  = pulling || coinsLoading || !!coinsError || onCooldown
   const btnDisabled = packLocked
@@ -47,6 +49,15 @@ export default function PackSection({
           ? 'NO PACKS LEFT'
           : 'OPEN PACK'
 
+  useEffect(() => {
+    if (!adOpen) return
+    setAdSecs(AD_DURATION)
+    const id = setInterval(() => {
+      setAdSecs(prev => (prev <= 1 ? 0 : prev - 1))
+    }, 1000)
+    return () => clearInterval(id)
+  }, [adOpen])
+
   function handleAdReward() {
     rewardAd()
     setAdOpen(false)
@@ -54,12 +65,9 @@ export default function PackSection({
   }
 
   return (
-    <>
-    {adOpen && <AdModal onReward={handleAdReward} />}
     <div className="pack-section">
       <div className="section-label">// Season 1 - the memes //</div>
 
-      {/* Full-screen rip overlay — rendered outside .pack so overflow:hidden doesn't clip it */}
       {pulling && (
         <div className="pack-logo-rip">
           <div className="pack-rip-inner">
@@ -113,11 +121,31 @@ export default function PackSection({
       </button>
 
       {onCooldown && (
-        <button className="watch-ad-btn" onClick={() => setAdOpen(true)}>
-          ▶ WATCH AD · +{AD_REWARD} PACKS
-        </button>
+        adOpen ? (
+          <div className="ad-popup">
+            <div className="ad-popup-header">// ADVERTISEMENT //</div>
+            <div className="ad-popup-logo">
+              <img src={logoImg} alt="CryptoRipz" />
+            </div>
+            <div className="ad-popup-timer">
+              {adSecs > 0 ? (
+                <>
+                  <div className="ad-popup-secs" key={adSecs}>{adSecs}</div>
+                  <div className="ad-popup-label">packs unlocking…</div>
+                </>
+              ) : (
+                <button className="ad-claim-btn" onClick={handleAdReward}>
+                  ✓ CLAIM +{AD_REWARD} PACKS
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <button className="watch-ad-btn" onClick={() => setAdOpen(true)}>
+            ▶ WATCH AD · +{AD_REWARD} PACKS
+          </button>
+        )
       )}
     </div>
-    </>
   )
 }
