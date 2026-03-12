@@ -31,6 +31,9 @@ export default function PackSection({
   onOpen, pulling, coinsLoading, coinsError,
   packsLeft, onCooldown, resetAt, onWatchAd,
 }) {
+  console.log('[PackSection] render — onCooldown:', onCooldown, '| onWatchAd type:', typeof onWatchAd, '| onWatchAd:', onWatchAd)
+  console.log('[PackSection] render — packsLeft:', packsLeft, '| pulling:', pulling, '| coinsLoading:', coinsLoading, '| coinsError:', coinsError)
+
   const countdown   = useCountdown(resetAt)
   const packLocked  = pulling || coinsLoading || !!coinsError || onCooldown
   const btnDisabled = packLocked
@@ -102,8 +105,13 @@ export default function PackSection({
         {btnLabel}
       </button>
 
+      {console.log('[PackSection] ad button check — onCooldown:', onCooldown, '→ button will', onCooldown ? 'RENDER' : 'NOT render')}
       {onCooldown && (
-        <button className="watch-ad-btn" onClick={onWatchAd}>
+        <button className="watch-ad-btn" onClick={() => {
+          console.log('[PackSection] WATCH AD button clicked — calling onWatchAd:', onWatchAd)
+          onWatchAd()
+          console.log('[PackSection] onWatchAd() returned')
+        }}>
           ▶ WATCH AD · +{AD_REWARD} PACKS
         </button>
       )}

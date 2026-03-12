@@ -28,6 +28,10 @@ export default function App() {
     if (user) setShowAuth(false)
   }, [user])
 
+  useEffect(() => {
+    console.log('[App] adOpen state changed:', adOpen)
+  }, [adOpen])
+
   const {
     coins,
     coinsLoading,
@@ -48,6 +52,8 @@ export default function App() {
     rewardShare,
   } = useGame(user)
 
+  console.log('[App] render — adOpen:', adOpen, '| onCooldown:', onCooldown, '| packsLeft:', packsLeft, '| user:', !!user)
+
   const appReady = !appLoading && !authLoading
 
   function handleOpenPack() {
@@ -59,11 +65,11 @@ export default function App() {
   }
 
   function handleWatchAd() {
-    // Open modal immediately (synchronous, inside the user gesture)
+    console.log('[Ad] handleWatchAd called — adOpen was:', adOpen)
     setAdOpen(true)
-    // Request notification permission in the background — don't block the modal
+    console.log('[Ad] setAdOpen(true) called')
     if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission().catch(() => {})
+      Notification.requestPermission().catch((e) => console.warn('[Ad] Notification.requestPermission error:', e))
     }
   }
 

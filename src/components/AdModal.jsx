@@ -5,11 +5,21 @@ import { AD_REWARD } from '../hooks/usePacks'
 const AD_DURATION = 10
 
 export default function AdModal({ onReward }) {
+  console.log('[AdModal] MOUNTED — onReward type:', typeof onReward)
   const [secs, setSecs] = useState(AD_DURATION)
   const done            = secs === 0
 
   useEffect(() => {
-    if (done) return
+    console.log('[AdModal] mount effect ran — AD_DURATION:', AD_DURATION)
+    return () => console.log('[AdModal] UNMOUNTED')
+  }, [])
+
+  useEffect(() => {
+    console.log('[AdModal] secs tick:', secs, '| done:', done)
+    if (done) {
+      console.log('[AdModal] countdown finished — claim button should now be visible')
+      return
+    }
     const t = setTimeout(() => setSecs(s => s - 1), 1000)
     return () => clearTimeout(t)
   }, [secs, done])
@@ -25,7 +35,11 @@ export default function AdModal({ onReward }) {
 
         <div className="ad-timer-area">
           {done ? (
-            <button className="ad-claim-btn" onClick={onReward}>
+            <button className="ad-claim-btn" onClick={() => {
+              console.log('[AdModal] CLAIM button clicked — calling onReward:', onReward)
+              onReward()
+              console.log('[AdModal] onReward() returned')
+            }}>
               ✓ CLAIM +{AD_REWARD} PACKS
             </button>
           ) : (
