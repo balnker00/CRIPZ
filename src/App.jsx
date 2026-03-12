@@ -59,7 +59,7 @@ export default function App() {
   }
 
   async function handleWatchAd() {
-    if ('Notification' in window && Notification.permission === 'default') {
+    if ('Notification' in window) {
       try { await Notification.requestPermission() } catch (_) {}
     }
     setAdOpen(true)
