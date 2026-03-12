@@ -1,6 +1,6 @@
 import logoImg from '../assets/pfp1.png'
 
-export default function Header({ username, onSignOut, onLogin }) {
+export default function Header({ username, onSignOut, onLogin, ripzBalance }) {
   return (
     <>
       <div className="rainbow-bar" />
@@ -23,9 +23,12 @@ export default function Header({ username, onSignOut, onLogin }) {
         <div className="header-user">
           {username ? (
             <>
-              <span style={{ color: '#00ff88', fontSize: '0.6rem', letterSpacing: '0.15em', opacity: 0.7 }}>
-                {username.toUpperCase()}
-              </span>
+              <div className="header-user-info">
+                <span className="header-username">{username.toUpperCase()}</span>
+                {ripzBalance != null && (
+                  <span className="header-ripz-balance">⚡{Number(ripzBalance).toFixed(0)} $RIPZ</span>
+                )}
+              </div>
               <button
                 onClick={onSignOut}
                 style={{

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, memo } from 'react'
+import { computeCardLevel, computeXpProgress, computeCardStats } from '../data/gameData'
 
 function computeAge(createdAt) {
   if (!createdAt) return '?'
@@ -20,13 +21,16 @@ function dexscreenerUrl(coin) {
   return `https://dexscreener.com/search?q=${encodeURIComponent(coin['TICKER'] ?? coin['NAME'] ?? '')}`
 }
 
-const Card = memo(function Card({ coin, rarity, animate = false, delay = 0, count = 1 }) {
+const Card = memo(function Card({ coin, rarity, animate = false, delay = 0, count = 1, onList, listed = false }) {
   const [revealed, setRevealed] = useState(!animate)
   const [imgErr, setImgErr]     = useState(false)
 
   const isGolden   = rarity.startsWith('GOLDEN_')
   const baseRarity = isGolden ? rarity.replace('GOLDEN_', '') : rarity
   const age        = useMemo(() => computeAge(coin['CREATED AT']), [coin])
+  const level      = useMemo(() => computeCardLevel(count), [count])
+  const { xpInLevel, xpNeeded } = useMemo(() => computeXpProgress(count), [count])
+  const { power, hype }         = useMemo(() => computeCardStats(coin), [coin])
 
   useEffect(() => {
     if (!animate) return
@@ -34,18 +38,32 @@ const Card = memo(function Card({ coin, rarity, animate = false, delay = 0, coun
     return () => clearTimeout(t)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  function handleClick() {
+  function handleClick(e) {
+    // Don't navigate if list button was clicked
+    if (e.target.closest('.card-list-btn')) return
     window.open(dexscreenerUrl(coin), '_blank', 'noopener,noreferrer')
   }
 
   return (
     <div
-      className={`card rarity-${rarityClass(rarity)}${revealed ? ' revealed' : ''}`}
+      className={`card rarity-${rarityClass(rarity)}${revealed ? ' revealed' : ''}${listed ? ' card-listed' : ''}`}
       onClick={handleClick}
-      title={`View ${coin['NAME']} on DexScreener`}
+      title={listed ? 'Listed for sale' : `View ${coin['NAME']} on DexScreener`}
     >
       <div className="card-bg" />
-      {count > 1 && <div className="card-count-badge">×{count}</div>}
+
+      {/* Level badge — top-right corner */}
+      <div className="card-level-badge">
+        <span className="card-level-num">LV{level}</span>
+        <span className="card-xp-dots">
+          {Array.from({ length: xpNeeded }, (_, i) => (
+            <span key={i} className={`card-xp-dot${i < xpInLevel ? ' filled' : ''}`} />
+          ))}
+        </span>
+      </div>
+
+      {listed && <div className="card-listed-tag">LISTED</div>}
+
       <div className="card-content">
         <div style={{ display: 'flex', gap: '4px', alignItems: 'center', marginBottom: '6px', overflow: 'hidden' }}>
           <div className="card-rarity-badge">{baseRarity}</div>
@@ -81,7 +99,36 @@ const Card = memo(function Card({ coin, rarity, animate = false, delay = 0, coun
           <span className="card-stat-label">AGE</span>
           <span className="card-stat-val neutral">{age}</span>
         </div>
+
+        {/* Power / Hype bars */}
+        <div className="card-stat-bars">
+          <div className="card-bar-row">
+            <span className="card-bar-label">PWR</span>
+            <div className="card-bar-track">
+              <div className="card-bar-fill card-bar-power" style={{ width: `${power}%` }} />
+            </div>
+            <span className="card-bar-num">{power}</span>
+          </div>
+          <div className="card-bar-row">
+            <span className="card-bar-label">HYP</span>
+            <div className="card-bar-track">
+              <div className="card-bar-fill card-bar-hype" style={{ width: `${hype}%` }} />
+            </div>
+            <span className="card-bar-num">{hype}</span>
+          </div>
+        </div>
       </div>
+
+      {/* List-for-sale button (only in Collection view) */}
+      {onList && !listed && (
+        <button
+          className="card-list-btn"
+          onClick={(e) => { e.stopPropagation(); onList() }}
+          title="List this card for sale"
+        >
+          SELL
+        </button>
+      )}
     </div>
   )
 })

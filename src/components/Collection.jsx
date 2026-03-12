@@ -24,7 +24,7 @@ function getPageRange(page, total) {
   return range
 }
 
-export default function Collection({ collection, filter, setFilter }) {
+export default function Collection({ collection, filter, setFilter, onListCard, user }) {
   const [page, setPage] = useState(1)
 
   const items = useMemo(() => {
@@ -65,8 +65,18 @@ export default function Collection({ collection, filter, setFilter }) {
             </div>
           </div>
         ) : (
-          paged.map(({ id, coin, rarity, count }) => (
-            <Card key={id} coin={coin} rarity={rarity} count={count} />
+          paged.map(({ id, coin, rarity, count, listing_id }) => (
+            <Card
+              key={id}
+              coin={coin}
+              rarity={rarity}
+              count={count}
+              listed={!!listing_id}
+              onList={user && onListCard && !listing_id
+                ? () => onListCard({ id, coin, rarity, count })
+                : undefined
+              }
+            />
           ))
         )}
       </div>

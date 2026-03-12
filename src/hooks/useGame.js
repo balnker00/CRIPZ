@@ -3,7 +3,7 @@ import { GOLDEN_CHANCE, RARITY_ORDER, RARITY_BY_ID } from '../data/gameData'
 import { supabase } from '../lib/supabase'
 import { usePacks } from './usePacks'
 
-export function useGame(user) {
+export function useGame(user, onPullComplete) {
   const [coins, setCoins]               = useState([])
   const [coinsReady, setCoinsReady]     = useState(false)
   const [coinsLoading, setCoinsLoading] = useState(true)
@@ -22,10 +22,11 @@ export function useGame(user) {
   } = usePacks(user)
   const notifTimer      = useRef(null)
   const coinsRef        = useRef([])
-  const rarityPoolsRef  = useRef({}) // { COMMON: [coinId,...], RARE: [...], ... }
-  const coinRarityRef   = useRef({}) // { coinId: 'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' }
-  // Stores DB-format cards: [{coin_id, is_golden, count}] — one row per user
-  const userCardsRef = useRef([])
+  const rarityPoolsRef  = useRef({})
+  const coinRarityRef   = useRef({})
+  const userCardsRef    = useRef([])
+  const onPullCompleteRef = useRef(onPullComplete)
+  useEffect(() => { onPullCompleteRef.current = onPullComplete }, [onPullComplete])
 
   // Fetch coins once on mount
   useEffect(() => {
@@ -46,7 +47,7 @@ export function useGame(user) {
       })
   }, [])
 
-  // Fetch rarity pools (coin_ids per base rarity) once on mount
+  // Fetch rarity pools once on mount
   useEffect(() => {
     supabase
       .from('rarities')
@@ -74,7 +75,7 @@ export function useGame(user) {
     }
   }, [user])
 
-  // Load user's collection (single row with cards array) when user + coins + pools are ready
+  // Load user's collection when user + coins + pools are ready
   useEffect(() => {
     setCollection([])
     userCardsRef.current = []
@@ -94,13 +95,18 @@ export function useGame(user) {
             const coin = coinsRef.current.find(coin => coin.id === c.coin_id)
             let rarity
             if (c.rarity_id != null) {
-              // legacy format: derive from stored rarity_id
               rarity = RARITY_BY_ID[c.rarity_id] ?? 'COMMON'
             } else {
               const base = coinRarityRef.current[c.coin_id] ?? 'COMMON'
               rarity = c.is_golden ? `GOLDEN_${base}` : base
             }
-            return { id: `db-${i}-${c.coin_id}`, coin, rarity, count: c.count ?? 1 }
+            return {
+              id:         `db-${i}-${c.coin_id}`,
+              coin,
+              rarity,
+              count:      c.count ?? 1,
+              listing_id: c.listing_id ?? null,
+            }
           })
           .filter(item => item.coin)
         setCollection(loaded)
@@ -125,7 +131,7 @@ export function useGame(user) {
     setTimeout(() => setFlash(false), 650)
 
     const pulls = Array.from({ length: 4 }, (_, i) => {
-      const coin = coinsRef.current[Math.floor(Math.random() * coinsRef.current.length)]
+      const coin      = coinsRef.current[Math.floor(Math.random() * coinsRef.current.length)]
       const baseRarity = coinRarityRef.current[coin.id] ?? 'COMMON'
       const isGolden   = Math.random() < GOLDEN_CHANCE
       return {
@@ -138,7 +144,6 @@ export function useGame(user) {
 
     setRevealedCards(pulls)
 
-    // De-dup optimistic collection state: increment count for existing entries
     setCollection(prev => {
       const next = prev.map(c => ({ ...c }))
       for (const pull of pulls) {
@@ -152,7 +157,6 @@ export function useGame(user) {
       return next
     })
 
-    // Persist as single row with cards array: {coin_id, is_golden, count}
     if (user) {
       const merged = userCardsRef.current.map(c => ({ ...c }))
       for (const p of pulls) {
@@ -176,7 +180,7 @@ export function useGame(user) {
       (b, p) => RARITY_ORDER.indexOf(p.rarity) > RARITY_ORDER.indexOf(b.rarity) ? p : b,
       pulls[0]
     )
-    const isGolden  = best.rarity.startsWith('GOLDEN_')
+    const isGolden   = best.rarity.startsWith('GOLDEN_')
     const baseRarity = isGolden ? best.rarity.replace('GOLDEN_', '') : best.rarity
     const goldPrefix = isGolden ? '★ GOLDEN ' : ''
 
@@ -188,8 +192,106 @@ export function useGame(user) {
       showNotif(`★ GOLDEN ${baseRarity}: ${best.coin['NAME']}`, false)
     }
 
-    setTimeout(() => setPulling(false), 4 * 140 + 500)
+    // Fire callback for $RIPZ earning + mission tracking
+    setTimeout(() => {
+      setPulling(false)
+      if (onPullCompleteRef.current) onPullCompleteRef.current(pulls)
+    }, 4 * 140 + 500)
   }, [pulling, coins, user, showNotif, packsLeft, packsReady, consumePack])
+
+  // ── Marketplace helpers ───────────────────────────────────────────────────
+
+  // Mark a card as listed (adds listing_id to the DB record)
+  const listCard = useCallback((coinId, isGolden, listingId) => {
+    if (!user) return
+    const merged = userCardsRef.current.map(c => ({ ...c }))
+    const entry  = merged.find(c => c.coin_id === coinId && !!c.is_golden === !!isGolden && !c.listing_id)
+    if (!entry) return
+    entry.listing_id = listingId
+    userCardsRef.current = merged
+
+    // Optimistic UI
+    setCollection(prev => prev.map(c => {
+      if (c.coin?.id === coinId && c.rarity.startsWith(isGolden ? 'GOLDEN_' : '') === !!isGolden
+          && !c.listing_id) {
+        return { ...c, listing_id: listingId }
+      }
+      return c
+    }))
+
+    supabase
+      .from('user_collection')
+      .upsert({ user_id: user.id, cards: merged }, { onConflict: 'user_id' })
+      .then(({ error }) => { if (error) console.error('listCard error:', error) })
+  }, [user])
+
+  // Remove listing from card (delist or cancel)
+  const unlistCard = useCallback((listingId) => {
+    if (!user) return
+    const merged = userCardsRef.current.map(c => ({ ...c }))
+    const entry  = merged.find(c => c.listing_id === listingId)
+    if (!entry) return
+    delete entry.listing_id
+    userCardsRef.current = merged
+
+    setCollection(prev => prev.map(c =>
+      c.listing_id === listingId ? { ...c, listing_id: null } : c
+    ))
+
+    supabase
+      .from('user_collection')
+      .upsert({ user_id: user.id, cards: merged }, { onConflict: 'user_id' })
+      .then(({ error }) => { if (error) console.error('unlistCard error:', error) })
+  }, [user])
+
+  // Remove card from collection after it was sold
+  const removeListedCard = useCallback((listingId) => {
+    if (!user) return
+    const merged = userCardsRef.current.filter(c => c.listing_id !== listingId)
+    userCardsRef.current = merged
+
+    setCollection(prev => prev.filter(c => c.listing_id !== listingId))
+
+    supabase
+      .from('user_collection')
+      .upsert({ user_id: user.id, cards: merged }, { onConflict: 'user_id' })
+      .then(({ error }) => { if (error) console.error('removeListedCard error:', error) })
+  }, [user])
+
+  // Add a purchased card to collection
+  const receiveCard = useCallback((coinId, isGolden) => {
+    if (!user || !coinsReady) return
+    const coin = coinsRef.current.find(c => c.id === coinId)
+    if (!coin) return
+
+    const base   = coinRarityRef.current[coinId] ?? 'COMMON'
+    const rarity = isGolden ? `GOLDEN_${base}` : base
+
+    const merged = userCardsRef.current.map(c => ({ ...c }))
+    const existing = merged.find(c => c.coin_id === coinId && !!c.is_golden === !!isGolden && !c.listing_id)
+    if (existing) {
+      existing.count = (existing.count ?? 1) + 1
+    } else {
+      merged.push({ coin_id: coinId, is_golden: isGolden, count: 1 })
+    }
+    userCardsRef.current = merged
+
+    setCollection(prev => {
+      const next = prev.map(c => ({ ...c }))
+      const idx  = next.findIndex(c => c.coin?.id === coinId && c.rarity === rarity && !c.listing_id)
+      if (idx >= 0) {
+        next[idx] = { ...next[idx], count: (next[idx].count ?? 1) + 1 }
+      } else {
+        next.push({ id: `recv-${Date.now()}-${coinId}`, coin, rarity, count: 1 })
+      }
+      return next
+    })
+
+    supabase
+      .from('user_collection')
+      .upsert({ user_id: user.id, cards: merged }, { onConflict: 'user_id' })
+      .then(({ error }) => { if (error) console.error('receiveCard error:', error) })
+  }, [user, coinsReady]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function parseNum(val) {
     if (!val && val !== 0) return 0
@@ -240,5 +342,10 @@ export function useGame(user) {
     rewardAd,
     rewardShare,
     showNotif,
+    // Marketplace helpers
+    listCard,
+    unlistCard,
+    removeListedCard,
+    receiveCard,
   }
 }

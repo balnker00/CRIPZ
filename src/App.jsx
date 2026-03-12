@@ -1,6 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from './hooks/useAuth'
 import { useGame } from './hooks/useGame'
+import { useRipz } from './hooks/useRipz'
+import { useMissions } from './hooks/useMissions'
+import { useBattle } from './hooks/useBattle'
+import { RIPZ_REWARDS } from './data/gameData'
 import Header from './components/Header'
 import StatsBar from './components/StatsBar'
 import PackSection from './components/PackSection'
@@ -9,6 +13,7 @@ import TabsPanel from './components/TabsPanel'
 import Notification from './components/Notification'
 import LoadingScreen from './components/LoadingScreen'
 import AuthScreen from './components/AuthScreen'
+
 export default function App() {
   const [appLoading, setAppLoading] = useState(true)
   const [theme, setTheme] = useState(() => localStorage.getItem('cripz-theme') || 'dark')
@@ -25,6 +30,39 @@ export default function App() {
     if (user) setShowAuth(false)
   }, [user])
 
+  // ── $RIPZ balance ─────────────────────────────────────────────────────────
+  const { ripzBalance, ripzReady, earnRipz, spendRipz } = useRipz(user)
+
+  // ── Missions (needs earnRipz to reward completions) ───────────────────────
+  const { missions, trackProgress } = useMissions(user, earnRipz)
+
+  // Daily login bonus — fire once per session when user logs in
+  const [loginBonusFired, setLoginBonusFired] = useState(false)
+  useEffect(() => {
+    if (user && ripzReady && !loginBonusFired) {
+      setLoginBonusFired(true)
+      trackProgress('login', {})
+    }
+    if (!user) setLoginBonusFired(false)
+  }, [user, ripzReady]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Pack pull callback — earn $RIPZ + track missions ─────────────────────
+  const handlePullComplete = useCallback((pulls) => {
+    if (!user) return
+    let ripzEarned = 0
+    for (const card of pulls) {
+      const isGolden  = card.rarity.startsWith('GOLDEN_')
+      const base      = isGolden ? card.rarity.replace('GOLDEN_', '') : card.rarity
+      if (isGolden)              ripzEarned += RIPZ_REWARDS.PULL_GOLDEN
+      if (base === 'LEGENDARY')  ripzEarned += RIPZ_REWARDS.PULL_LEGENDARY
+      else if (base === 'EPIC')  ripzEarned += RIPZ_REWARDS.PULL_EPIC
+      else if (base === 'RARE')  ripzEarned += RIPZ_REWARDS.PULL_RARE
+    }
+    if (ripzEarned > 0) earnRipz(ripzEarned)
+    trackProgress('pack_opened', { cards: pulls })
+  }, [user, earnRipz, trackProgress])
+
+  // ── Game state ────────────────────────────────────────────────────────────
   const {
     coins,
     coinsLoading,
@@ -44,7 +82,28 @@ export default function App() {
     rewardAd,
     rewardShare,
     showNotif,
-  } = useGame(user)
+    listCard,
+    unlistCard,
+    removeListedCard,
+    receiveCard,
+  } = useGame(user, handlePullComplete)
+
+  // Share reward + $RIPZ
+  const handleShare = useCallback(() => {
+    rewardShare()
+    if (user) earnRipz(RIPZ_REWARDS.SHARE_PULL)
+  }, [rewardShare, earnRipz, user])
+
+  // Ad reward + $RIPZ
+  const handleAdReward = useCallback(() => {
+    rewardAd()
+    if (user) earnRipz(RIPZ_REWARDS.WATCH_AD)
+  }, [rewardAd, earnRipz, user])
+
+  // ── Battle ────────────────────────────────────────────────────────────────
+  const {
+    battleHistory, battling, lastResult, startBattle, clearResult,
+  } = useBattle(user, collection, coins, earnRipz, trackProgress)
 
   const appReady = !appLoading && !authLoading
 
@@ -66,10 +125,15 @@ export default function App() {
         <AuthScreen onAuth={handleAuth} onClose={() => setShowAuth(false)} />
       )}
 
-      <div className={`app-content${!appReady ? ' app-content-hidden' : ''}`}>
+      <div className={'app-content' + (!appReady ? ' app-content-hidden' : '')}>
         {flash && <div className="flash" />}
 
-        <Header username={username} onSignOut={signOut} onLogin={() => setShowAuth(true)} />
+        <Header
+          username={username}
+          onSignOut={signOut}
+          onLogin={() => setShowAuth(true)}
+          ripzBalance={user ? ripzBalance : null}
+        />
         <StatsBar stats={stats} />
 
         <main>
@@ -81,13 +145,13 @@ export default function App() {
             packsLeft={packsLeft}
             onCooldown={onCooldown}
             resetAt={resetAt}
-            rewardAd={rewardAd}
+            rewardAd={handleAdReward}
             showNotif={showNotif}
           />
 
           <RevealArea
             cards={revealedCards}
-            onShare={rewardShare}
+            onShare={handleShare}
             totalCards={stats.totalCards}
           />
 
@@ -98,6 +162,21 @@ export default function App() {
             collection={collection}
             collFilter={collFilter}
             setCollFilter={setCollFilter}
+            user={user}
+            ripzBalance={ripzBalance}
+            earnRipz={earnRipz}
+            spendRipz={spendRipz}
+            missions={missions}
+            battleHistory={battleHistory}
+            battling={battling}
+            lastResult={lastResult}
+            onStartBattle={startBattle}
+            onClearResult={clearResult}
+            listCard={listCard}
+            unlistCard={unlistCard}
+            removeListedCard={removeListedCard}
+            receiveCard={receiveCard}
+            showNotif={showNotif}
           />
         </main>
 
