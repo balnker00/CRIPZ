@@ -9,6 +9,7 @@ import TabsPanel from './components/TabsPanel'
 import Notification from './components/Notification'
 import LoadingScreen from './components/LoadingScreen'
 import AuthScreen from './components/AuthScreen'
+import AdModal from './components/AdModal'
 
 export default function App() {
   const [appLoading, setAppLoading] = useState(true)
@@ -40,6 +41,12 @@ export default function App() {
     stats,
     pulling,
     openPack,
+    packsLeft,
+    onCooldown,
+    resetAt,
+    adOpen,
+    openAdModal,
+    rewardAd,
   } = useGame(user)
 
   const appReady = !appLoading && !authLoading
@@ -62,6 +69,8 @@ export default function App() {
         <AuthScreen onAuth={handleAuth} onClose={() => setShowAuth(false)} />
       )}
 
+      {adOpen && <AdModal onReward={rewardAd} />}
+
       <div className={`app-content${!appReady ? ' app-content-hidden' : ''}`}>
         {flash && <div className="flash" />}
 
@@ -74,6 +83,10 @@ export default function App() {
             pulling={pulling}
             coinsLoading={coinsLoading}
             coinsError={coinsError}
+            packsLeft={packsLeft}
+            onCooldown={onCooldown}
+            resetAt={resetAt}
+            onWatchAd={openAdModal}
           />
 
           <RevealArea cards={revealedCards} />

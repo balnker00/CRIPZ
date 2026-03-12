@@ -498,6 +498,164 @@ main {
 
 .pack-stripe { display: none; }
 
+/* ── PACK META (counter / cooldown) ── */
+.packs-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 2rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.packs-counter {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  opacity: 0.75;
+}
+
+.packs-reset {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--text);
+  opacity: 0.45;
+}
+
+.packs-reset--urgent {
+  opacity: 0.7;
+  color: var(--text);
+}
+
+.packs-timer {
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 0.08em;
+}
+
+/* ── WATCH AD BUTTON ── */
+.watch-ad-btn {
+  display: block;
+  margin: 0.6rem auto 0;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  padding: 0.55rem 1.4rem;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.watch-ad-btn:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+/* ── PACK LOCKED STATE ── */
+.pack-locked {
+  cursor: default;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ── AD MODAL ── */
+.ad-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.ad-modal {
+  background: var(--dim);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--gold);
+  width: min(380px, 90vw);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ad-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  opacity: 0.6;
+  padding: 0.5rem 1rem 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.ad-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 180px;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 8px,
+    rgba(255, 255, 255, 0.015) 8px,
+    rgba(255, 255, 255, 0.015) 16px
+  );
+  border-bottom: 1px solid var(--border);
+}
+
+.ad-placeholder-text {
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  letter-spacing: 0.25em;
+  color: var(--text);
+  opacity: 0.12;
+}
+
+.ad-placeholder-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text);
+  opacity: 0.08;
+  margin-top: 6px;
+  letter-spacing: 0.15em;
+}
+
+.ad-footer {
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.2rem;
+}
+
+.ad-claim-btn {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  padding: 0.6rem 1.6rem;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.ad-claim-btn:hover {
+  background: rgba(255, 215, 0, 0.12);
+}
+
+.ad-countdown {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text);
+  opacity: 0.45;
+  letter-spacing: 0.1em;
+}
+
 /* ── BUTTONS ── */
 .pull-btn {
   display: inline-block;
@@ -1374,6 +1532,17 @@ main {
 [data-theme="light"] .pull-btn         { border-color: var(--green); color: var(--green); }
 [data-theme="light"] .pull-btn::before { background: var(--green); }
 [data-theme="light"] .pull-btn:hover:not(:disabled) { color: #fff; }
+
+/* Pack meta + ad — light theme */
+[data-theme="light"] .packs-counter  { color: var(--green); }
+[data-theme="light"] .packs-reset    { color: var(--text); }
+[data-theme="light"] .watch-ad-btn   { border-color: #aa8800; color: #aa8800; }
+[data-theme="light"] .watch-ad-btn:hover { background: rgba(170,136,0,0.08); }
+[data-theme="light"] .ad-modal       { background: #f0ece0; border-color: #d0ccc0; border-top-color: #aa8800; }
+[data-theme="light"] .ad-label       { color: #aa8800; border-bottom-color: #d0ccc0; }
+[data-theme="light"] .ad-claim-btn   { border-color: #aa8800; color: #aa8800; }
+[data-theme="light"] .ad-claim-btn:hover { background: rgba(170,136,0,0.08); }
+[data-theme="light"] .ad-overlay     { background: rgba(242,240,232,0.88); }
 
 [data-theme="light"] .count-btn        { border-color: rgba(0,119,68,0.35); color: rgba(0,119,68,0.65); }
 [data-theme="light"] .count-btn:hover,
