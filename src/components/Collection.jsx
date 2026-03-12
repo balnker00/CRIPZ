@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Card from './Card'
 
 const FILTERS = [
@@ -15,12 +15,12 @@ const PAGE_SIZE = 20
 export default function Collection({ collection, filter, setFilter }) {
   const [page, setPage] = useState(1)
 
-  const items = (() => {
+  const items = useMemo(() => {
     const list = [...collection].reverse()
     if (filter === 'ALL')    return list
     if (filter === 'GOLDEN') return list.filter(c => c.rarity.startsWith('GOLDEN_'))
     return list.filter(c => c.rarity === filter)
-  })()
+  }, [collection, filter])
 
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
   const paged = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)

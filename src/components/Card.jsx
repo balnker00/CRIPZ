@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 
 function computeAge(createdAt) {
   if (!createdAt) return '?'
@@ -20,7 +20,7 @@ function dexscreenerUrl(coin) {
   return `https://dexscreener.com/search?q=${encodeURIComponent(coin['TICKER'] ?? coin['NAME'] ?? '')}`
 }
 
-export default function Card({ coin, rarity, animate = false, delay = 0 }) {
+const Card = memo(function Card({ coin, rarity, animate = false, delay = 0 }) {
   const [revealed, setRevealed] = useState(!animate)
   const [imgErr, setImgErr]     = useState(false)
 
@@ -80,4 +80,6 @@ export default function Card({ coin, rarity, animate = false, delay = 0 }) {
       </div>
     </div>
   )
-}
+})
+
+export default Card
