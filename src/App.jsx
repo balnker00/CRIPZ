@@ -85,7 +85,13 @@ export default function App() {
 
       {adOpen && (
         <AdModal
-          onReward={() => { rewardAd(); setAdOpen(false) }}
+          onReward={() => {
+            console.log('[App] onReward fired — calling rewardAd(), then setAdOpen(false)')
+            rewardAd()
+            console.log('[App] rewardAd() returned — calling setAdOpen(false)')
+            setAdOpen(false)
+            console.log('[App] setAdOpen(false) called')
+          }}
         />
       )}
 
