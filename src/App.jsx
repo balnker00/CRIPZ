@@ -65,7 +65,7 @@ export default function App() {
       <div className={`app-content${!appReady ? ' app-content-hidden' : ''}`}>
         {flash && <div className="flash" />}
 
-        <Header username={username} onSignOut={signOut} />
+        <Header username={username} onSignOut={signOut} onLogin={() => setShowAuth(true)} />
         <StatsBar stats={stats} />
 
         <main>
