@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { rollBaseRarity, GOLDEN_CHANCE, RARITY_ORDER, RARITY_BY_ID } from '../data/gameData'
+import { GOLDEN_CHANCE, RARITY_ORDER, RARITY_BY_ID } from '../data/gameData'
 import { supabase } from '../lib/supabase'
 import { usePacks } from './usePacks'
 
@@ -23,6 +23,7 @@ export function useGame(user) {
   const notifTimer      = useRef(null)
   const coinsRef        = useRef([])
   const rarityPoolsRef  = useRef({}) // { COMMON: [coinId,...], RARE: [...], ... }
+  const coinRarityRef   = useRef({}) // { coinId: 'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY' }
   // Stores DB-format cards: [{coin_id, is_golden}] — one row per user
   const userCardsRef = useRef([])
 
@@ -53,8 +54,13 @@ export function useGame(user) {
       .then(({ data, error }) => {
         if (error) console.error('Failed to load rarity pools:', error)
         const pools = {}
-        ;(data ?? []).forEach(r => { pools[r.name] = r.coin_ids ?? [] })
+        const map   = {}
+        ;(data ?? []).forEach(r => {
+          pools[r.name] = r.coin_ids ?? []
+          ;(r.coin_ids ?? []).forEach(id => { map[id] = r.name })
+        })
         rarityPoolsRef.current = pools
+        coinRarityRef.current  = map
         setRarityPoolsReady(true)
       })
   }, [])
@@ -91,9 +97,7 @@ export function useGame(user) {
               // legacy format: derive from stored rarity_id
               rarity = RARITY_BY_ID[c.rarity_id] ?? 'COMMON'
             } else {
-              // new format: look up base rarity from the pool each coin belongs to
-              const base = Object.entries(rarityPoolsRef.current)
-                .find(([, ids]) => ids.includes(c.coin_id))?.[0] ?? 'COMMON'
+              const base = coinRarityRef.current[c.coin_id] ?? 'COMMON'
               rarity = c.is_golden ? `GOLDEN_${base}` : base
             }
             return { id: `db-${i}-${c.coin_id}`, coin, rarity }
@@ -121,16 +125,9 @@ export function useGame(user) {
     setTimeout(() => setFlash(false), 650)
 
     const pulls = Array.from({ length: 4 }, (_, i) => {
-      const baseRarity = rollBaseRarity()
-      const pool = rarityPoolsRef.current[baseRarity] ?? []
-      let coin
-      if (pool.length > 0) {
-        const coinId = pool[Math.floor(Math.random() * pool.length)]
-        coin = coinsRef.current.find(c => c.id === coinId)
-      }
-      // Fallback: pool empty or coin not found — pick random from all coins
-      if (!coin) coin = coinsRef.current[Math.floor(Math.random() * coinsRef.current.length)]
-      const isGolden = Math.random() < GOLDEN_CHANCE
+      const coin = coinsRef.current[Math.floor(Math.random() * coinsRef.current.length)]
+      const baseRarity = coinRarityRef.current[coin.id] ?? 'COMMON'
+      const isGolden   = Math.random() < GOLDEN_CHANCE
       return {
         id:       `${Date.now()}-${i}`,
         coin,
