@@ -124,12 +124,9 @@ export function usePacks(user) {
   }, [persist])
 
   const rewardAd = useCallback(() => {
-    console.log('[usePacks] rewardAd called — leftRef.current:', leftRef.current, '| AD_REWARD:', AD_REWARD)
     const newLeft = leftRef.current + AD_REWARD
-    console.log('[usePacks] rewardAd — setting left to:', newLeft, '| resetAt stays:', resetAtRef.current)
     setLeft(newLeft)
     persist(newLeft, resetAtRef.current)
-    console.log('[usePacks] rewardAd — persist called, done')
   }, [persist])
 
   const rewardShare = useCallback(() => {
@@ -138,7 +135,6 @@ export function usePacks(user) {
     persist(newLeft, resetAtRef.current)
   }, [persist])
 
-  console.log('[usePacks] return — left:', left, '| onCooldown:', left === 0, '| resetAt:', resetAt)
   return {
     packsLeft:  left,
     onCooldown: left === 0,

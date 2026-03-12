@@ -28,10 +28,6 @@ export default function App() {
     if (user) setShowAuth(false)
   }, [user])
 
-  useEffect(() => {
-    console.log('[App] adOpen state changed:', adOpen)
-  }, [adOpen])
-
   const {
     coins,
     coinsLoading,
@@ -52,8 +48,6 @@ export default function App() {
     rewardShare,
   } = useGame(user)
 
-  console.log('[App] render — adOpen:', adOpen, '| onCooldown:', onCooldown, '| packsLeft:', packsLeft, '| user:', !!user)
-
   const appReady = !appLoading && !authLoading
 
   function handleOpenPack() {
@@ -65,12 +59,13 @@ export default function App() {
   }
 
   function handleWatchAd() {
-    console.log('[Ad] handleWatchAd called — adOpen was:', adOpen)
+    if (adOpen) return
     setAdOpen(true)
-    console.log('[Ad] setAdOpen(true) called')
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission().catch((e) => console.warn('[Ad] Notification.requestPermission error:', e))
-    }
+  }
+
+  function handleAdReward() {
+    rewardAd()
+    setAdOpen(false)
   }
 
   return (
@@ -84,15 +79,7 @@ export default function App() {
       )}
 
       {adOpen && (
-        <AdModal
-          onReward={() => {
-            console.log('[App] onReward fired — calling rewardAd(), then setAdOpen(false)')
-            rewardAd()
-            console.log('[App] rewardAd() returned — calling setAdOpen(false)')
-            setAdOpen(false)
-            console.log('[App] setAdOpen(false) called')
-          }}
-        />
+        <AdModal onReward={handleAdReward} />
       )}
 
       <div className={`app-content${!appReady ? ' app-content-hidden' : ''}`}>
