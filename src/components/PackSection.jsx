@@ -52,12 +52,14 @@ export default function PackSection({
       {/* Full-screen rip overlay — rendered outside .pack so overflow:hidden doesn't clip it */}
       {pulling && (
         <div className="pack-logo-rip">
-          <div className="pack-rip-half pack-rip-top">
-            <img src={logoImg} alt="" />
-          </div>
-          <div className="pack-rip-tear" />
-          <div className="pack-rip-half pack-rip-bottom">
-            <img src={logoImg} alt="" />
+          <div className="pack-rip-inner">
+            <div className="pack-rip-half pack-rip-top">
+              <img src={logoImg} alt="" />
+            </div>
+            <div className="pack-rip-tear" />
+            <div className="pack-rip-half pack-rip-bottom">
+              <img src={logoImg} alt="" />
+            </div>
           </div>
         </div>
       )}

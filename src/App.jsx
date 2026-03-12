@@ -58,17 +58,13 @@ export default function App() {
     }
   }
 
-  async function handleWatchAd() {
-    if ('Notification' in window) {
-      try {
-        // Race against a 400 ms timeout — Brave shields can silently hang the promise
-        await Promise.race([
-          Notification.requestPermission(),
-          new Promise(resolve => setTimeout(resolve, 400)),
-        ])
-      } catch (_) {}
-    }
+  function handleWatchAd() {
+    // Open modal immediately (synchronous, inside the user gesture)
     setAdOpen(true)
+    // Request notification permission in the background — don't block the modal
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission().catch(() => {})
+    }
   }
 
   return (

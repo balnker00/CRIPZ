@@ -54,7 +54,7 @@ const Card = memo(function Card({ coin, rarity, animate = false, delay = 0 }) {
         <div className="card-image">
           {coin['IMAGE URL'] && !imgErr
             ? <img
-                src={coin['IMAGE URL']}
+                src={coin['IMAGE URL'].replace(/^http:\/\//i, 'https://')}
                 alt={coin['NAME']}
                 loading="lazy"
                 onError={() => setImgErr(true)}

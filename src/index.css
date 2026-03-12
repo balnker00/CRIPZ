@@ -740,40 +740,43 @@ main {
 /* ── PACK LOGO RIP ANIMATION ── */
 /* Logo is 62 × 62 px. Cut at 25% = 15.5 px ≈ 16 px from top */
 
-/* ── PACK RIP — full-screen overlay, zooms in then splits ── */
+/* ── PACK RIP — full-screen overlay, centred pack card, splits at 50% ── */
 
 /*
-  --rip-size   : full square logo dimension (responsive)
-  --rip-top-h  : height of top slice (top 25%)
-  --rip-half   : half of --rip-size, used for centering
+  --rip-w   : card width (responsive)
+  --rip-h   : card height (pack aspect ratio ≈ 160 : 220)
+  --rip-img : logo image size inside the card
 */
 .pack-logo-rip {
-  --rip-size:  min(72vmin, 340px);
-  --rip-top-h: calc(var(--rip-size) * 0.25);
-  --rip-half:  calc(var(--rip-size) / 2);
+  --rip-w:   min(62vmin, 240px);
+  --rip-h:   calc(var(--rip-w) * 1.375);
+  --rip-img: calc(var(--rip-w) * 0.58);
 
   position: fixed;
   inset: 0;
   z-index: 9999;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   animation: pack-backdrop 1.1s ease forwards;
 }
 
 @keyframes pack-backdrop {
-  0%   { background: rgba(0, 0, 0, 0);    }
-  12%  { background: rgba(0, 0, 0, 0.9);  }
-  78%  { background: rgba(0, 0, 0, 0.9);  }
-  100% { background: rgba(0, 0, 0, 0);    }
+  0%   { background: rgba(0, 0, 0, 0);   }
+  12%  { background: rgba(0, 0, 0, 0.9); }
+  78%  { background: rgba(0, 0, 0, 0.9); }
+  100% { background: rgba(0, 0, 0, 0);   }
 }
 
-/* "RIPZZZ" bursts out from the tear, zooms out and fades */
+/* "RIPZZZ" bursts out from the cut line (vertical centre of the overlay) */
 .pack-logo-rip::after {
   content: 'RIPZZZ';
   position: absolute;
-  top: calc(50% - var(--rip-top-h));   /* vertically at tear line */
+  top: 50%;
   left: 50%;
   font-family: 'Orbitron', monospace;
-  font-size: clamp(1.6rem, 8vw, 3.8rem);
+  font-size: clamp(1.6rem, 8vw, 3.6rem);
   font-weight: 900;
   letter-spacing: 0.25em;
   color: var(--green);
@@ -785,61 +788,83 @@ main {
   pointer-events: none;
   z-index: 2;
   opacity: 0;
-  animation: ripzzz-burst 0.7s ease-out 0.22s forwards;
+  animation: ripzzz-burst 0.72s ease-out 0.24s forwards;
 }
 
 @keyframes ripzzz-burst {
-  0%   { transform: translate(-50%, -50%) scale(0.4); opacity: 0;   }
-  18%  { transform: translate(-50%, -50%) scale(1.0); opacity: 1;   }
-  38%  { transform: translate(-50%, -50%) scale(1.1); opacity: 0.9; }
-  100% { transform: translate(-50%, -50%) scale(5.5); opacity: 0;   }
+  0%   { transform: translate(-50%, -50%) scale(0.35); opacity: 0;   }
+  18%  { transform: translate(-50%, -50%) scale(1.0);  opacity: 1;   }
+  38%  { transform: translate(-50%, -50%) scale(1.08); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(5.5);  opacity: 0;   }
 }
 
-/* Both halves: absolutely positioned inside the fixed overlay */
+/* Pack card wrapper — centred via flexbox parent, pack card proportions */
+.pack-rip-inner {
+  position: relative;
+  width: var(--rip-w);
+  height: var(--rip-h);
+  overflow: visible;   /* halves must fly outside the card boundary */
+  flex-shrink: 0;
+}
+
+/* Each half clips its own portion; card background + border on each half */
 .pack-rip-half {
   position: absolute;
-  left: calc(50% - var(--rip-half));
-  width: var(--rip-size);
+  left: 0;
+  width: 100%;
   overflow: hidden;
+  background: linear-gradient(135deg, #0d0d0d 0%, #1a0a1a 50%, #0a0a0a 100%);
+  border-left:  2px solid var(--green);
+  border-right: 2px solid var(--green);
+  box-shadow: 0 0 24px rgba(0, 255, 153, 0.15), inset 0 0 30px rgba(204, 0, 255, 0.05);
 }
 
-.pack-rip-half img {
-  width: var(--rip-size);
-  height: var(--rip-size);
-  object-fit: contain;
-  display: block;
-  pointer-events: none;
-  filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.75))
-          drop-shadow(0 0 70px rgba(0, 255, 153, 0.4));
-}
-
-/* Top 25% — centred on screen */
+/* Top half: top 50% of the card */
 .pack-rip-top {
-  top: calc(50% - var(--rip-half));
-  height: var(--rip-top-h);
-  /* origin at centre of the full logo so both halves scale from the same point */
-  transform-origin: center 200%;
-  animation: pack-rip-top-fly 1.1s cubic-bezier(0.25, 0, 0.5, 0.6) 0s forwards;
+  top: 0;
+  height: 50%;
+  border-top:    2px solid var(--green);
+  border-radius: 6px 6px 0 0;
+  transform-origin: center bottom;   /* scale from the cut line */
+  animation: pack-rip-top-fly 1.05s cubic-bezier(0.25, 0, 0.5, 0.6) 0s forwards;
 }
 
-/* Bottom 75% */
+/* Bottom half: bottom 50% of the card */
 .pack-rip-bottom {
-  top: calc(50% - var(--rip-half) + var(--rip-top-h));
-  height: calc(var(--rip-size) * 0.75);
-  transform-origin: center 33.33%;
-  animation: pack-rip-bottom-fly 1.1s cubic-bezier(0.25, 0, 0.5, 0.6) 0s forwards;
+  top: 50%;
+  height: 50%;
+  border-bottom: 2px solid var(--green);
+  border-radius: 0 0 6px 6px;
+  transform-origin: center top;      /* scale from the cut line */
+  animation: pack-rip-bottom-fly 1.05s cubic-bezier(0.25, 0, 0.5, 0.6) 0s forwards;
 }
 
+/* Logo image — centered in the full card, clipped by each half's overflow:hidden */
+.pack-rip-half img {
+  position: absolute;
+  left: 50%;
+  width: var(--rip-img);
+  height: var(--rip-img);
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6))
+          drop-shadow(0 0 50px rgba(0, 255, 153, 0.3));
+  /* logo vertical centre = card vertical centre = cut line */
+  top: calc((var(--rip-h) / 2 - var(--rip-img) / 2));
+  transform: translateX(-50%);
+}
+
+/* Bottom half: shift image up so the bottom half of the logo is visible */
 .pack-rip-bottom img {
-  margin-top: calc(var(--rip-top-h) * -1);
+  top: calc(var(--rip-h) / 2 - var(--rip-img) / 2 - var(--rip-h) / 2);
 }
 
-/* Zigzag tear line at the cut */
+/* Zigzag tear line — positioned at 50% of the card, relative to pack-rip-inner */
 .pack-rip-tear {
   position: absolute;
-  top: calc(50% - var(--rip-top-h) - 2px);
-  left: calc(50% - var(--rip-half) - 12px);
-  width: calc(var(--rip-size) + 24px);
+  top: calc(50% - 2px);
+  left: -10px;
+  width: calc(100% + 20px);
   height: 4px;
   background: var(--green);
   box-shadow: 0 0 14px var(--green), 0 0 35px rgba(0, 255, 153, 0.6);
@@ -861,22 +886,22 @@ main {
   100% { opacity: 0; }
 }
 
-/* Zoom in from centre → overshoot → settle → tear and fly up-left off screen */
+/* Top half: zoom in from cut line → overshoot → fly up-left */
 @keyframes pack-rip-top-fly {
-  0%   { transform: scale(0.08);                                                       opacity: 0; }
-  13%  { transform: scale(1.08);                                                       opacity: 1; }
+  0%   { transform: scale(0.05);                                                       opacity: 0; }
+  13%  { transform: scale(1.06);                                                       opacity: 1; }
   22%  { transform: scale(1);                                                          opacity: 1; }
-  30%  { transform: translateY(-10px) translateX(-6px) rotate(-7deg);                 opacity: 1; }
-  100% { transform: translateY(-165vh) translateX(-55vw) rotate(-68deg) scale(0.03);  opacity: 0; }
+  30%  { transform: translateY(-8px) translateX(-5px) rotate(-6deg);                  opacity: 1; }
+  100% { transform: translateY(-160vh) translateX(-50vw) rotate(-65deg) scale(0.03);  opacity: 0; }
 }
 
-/* Mirror: fly down-right off screen */
+/* Bottom half: mirror fly down-right */
 @keyframes pack-rip-bottom-fly {
-  0%   { transform: scale(0.08);                                                       opacity: 0; }
-  13%  { transform: scale(1.08);                                                       opacity: 1; }
+  0%   { transform: scale(0.05);                                                       opacity: 0; }
+  13%  { transform: scale(1.06);                                                       opacity: 1; }
   22%  { transform: scale(1);                                                          opacity: 1; }
-  30%  { transform: translateY(10px) translateX(6px) rotate(7deg);                    opacity: 1; }
-  100% { transform: translateY(165vh) translateX(55vw) rotate(62deg) scale(0.03);     opacity: 0; }
+  30%  { transform: translateY(8px) translateX(5px) rotate(6deg);                     opacity: 1; }
+  100% { transform: translateY(160vh) translateX(50vw) rotate(60deg) scale(0.03);     opacity: 0; }
 }
 
 /* ── BUTTONS ── */
