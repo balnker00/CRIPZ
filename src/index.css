@@ -1930,4 +1930,76 @@ main {
 [data-theme="light"] .logo-crypto { color: var(--green); }
 [data-theme="light"] .logo-ripz   { color: var(--red); }
 [data-theme="light"] .tagline     { color: #222; }
+
+/* ══════════════════════════════
+   FOOTER
+══════════════════════════════ */
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 1rem 0.5rem;
+  border-top: 1px solid rgba(0, 255, 153, 0.08);
+  margin-top: 1rem;
+}
+
+.footer-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text);
+  opacity: 0.4;
+  letter-spacing: 0.05em;
+  padding: 0;
+  transition: opacity 0.15s, color 0.15s;
+}
+.footer-link:hover { opacity: 1; color: var(--green); }
+
+.footer-sep {
+  font-size: 0.6rem;
+  color: var(--text);
+  opacity: 0.2;
+}
+
+/* Legal pages back button */
+.legal-back-btn {
+  align-self: flex-start;
+  background: none;
+  border: 1px solid rgba(0, 255, 153, 0.2);
+  border-radius: 4px;
+  color: var(--green);
+  cursor: pointer;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  padding: 0.4rem 0.8rem;
+  margin-top: 0.5rem;
+  transition: background 0.15s, border-color 0.15s;
+}
+.legal-back-btn:hover { background: rgba(0, 255, 153, 0.07); border-color: var(--green); }
+
+/* Contact X link */
+.contact-x-link {
+  display: inline-block;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--green);
+  text-decoration: none;
+  border: 1px solid rgba(0, 255, 153, 0.3);
+  border-radius: 4px;
+  padding: 0.45rem 0.9rem;
+  transition: background 0.15s, border-color 0.15s;
+}
+.contact-x-link:hover { background: rgba(0, 255, 153, 0.08); border-color: var(--green); }
+
+[data-theme="light"] .footer-link { color: var(--text); }
+[data-theme="light"] .footer-link:hover { color: var(--green); }
+[data-theme="light"] .app-footer { border-top-color: rgba(0,119,68,0.12); }
+[data-theme="light"] .legal-back-btn { color: var(--green); border-color: rgba(0,119,68,0.3); }
+[data-theme="light"] .contact-x-link { color: var(--green); border-color: rgba(0,119,68,0.3); }
 [data-theme="light"] .ticker-badge { color: var(--red); border-color: var(--red); }

@@ -2,6 +2,9 @@ import Collection from './Collection'
 import About from './About'
 import PackSection from './PackSection'
 import RevealArea from './RevealArea'
+import PrivacyPolicy from './PrivacyPolicy'
+import TermsOfService from './TermsOfService'
+import Contact from './Contact'
 
 export default function TabsPanel({
   activeTab, setActiveTab,
@@ -89,6 +92,12 @@ export default function TabsPanel({
           />
         ) : activeTab === 'about' ? (
           <About />
+        ) : activeTab === 'privacy' ? (
+          <PrivacyPolicy onBack={() => setActiveTab('about')} />
+        ) : activeTab === 'terms' ? (
+          <TermsOfService onBack={() => setActiveTab('about')} />
+        ) : activeTab === 'contact' ? (
+          <Contact onBack={() => setActiveTab('about')} />
         ) : (
           <div className="coming-soon">
             <div className="coming-soon-inner">
@@ -99,6 +108,14 @@ export default function TabsPanel({
           </div>
         )}
       </div>
+
+      <footer className="app-footer">
+        <button className="footer-link" onClick={() => setActiveTab('privacy')}>Privacy Policy</button>
+        <span className="footer-sep">·</span>
+        <button className="footer-link" onClick={() => setActiveTab('terms')}>Terms of Service</button>
+        <span className="footer-sep">·</span>
+        <button className="footer-link" onClick={() => setActiveTab('contact')}>Contact</button>
+      </footer>
     </div>
   )
 }
