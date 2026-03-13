@@ -111,8 +111,6 @@ export default function PackSection({
         )}
       </div>
 
-      <br />
-
       <button className="pull-btn" onClick={onOpen} disabled={btnDisabled}>
         {btnLabel}
       </button>
