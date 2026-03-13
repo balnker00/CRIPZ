@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import Card from './Card'
 import { RARITY_ORDER } from '../data/gameData'
 import { SHARE_REWARD } from '../hooks/usePacks'
@@ -16,6 +17,9 @@ function buildTweetText(cards, totalCards) {
 }
 
 export default function RevealArea({ cards, onShare, totalCards = 0 }) {
+  const [hasShared, setHasShared] = useState(false)
+  useEffect(() => { setHasShared(false) }, [cards])
+
   if (cards.length === 0) {
     return (
       <div className="reveal-area">
@@ -28,6 +32,8 @@ export default function RevealArea({ cards, onShare, totalCards = 0 }) {
   }
 
   function handleShare() {
+    if (hasShared) return
+    setHasShared(true)
     const text = buildTweetText(cards, totalCards)
     const url  = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
     window.open(url, '_blank', 'noopener,noreferrer')
@@ -42,7 +48,7 @@ export default function RevealArea({ cards, onShare, totalCards = 0 }) {
         ))}
       </div>
       <div className="reveal-actions">
-        <button className="share-btn" onClick={handleShare}>
+        <button className="share-btn" onClick={handleShare} disabled={hasShared}>
           ↗ SHARE ON X · +{SHARE_REWARD} PACKS
         </button>
       </div>
