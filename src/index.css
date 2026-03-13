@@ -399,8 +399,8 @@ main {
 }
 
 .pack {
-  width: 260px;
-  height: 357px;
+  width: 390px;
+  height: 536px;
   position: relative;
   transition: transform 0.2s, filter 0.2s;
 }
@@ -714,7 +714,7 @@ main {
   --rip-img : logo image size inside the card
 */
 .pack-logo-rip {
-  --rip-w:   min(80vmin, 340px);
+  --rip-w:   min(120vmin, 510px);
   --rip-h:   calc(var(--rip-w) * 1.373);
 
   position: fixed;
