@@ -401,40 +401,10 @@ main {
 .pack {
   width: 160px;
   height: 220px;
-  background: linear-gradient(135deg, #0d0d0d 0%, #1a0a1a 50%, #0a0a0a 100%);
-  border: 2px solid var(--green);
   border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
   position: relative;
   overflow: hidden;
-  box-shadow:
-    0 0 30px rgba(0, 255, 153, 0.2),
-    0 0 60px rgba(0, 255, 153, 0.05),
-    inset 0 0 30px rgba(204, 0, 255, 0.05);
   transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.pack::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(0, 255, 153, 0.06) 50%,
-    transparent 70%
-  );
-  animation: pack-shimmer 3s infinite;
-  z-index: 0;
-}
-
-@keyframes pack-shimmer {
-  0%   { transform: translateX(-100%); }
-  100% { transform: translateX(200%);  }
 }
 
 .pack-wrapper:hover .pack {
@@ -442,6 +412,7 @@ main {
   box-shadow:
     0 0 50px rgba(0, 255, 153, 0.4),
     0 0 100px rgba(0, 255, 153, 0.1);
+  border-radius: 6px;
 }
 
 .pack-wrapper:active .pack { transform: scale(0.98); }
@@ -462,18 +433,10 @@ main {
 .pack-icon { font-size: 2.5rem; position: relative; z-index: 1; }
 
 .pack-logo-img {
-  width: 88px;
-  height: 88px;
-  object-fit: contain;
-  position: relative;
-  z-index: 1;
-  filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.5)) drop-shadow(0 0 24px rgba(0, 255, 153, 0.2));
-  animation: pack-logo-float 4s ease-in-out infinite;
-}
-
-@keyframes pack-logo-float {
-  0%, 100% { transform: translateY(0px) rotate(-2deg); }
-  50%       { transform: translateY(-6px) rotate(2deg); }
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .pack-name {
@@ -805,16 +768,12 @@ main {
   flex-shrink: 0;
 }
 
-/* Each half clips its own portion; card background + border on each half */
+/* Each half clips its own portion */
 .pack-rip-half {
   position: absolute;
   left: 0;
   width: 100%;
   overflow: hidden;
-  background: linear-gradient(135deg, #0d0d0d 0%, #1a0a1a 50%, #0a0a0a 100%);
-  border-left:  2px solid var(--green);
-  border-right: 2px solid var(--green);
-  box-shadow: 0 0 24px rgba(0, 255, 153, 0.15), inset 0 0 30px rgba(204, 0, 255, 0.05);
 }
 
 /* Top half: top 50% of the card */
@@ -837,24 +796,20 @@ main {
   animation: pack-rip-bottom-fly 1.05s cubic-bezier(0.25, 0, 0.5, 0.6) 0s forwards;
 }
 
-/* Logo image — centered in the full card, clipped by each half's overflow:hidden */
+/* Image fills the full card in each half — parent overflow:hidden clips appropriately */
 .pack-rip-half img {
   position: absolute;
-  left: 50%;
-  width: var(--rip-img);
-  height: var(--rip-img);
-  object-fit: contain;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: var(--rip-h);
+  object-fit: cover;
   pointer-events: none;
-  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6))
-          drop-shadow(0 0 50px rgba(0, 255, 153, 0.3));
-  /* logo vertical centre = card vertical centre = cut line */
-  top: calc((var(--rip-h) / 2 - var(--rip-img) / 2));
-  transform: translateX(-50%);
 }
 
-/* Bottom half: shift image up so the bottom half of the logo is visible */
+/* Bottom half: shift image up so the bottom half of the image is visible */
 .pack-rip-bottom img {
-  top: calc(var(--rip-h) / 2 - var(--rip-img) / 2 - var(--rip-h) / 2);
+  top: calc(-1 * var(--rip-h) / 2);
 }
 
 /* Zigzag tear line — positioned at 50% of the card, relative to pack-rip-inner */

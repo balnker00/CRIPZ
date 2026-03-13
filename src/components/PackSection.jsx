@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import logoImg from '../assets/pfpGL.png'
+import logoImg from '../assets/pfpP.png'
 import { FREE_PACKS, AD_REWARD } from '../hooks/usePacks'
 
 const AD_DURATION = 10
@@ -87,10 +87,7 @@ export default function PackSection({
         onClick={packLocked ? undefined : onOpen}
       >
         <div className="pack">
-          <div className="pack-bg-flower" />
           <img src={logoImg} alt="Pack" className="pack-logo-img" />
-          <div className="pack-name">MEMES PACK</div>
-          <div className="pack-sub">RIPZ · random rarity</div>
         </div>
       </div>
 
