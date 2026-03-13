@@ -69,6 +69,8 @@ export default function App() {
 
         <Header />
 
+        <StatsBar stats={stats} />
+
         <main>
           <TabsPanel
             activeTab={activeTab}
@@ -94,8 +96,6 @@ export default function App() {
             onLogin={() => setShowAuth(true)}
           />
         </main>
-
-        <StatsBar stats={stats} />
 
         <Notification msg={notif.msg} rare={notif.rare} show={notif.show} />
       </div>
