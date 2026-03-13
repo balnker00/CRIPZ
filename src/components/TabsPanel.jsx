@@ -1,5 +1,4 @@
 import Collection from './Collection'
-import Codex from './Codex'
 import About from './About'
 import PackSection from './PackSection'
 import RevealArea from './RevealArea'
@@ -14,7 +13,6 @@ export default function TabsPanel({
   username, onSignOut, onLogin,
 }) {
   const totalPulled = collection.reduce((s, c) => s + (c.count ?? 1), 0)
-  const uniqueCount = new Set(collection.map(c => c.coin?.['TICKER']).filter(Boolean)).size
 
   return (
     <div className="tabs-wrapper">
@@ -31,13 +29,6 @@ export default function TabsPanel({
         >
           Collection
           <span className="tab-badge">{totalPulled}</span>
-        </button>
-        <button
-          className={`tab-btn${activeTab === 'codex' ? ' active' : ''}`}
-          onClick={() => setActiveTab('codex')}
-        >
-          Codex
-          <span className="tab-badge">{uniqueCount}</span>
         </button>
         <button
           className={`tab-btn${activeTab === 'about' ? ' active' : ''}`}
@@ -96,8 +87,6 @@ export default function TabsPanel({
             filter={collFilter}
             setFilter={setCollFilter}
           />
-        ) : activeTab === 'codex' ? (
-          <Codex coins={coins} collection={collection} />
         ) : activeTab === 'about' ? (
           <About />
         ) : (
