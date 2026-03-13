@@ -29,9 +29,20 @@ function useCountdown(resetAt) {
   return display
 }
 
+const RARITY_TIERS = ['GOLDEN', 'LEGENDARY', 'EPIC', 'RARE']
+
+function bestRipTier(cards) {
+  if (!cards?.length) return null
+  for (const tier of RARITY_TIERS) {
+    if (cards.some(c => c.rarity === tier || c.rarity?.startsWith(tier + '_'))) return tier.toLowerCase()
+  }
+  return null
+}
+
 export default function PackSection({
   onOpen, pulling, coinsLoading, coinsError,
   packsLeft, onCooldown, resetAt, rewardAd, showNotif,
+  revealedCards,
 }) {
   const [adOpen, setAdOpen] = useState(false)
   const [adSecs, setAdSecs] = useState(AD_DURATION)
@@ -69,7 +80,7 @@ export default function PackSection({
       <div className="section-label">// Season 1 - the memes //</div>
 
       {pulling && (
-        <div className="pack-logo-rip">
+        <div className={`pack-logo-rip${bestRipTier(revealedCards) ? ` pack-rip--${bestRipTier(revealedCards)}` : ''}`}>
           <div className="pack-rip-inner">
             <div className="pack-rip-half pack-rip-top">
               <img src={logoImg} alt="" />

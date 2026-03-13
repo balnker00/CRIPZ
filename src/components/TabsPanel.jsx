@@ -81,6 +81,7 @@ export default function TabsPanel({
               resetAt={resetAt}
               rewardAd={rewardAd}
               showNotif={showNotif}
+              revealedCards={revealedCards}
             />
             <RevealArea
               cards={revealedCards}
