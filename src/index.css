@@ -401,18 +401,22 @@ main {
 .pack {
   width: 160px;
   height: 220px;
-  border-radius: 6px;
   position: relative;
   overflow: hidden;
+  border-radius: 6px;
+  box-shadow:
+    0 0 0 1.5px rgba(0, 255, 153, 0.5),
+    0 0 18px rgba(0, 255, 153, 0.35),
+    0 0 40px rgba(0, 255, 153, 0.12);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .pack-wrapper:hover .pack {
   transform: scale(1.05) translateY(-4px);
   box-shadow:
-    0 0 50px rgba(0, 255, 153, 0.4),
-    0 0 100px rgba(0, 255, 153, 0.1);
-  border-radius: 6px;
+    0 0 0 2px rgba(0, 255, 153, 0.8),
+    0 0 35px rgba(0, 255, 153, 0.55),
+    0 0 80px rgba(0, 255, 153, 0.2);
 }
 
 .pack-wrapper:active .pack { transform: scale(0.98); }
