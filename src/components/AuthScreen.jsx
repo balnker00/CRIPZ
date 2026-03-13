@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import logoImg from '../assets/pfpGGO.png'
+import logoImg from '../assets/pfpP.png'
 
 export default function AuthScreen({ onAuth, onClose }) {
   const [mode, setMode]         = useState('signin')

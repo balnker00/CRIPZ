@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import logoImg from '../assets/pfpGGO.png'
+import logoImg from '../assets/pfpP.png'
 import { FREE_PACKS, AD_REWARD } from '../hooks/usePacks'
 
 const AD_DURATION = 10
