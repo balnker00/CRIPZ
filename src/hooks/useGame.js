@@ -70,7 +70,7 @@ export function useGame(user) {
     if (!user) {
       setRevealedCards([])
       setCollFilter('ALL')
-      setActiveTab('collection')
+      setActiveTab('openpacks')
     }
   }, [user])
 

@@ -306,7 +306,7 @@ header {
 .tagline {
   font-family: 'Share Tech Mono', monospace;
   font-size: 0.62rem;
-  color: var(--red);
+  color: #ffffff;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   opacity: 0.8;
@@ -1929,5 +1929,5 @@ main {
 /* Auth screen in light mode */
 [data-theme="light"] .logo-crypto { color: var(--green); }
 [data-theme="light"] .logo-ripz   { color: var(--red); }
-[data-theme="light"] .tagline     { color: var(--red); }
+[data-theme="light"] .tagline     { color: #222; }
 [data-theme="light"] .ticker-badge { color: var(--red); border-color: var(--red); }
