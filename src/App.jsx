@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useAuth } from './hooks/useAuth'
 import { useGame } from './hooks/useGame'
 import Header from './components/Header'
-import StatsBar from './components/StatsBar'
 import TabsPanel from './components/TabsPanel'
 import Notification from './components/Notification'
 import LoadingScreen from './components/LoadingScreen'
@@ -69,8 +68,6 @@ export default function App() {
 
         <Header />
 
-        <StatsBar stats={stats} />
-
         <main>
           <TabsPanel
             activeTab={activeTab}
@@ -94,6 +91,7 @@ export default function App() {
             username={username}
             onSignOut={signOut}
             onLogin={() => setShowAuth(true)}
+            stats={stats}
           />
         </main>
 

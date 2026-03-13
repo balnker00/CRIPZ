@@ -5,6 +5,7 @@ import RevealArea from './RevealArea'
 import PrivacyPolicy from './PrivacyPolicy'
 import TermsOfService from './TermsOfService'
 import Contact from './Contact'
+import StatsBar from './StatsBar'
 
 export default function TabsPanel({
   activeTab, setActiveTab,
@@ -14,6 +15,7 @@ export default function TabsPanel({
   packsLeft, onCooldown, resetAt, rewardAd, showNotif,
   revealedCards, rewardShare, totalCards,
   username, onSignOut, onLogin,
+  stats,
 }) {
   const totalPulled = collection.reduce((s, c) => s + (c.count ?? 1), 0)
 
@@ -63,6 +65,8 @@ export default function TabsPanel({
           )}
         </div>
       </div>
+
+      <StatsBar stats={stats} />
 
       <div className="tab-panel active">
         {activeTab === 'openpacks' ? (
