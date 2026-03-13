@@ -1,7 +1,7 @@
 import Card from './Card'
 import { RARITY_ORDER } from '../data/gameData'
 import { SHARE_REWARD } from '../hooks/usePacks'
-import logoImg from '../assets/pfp1.png'
+import logoImg from '../assets/pfpGGO.png'
 
 function buildTweetText(cards, totalCards) {
   const best = cards.reduce(

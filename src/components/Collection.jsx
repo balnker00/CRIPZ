@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import Card from './Card'
-import logoImg from '../assets/pfp1.png'
+import logoImg from '../assets/pfpGGO.png'
 
 const FILTERS = [
   { label: 'All',       value: 'ALL'       },

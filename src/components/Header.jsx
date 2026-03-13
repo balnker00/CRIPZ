@@ -1,4 +1,4 @@
-import logoImg from '../assets/pfp1.png'
+import logoImg from '../assets/pfpGGO.png'
 
 export default function Header() {
   return (
