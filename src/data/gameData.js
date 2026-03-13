@@ -7,8 +7,8 @@ export const BASE_RARITIES = [
   { rarity: 'COMMON',    weight: 900 }, // 90%
 ]
 
-// Golden: 0.3% — extremely rare overlay (TEMP: 50% for testing)
-export const GOLDEN_CHANCE = 0.5
+// Golden: 0.3% — extremely rare overlay
+export const GOLDEN_CHANCE = 0.003
 
 export function rollRarity() {
   const total = BASE_RARITIES.reduce((s, r) => s + r.weight, 0)
