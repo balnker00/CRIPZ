@@ -11,6 +11,7 @@ export default function TabsPanel({
   onOpenPack, pulling, coinsLoading, coinsError,
   packsLeft, onCooldown, resetAt, rewardAd, showNotif,
   revealedCards, rewardShare, totalCards,
+  username, onSignOut, onLogin,
 }) {
   const totalPulled = collection.reduce((s, c) => s + (c.count ?? 1), 0)
   const uniqueCount = new Set(collection.map(c => c.coin?.['TICKER']).filter(Boolean)).size
@@ -56,6 +57,17 @@ export default function TabsPanel({
         >
           Battle
         </button>
+
+        <div className="tabs-user">
+          {username ? (
+            <>
+              <span className="tabs-username">{username.toUpperCase()}</span>
+              <button className="tabs-auth-btn" onClick={onSignOut}>LOGOUT</button>
+            </>
+          ) : (
+            <button className="tabs-auth-btn tabs-auth-btn--login" onClick={onLogin}>LOGIN</button>
+          )}
+        </div>
       </div>
 
       <div className="tab-panel active">

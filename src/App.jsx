@@ -67,7 +67,7 @@ export default function App() {
       <div className={`app-content${!appReady ? ' app-content-hidden' : ''}`}>
         {flash && <div className="flash" />}
 
-        <Header username={username} onSignOut={signOut} onLogin={() => setShowAuth(true)} />
+        <Header />
 
         <main>
           <TabsPanel
@@ -89,6 +89,9 @@ export default function App() {
             revealedCards={revealedCards}
             rewardShare={rewardShare}
             totalCards={stats.totalCards}
+            username={username}
+            onSignOut={signOut}
+            onLogin={() => setShowAuth(true)}
           />
         </main>
 
