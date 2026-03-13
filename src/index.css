@@ -394,54 +394,19 @@ main {
 .pack-wrapper {
   display: inline-block;
   cursor: pointer;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.4rem;
   -webkit-tap-highlight-color: transparent;
 }
 
 .pack {
-  width: 160px;
-  height: 220px;
-  background: linear-gradient(135deg, #0d0d0d 0%, #1a0a1a 50%, #0a0a0a 100%);
-  border: 2px solid var(--green);
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  width: 293px;
+  height: 402px;
   position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 0 30px rgba(0, 255, 153, 0.2),
-    0 0 60px rgba(0, 255, 153, 0.05),
-    inset 0 0 30px rgba(204, 0, 255, 0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.pack::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(0, 255, 153, 0.06) 50%,
-    transparent 70%
-  );
-  animation: pack-shimmer 3s infinite;
-  z-index: 0;
-}
-
-@keyframes pack-shimmer {
-  0%   { transform: translateX(-100%); }
-  100% { transform: translateX(200%);  }
+  transition: transform 0.2s, filter 0.2s;
 }
 
 .pack-wrapper:hover .pack {
   transform: scale(1.05) translateY(-4px);
-  box-shadow:
-    0 0 50px rgba(0, 255, 153, 0.4),
-    0 0 100px rgba(0, 255, 153, 0.1);
 }
 
 .pack-wrapper:active .pack { transform: scale(0.98); }
@@ -462,18 +427,21 @@ main {
 .pack-icon { font-size: 2.5rem; position: relative; z-index: 1; }
 
 .pack-logo-img {
-  width: 88px;
-  height: 88px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  position: relative;
-  z-index: 1;
-  filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.5)) drop-shadow(0 0 24px rgba(0, 255, 153, 0.2));
-  animation: pack-logo-float 4s ease-in-out infinite;
+  display: block;
+  filter:
+    drop-shadow(0 0 6px rgba(0, 255, 153, 0.9))
+    drop-shadow(0 0 18px rgba(0, 255, 153, 0.6))
+    drop-shadow(0 0 40px rgba(0, 255, 153, 0.25));
 }
 
-@keyframes pack-logo-float {
-  0%, 100% { transform: translateY(0px) rotate(-2deg); }
-  50%       { transform: translateY(-6px) rotate(2deg); }
+.pack-wrapper:hover .pack-logo-img {
+  filter:
+    drop-shadow(0 0 8px rgba(0, 255, 153, 1))
+    drop-shadow(0 0 28px rgba(0, 255, 153, 0.8))
+    drop-shadow(0 0 60px rgba(0, 255, 153, 0.4));
 }
 
 .pack-name {
@@ -503,9 +471,9 @@ main {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  min-height: 2rem;
-  margin-top: -0.5rem;
-  margin-bottom: 0.25rem;
+  min-height: unset;
+  margin-top: 0;
+  margin-bottom: 0.4rem;
 }
 
 .packs-counter {
@@ -746,9 +714,8 @@ main {
   --rip-img : logo image size inside the card
 */
 .pack-logo-rip {
-  --rip-w:   min(62vmin, 240px);
-  --rip-h:   calc(var(--rip-w) * 1.375);
-  --rip-img: calc(var(--rip-w) * 0.58);
+  --rip-w:   min(90vw, 510px);
+  --rip-h:   calc(var(--rip-w) * 1.373);
 
   position: fixed;
   inset: 0;
@@ -805,56 +772,47 @@ main {
   flex-shrink: 0;
 }
 
-/* Each half clips its own portion; card background + border on each half */
+/* Each half clips its own portion */
 .pack-rip-half {
   position: absolute;
   left: 0;
   width: 100%;
   overflow: hidden;
-  background: linear-gradient(135deg, #0d0d0d 0%, #1a0a1a 50%, #0a0a0a 100%);
-  border-left:  2px solid var(--green);
-  border-right: 2px solid var(--green);
-  box-shadow: 0 0 24px rgba(0, 255, 153, 0.15), inset 0 0 30px rgba(204, 0, 255, 0.05);
 }
 
-/* Top half: top 50% of the card */
+/* Top half: top 50% of the image */
 .pack-rip-top {
   top: 0;
   height: 50%;
-  border-top:    2px solid var(--green);
-  border-radius: 6px 6px 0 0;
-  transform-origin: center bottom;   /* scale from the cut line */
+  transform-origin: center bottom;
   animation: pack-rip-top-fly 1.05s cubic-bezier(0.25, 0, 0.5, 0.6) 0s forwards;
 }
 
-/* Bottom half: bottom 50% of the card */
+/* Bottom half: bottom 50% of the image */
 .pack-rip-bottom {
   top: 50%;
   height: 50%;
-  border-bottom: 2px solid var(--green);
-  border-radius: 0 0 6px 6px;
-  transform-origin: center top;      /* scale from the cut line */
+  transform-origin: center top;
   animation: pack-rip-bottom-fly 1.05s cubic-bezier(0.25, 0, 0.5, 0.6) 0s forwards;
 }
 
-/* Logo image — centered in the full card, clipped by each half's overflow:hidden */
+/* Image fills the full area in each half — parent overflow:hidden clips appropriately */
 .pack-rip-half img {
   position: absolute;
-  left: 50%;
-  width: var(--rip-img);
-  height: var(--rip-img);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: var(--rip-h);
   object-fit: contain;
   pointer-events: none;
-  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6))
-          drop-shadow(0 0 50px rgba(0, 255, 153, 0.3));
-  /* logo vertical centre = card vertical centre = cut line */
-  top: calc((var(--rip-h) / 2 - var(--rip-img) / 2));
-  transform: translateX(-50%);
+  filter:
+    drop-shadow(0 0 8px rgba(0, 255, 153, 0.9))
+    drop-shadow(0 0 24px rgba(0, 255, 153, 0.5));
 }
 
-/* Bottom half: shift image up so the bottom half of the logo is visible */
+/* Bottom half: shift image up so the bottom half is visible */
 .pack-rip-bottom img {
-  top: calc(var(--rip-h) / 2 - var(--rip-img) / 2 - var(--rip-h) / 2);
+  top: calc(-1 * var(--rip-h) / 2);
 }
 
 /* Zigzag tear line — positioned at 50% of the card, relative to pack-rip-inner */
@@ -1644,8 +1602,7 @@ main {
 
   .stats-bar { gap: 1rem; font-size: 0.65rem; padding: 0.6rem 0.75rem; }
 
-  .pack { width: 140px; height: 200px; }
-  .pack-logo-img { width: 72px; height: 72px; }
+  .pack { width: 225px; height: 309px; }
 
   .card      { width: 145px; height: 260px; }
   .card-image { height: 96px; }
@@ -1687,8 +1644,7 @@ main {
     justify-content: flex-start;
   }
 
-  .pack { width: 130px; height: 186px; }
-  .pack-logo-img { width: 62px; height: 62px; }
+  .pack { width: min(86vw, 195px); height: calc(min(86vw, 195px) * 1.373); }
   .pack-name  { font-size: 0.55rem; }
   .pull-btn   { font-size: 0.65rem; padding: 0.7rem 1.6rem; }
   .count-btns { gap: 0.5rem; }
