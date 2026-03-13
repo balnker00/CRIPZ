@@ -394,7 +394,7 @@ main {
 .pack-wrapper {
   display: inline-block;
   cursor: pointer;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.4rem;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -472,7 +472,7 @@ main {
   align-items: center;
   gap: 4px;
   min-height: 2rem;
-  margin-top: -0.5rem;
+  margin-top: 0;
   margin-bottom: 0.25rem;
 }
 
@@ -714,7 +714,7 @@ main {
   --rip-img : logo image size inside the card
 */
 .pack-logo-rip {
-  --rip-w:   min(120vmin, 510px);
+  --rip-w:   min(90vw, 510px);
   --rip-h:   calc(var(--rip-w) * 1.373);
 
   position: fixed;
@@ -1602,8 +1602,7 @@ main {
 
   .stats-bar { gap: 1rem; font-size: 0.65rem; padding: 0.6rem 0.75rem; }
 
-  .pack { width: 140px; height: 200px; }
-  .pack-logo-img { width: 72px; height: 72px; }
+  .pack { width: 300px; height: 412px; }
 
   .card      { width: 145px; height: 260px; }
   .card-image { height: 96px; }
@@ -1645,8 +1644,7 @@ main {
     justify-content: flex-start;
   }
 
-  .pack { width: 130px; height: 186px; }
-  .pack-logo-img { width: 62px; height: 62px; }
+  .pack { width: min(86vw, 260px); height: calc(min(86vw, 260px) * 1.373); }
   .pack-name  { font-size: 0.55rem; }
   .pull-btn   { font-size: 0.65rem; padding: 0.7rem 1.6rem; }
   .count-btns { gap: 0.5rem; }
