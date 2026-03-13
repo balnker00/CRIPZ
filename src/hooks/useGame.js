@@ -27,8 +27,27 @@ export function useGame(user) {
   // Stores DB-format cards: [{coin_id, is_golden, count}] — one row per user
   const userCardsRef = useRef([])
 
-  // Fetch coins once on mount
+  // Fetch coins once on mount, with localStorage cache (1 hour TTL)
   useEffect(() => {
+    const CACHE_KEY = 'coinz_cache'
+    const CACHE_TTL = 60 * 60 * 1000 // 1 hour
+
+    try {
+      const raw = localStorage.getItem(CACHE_KEY)
+      if (raw) {
+        const { data, timestamp } = JSON.parse(raw)
+        if (Date.now() - timestamp < CACHE_TTL && Array.isArray(data) && data.length > 0) {
+          coinsRef.current = data
+          setCoins(data)
+          setCoinsLoading(false)
+          setCoinsReady(true)
+          return
+        }
+      }
+    } catch (_) {
+      // ignore corrupted or missing cache
+    }
+
     supabase
       .from('coinz')
       .select('*')
@@ -41,7 +60,15 @@ export function useGame(user) {
           coinsRef.current = data ?? []
           setCoins(data ?? [])
           setCoinsReady(true)
-          if (!data?.length) setCoinsError('No coins found — check RLS policies on the coinz table')
+          if (!data?.length) {
+            setCoinsError('No coins found — check RLS policies on the coinz table')
+          } else {
+            try {
+              localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }))
+            } catch (_) {
+              // ignore quota errors — cache is best-effort
+            }
+          }
         }
       })
   }, [])
