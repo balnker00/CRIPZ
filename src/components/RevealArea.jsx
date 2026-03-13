@@ -1,6 +1,7 @@
 import Card from './Card'
 import { RARITY_ORDER } from '../data/gameData'
 import { SHARE_REWARD } from '../hooks/usePacks'
+import logoImg from '../assets/pfp1.png'
 
 function buildTweetText(cards, totalCards) {
   const best = cards.reduce(
@@ -19,7 +20,7 @@ export default function RevealArea({ cards, onShare, totalCards = 0 }) {
     return (
       <div className="reveal-area">
         <div className="empty-state">
-          <div className="empty-icon">🃏</div>
+          <img src={logoImg} alt="CryptoRipz" className="empty-logo" />
           <div className="empty-text">open a pack to pull your first cards</div>
         </div>
       </div>

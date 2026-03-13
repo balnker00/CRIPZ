@@ -988,6 +988,7 @@ main {
 }
 
 .empty-icon { font-size: 2rem; margin-bottom: 0.75rem; opacity: 0.4; }
+.empty-logo { width: 64px; height: 64px; object-fit: contain; opacity: 0.35; margin-bottom: 0.75rem; border-radius: 50%; }
 
 .empty-text {
   font-size: 0.75rem;
@@ -1390,6 +1391,27 @@ main {
   color: var(--green);
   background: rgba(0, 255, 153, 0.05);
 }
+
+.collection-search {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  width: 130px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.collection-search::placeholder { color: rgba(255,255,255,0.25); }
+.collection-search:focus { border-color: var(--green); }
+
+[data-theme="light"] .collection-search { color: var(--text); border-color: rgba(0,0,0,0.18); }
+[data-theme="light"] .collection-search::placeholder { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .collection-search:focus { border-color: var(--green); }
 
 /* ── PAGINATION ── */
 .pagination {

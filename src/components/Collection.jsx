@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import Card from './Card'
+import logoImg from '../assets/pfp1.png'
 
 const FILTERS = [
   { label: 'All',       value: 'ALL'       },
@@ -26,19 +27,25 @@ function getPageRange(page, total) {
 
 export default function Collection({ collection, filter, setFilter }) {
   const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
 
   const items = useMemo(() => {
     const list = [...collection].reverse()
-    if (filter === 'ALL')    return list
-    if (filter === 'GOLDEN') return list.filter(c => c.rarity.startsWith('GOLDEN_'))
-    return list.filter(c => c.rarity === filter)
-  }, [collection, filter])
+    const byRarity = filter === 'ALL'    ? list
+                   : filter === 'GOLDEN' ? list.filter(c => c.rarity.startsWith('GOLDEN_'))
+                   : list.filter(c => c.rarity === filter)
+    if (!search.trim()) return byRarity
+    const q = search.trim().toLowerCase()
+    return byRarity.filter(c =>
+      c.coin?.['NAME']?.toLowerCase().includes(q) ||
+      c.coin?.['TICKER']?.toLowerCase().includes(q)
+    )
+  }, [collection, filter, search])
 
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
   const paged = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
-  // Reset to page 1 whenever filter changes
-  useEffect(() => { setPage(1) }, [filter])
+  useEffect(() => { setPage(1) }, [filter, search])
 
   return (
     <>
@@ -52,12 +59,19 @@ export default function Collection({ collection, filter, setFilter }) {
             {f.label}
           </button>
         ))}
+        <input
+          className="collection-search"
+          type="text"
+          placeholder="search..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
       </div>
 
       <div className="collection-grid">
         {items.length === 0 ? (
           <div className="empty-state" style={{ gridColumn: '1/-1' }}>
-            <div className="empty-icon">🌺</div>
+            <img src={logoImg} alt="CryptoRipz" className="empty-logo" />
             <div className="empty-text">
               {collection.length === 0
                 ? 'your collection is empty — start pulling'
