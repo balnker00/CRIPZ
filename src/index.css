@@ -842,6 +842,17 @@ main {
   100% { opacity: 0; }
 }
 
+/* Rarity-tinted tear line & glow */
+.pack-rip--golden    .pack-rip-tear { background: var(--gold);   box-shadow: 0 0 18px var(--gold),   0 0 50px rgba(255,215,0,0.7); }
+.pack-rip--legendary .pack-rip-tear { background: var(--orange); box-shadow: 0 0 18px var(--orange), 0 0 50px rgba(255,136,0,0.7); }
+.pack-rip--epic      .pack-rip-tear { background: var(--purple); box-shadow: 0 0 18px var(--purple), 0 0 50px rgba(204,0,255,0.7); }
+.pack-rip--rare      .pack-rip-tear { background: var(--blue);   box-shadow: 0 0 18px var(--blue),   0 0 50px rgba(68,136,255,0.7); }
+
+.pack-rip--golden    .pack-rip-half img { filter: drop-shadow(0 0 10px rgba(255,215,0,0.9))  drop-shadow(0 0 30px rgba(255,215,0,0.5)); }
+.pack-rip--legendary .pack-rip-half img { filter: drop-shadow(0 0 10px rgba(255,136,0,0.9))  drop-shadow(0 0 30px rgba(255,136,0,0.5)); }
+.pack-rip--epic      .pack-rip-half img { filter: drop-shadow(0 0 10px rgba(204,0,255,0.9))  drop-shadow(0 0 30px rgba(204,0,255,0.5)); }
+.pack-rip--rare      .pack-rip-half img { filter: drop-shadow(0 0 10px rgba(68,136,255,0.9)) drop-shadow(0 0 30px rgba(68,136,255,0.5)); }
+
 /* Top half: zoom in from cut line → overshoot → fly up-left */
 @keyframes pack-rip-top-fly {
   0%   { transform: scale(0.05);                                                       opacity: 0; }
