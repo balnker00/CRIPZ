@@ -324,10 +324,10 @@ header {
   display: flex;
   justify-content: center;
   gap: 2rem;
-  padding: 0.75rem 1rem;
-  background: rgba(0, 255, 153, 0.025);
+  padding: 0.5rem 1rem;
+  background: rgba(0, 255, 153, 0.02);
   border-top: 1px solid rgba(0, 255, 153, 0.1);
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   flex-wrap: wrap;
 }
 
@@ -361,7 +361,7 @@ main {
   z-index: 10;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 2rem 1rem 3.5rem;
 }
 
 /* ── PACK SECTION ── */
@@ -988,6 +988,7 @@ main {
 }
 
 .empty-icon { font-size: 2rem; margin-bottom: 0.75rem; opacity: 0.4; }
+.empty-logo { width: 64px; height: 64px; object-fit: contain; opacity: 0.35; margin-bottom: 0.75rem; border-radius: 50%; }
 
 .empty-text {
   font-size: 0.75rem;
@@ -1391,6 +1392,27 @@ main {
   background: rgba(0, 255, 153, 0.05);
 }
 
+.collection-search {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  width: 130px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.collection-search::placeholder { color: rgba(255,255,255,0.25); }
+.collection-search:focus { border-color: var(--green); }
+
+[data-theme="light"] .collection-search { color: var(--text); border-color: rgba(0,0,0,0.18); }
+[data-theme="light"] .collection-search::placeholder { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .collection-search:focus { border-color: var(--green); }
+
 /* ── PAGINATION ── */
 .pagination {
   display: flex;
@@ -1655,7 +1677,7 @@ main {
   .ticker-badge  { display: none; }         /* hide $RIPZ badge on tiny screens */
   .tagline       { font-size: 0.46rem; }
 
-  main { padding: 1rem 0.5rem; }
+  main { padding: 1rem 0.5rem 3rem; }
 
   /* Stats bar: 2-column wrap */
   .stats-bar {
@@ -1930,4 +1952,81 @@ main {
 [data-theme="light"] .logo-crypto { color: var(--green); }
 [data-theme="light"] .logo-ripz   { color: var(--red); }
 [data-theme="light"] .tagline     { color: #222; }
+
+/* ══════════════════════════════
+   FOOTER
+══════════════════════════════ */
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  background: var(--bg);
+  border-top: 1px solid rgba(0, 255, 153, 0.08);
+}
+
+.footer-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text);
+  opacity: 0.4;
+  letter-spacing: 0.05em;
+  padding: 0;
+  transition: opacity 0.15s, color 0.15s;
+}
+.footer-link:hover { opacity: 1; color: var(--green); }
+
+.footer-sep {
+  font-size: 0.6rem;
+  color: var(--text);
+  opacity: 0.2;
+}
+
+/* Legal pages back button */
+.legal-back-btn {
+  align-self: flex-start;
+  background: none;
+  border: 1px solid rgba(0, 255, 153, 0.2);
+  border-radius: 4px;
+  color: var(--green);
+  cursor: pointer;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  padding: 0.4rem 0.8rem;
+  margin-top: 0.5rem;
+  transition: background 0.15s, border-color 0.15s;
+}
+.legal-back-btn:hover { background: rgba(0, 255, 153, 0.07); border-color: var(--green); }
+
+/* Contact X link */
+.contact-x-link {
+  display: inline-block;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--green);
+  text-decoration: none;
+  border: 1px solid rgba(0, 255, 153, 0.3);
+  border-radius: 4px;
+  padding: 0.45rem 0.9rem;
+  transition: background 0.15s, border-color 0.15s;
+}
+.contact-x-link:hover { background: rgba(0, 255, 153, 0.08); border-color: var(--green); }
+
+[data-theme="light"] .footer-link { color: var(--text); }
+[data-theme="light"] .footer-link:hover { color: var(--green); }
+[data-theme="light"] .app-footer { border-top-color: rgba(0,119,68,0.12); background: var(--bg); }
+[data-theme="light"] .legal-back-btn { color: var(--green); border-color: rgba(0,119,68,0.3); }
+[data-theme="light"] .contact-x-link { color: var(--green); border-color: rgba(0,119,68,0.3); }
 [data-theme="light"] .ticker-badge { color: var(--red); border-color: var(--red); }
