@@ -71,6 +71,15 @@ export default function About() {
       </section>
 
       <section className="about-section">
+        <div className="about-section-title">🗄️ Data & Storage</div>
+        <ul className="about-list">
+          <li>Your <strong>collection and pack balance</strong> are stored in a dedicated database tied to your account — your cards persist across devices and sessions.</li>
+          <li>Guest progress is saved locally in your browser. <strong>Create an account</strong> to back up your collection permanently.</li>
+          <li>We store only what's needed to run the game: your card collection, pack count, and cooldown state. No wallet data, no keys.</li>
+        </ul>
+      </section>
+
+      <section className="about-section">
         <div className="about-section-title">⚠️ Disclaimer</div>
         <p className="about-desc about-dim-text">CryptoRipz is a collectible card game for entertainment only. Card stats are approximate and for gameplay purposes. Nothing here is financial advice. Always DYOR.</p>
       </section>
