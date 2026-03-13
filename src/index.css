@@ -399,8 +399,8 @@ main {
 }
 
 .pack {
-  width: 390px;
-  height: 536px;
+  width: 293px;
+  height: 402px;
   position: relative;
   transition: transform 0.2s, filter 0.2s;
 }
@@ -1602,7 +1602,7 @@ main {
 
   .stats-bar { gap: 1rem; font-size: 0.65rem; padding: 0.6rem 0.75rem; }
 
-  .pack { width: 300px; height: 412px; }
+  .pack { width: 225px; height: 309px; }
 
   .card      { width: 145px; height: 260px; }
   .card-image { height: 96px; }
@@ -1644,7 +1644,7 @@ main {
     justify-content: flex-start;
   }
 
-  .pack { width: min(86vw, 260px); height: calc(min(86vw, 260px) * 1.373); }
+  .pack { width: min(86vw, 195px); height: calc(min(86vw, 195px) * 1.373); }
   .pack-name  { font-size: 0.55rem; }
   .pull-btn   { font-size: 0.65rem; padding: 0.7rem 1.6rem; }
   .count-btns { gap: 0.5rem; }
