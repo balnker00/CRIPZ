@@ -1,11 +1,16 @@
 import Collection from './Collection'
 import Codex from './Codex'
 import About from './About'
+import PackSection from './PackSection'
+import RevealArea from './RevealArea'
 
 export default function TabsPanel({
   activeTab, setActiveTab,
   coins,
   collection, collFilter, setCollFilter,
+  onOpenPack, pulling, coinsLoading, coinsError,
+  packsLeft, onCooldown, resetAt, rewardAd, showNotif,
+  revealedCards, rewardShare, totalCards,
 }) {
   const totalPulled = collection.reduce((s, c) => s + (c.count ?? 1), 0)
   const uniqueCount = new Set(collection.map(c => c.coin?.['TICKER']).filter(Boolean)).size
@@ -13,6 +18,12 @@ export default function TabsPanel({
   return (
     <div className="tabs-wrapper">
       <div className="tabs">
+        <button
+          className={`tab-btn${activeTab === 'openpacks' ? ' active' : ''}`}
+          onClick={() => setActiveTab('openpacks')}
+        >
+          Open Packs
+        </button>
         <button
           className={`tab-btn${activeTab === 'collection' ? ' active' : ''}`}
           onClick={() => setActiveTab('collection')}
@@ -48,7 +59,26 @@ export default function TabsPanel({
       </div>
 
       <div className="tab-panel active">
-        {activeTab === 'collection' ? (
+        {activeTab === 'openpacks' ? (
+          <>
+            <PackSection
+              onOpen={onOpenPack}
+              pulling={pulling}
+              coinsLoading={coinsLoading}
+              coinsError={coinsError}
+              packsLeft={packsLeft}
+              onCooldown={onCooldown}
+              resetAt={resetAt}
+              rewardAd={rewardAd}
+              showNotif={showNotif}
+            />
+            <RevealArea
+              cards={revealedCards}
+              onShare={rewardShare}
+              totalCards={totalCards}
+            />
+          </>
+        ) : activeTab === 'collection' ? (
           <Collection
             collection={collection}
             filter={collFilter}

@@ -327,7 +327,7 @@ header {
   gap: 2rem;
   padding: 0.75rem 1rem;
   background: rgba(0, 255, 153, 0.025);
-  border-bottom: 1px solid rgba(0, 255, 153, 0.1);
+  border-top: 1px solid rgba(0, 255, 153, 0.1);
   font-size: 0.7rem;
   flex-wrap: wrap;
 }
