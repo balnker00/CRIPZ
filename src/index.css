@@ -211,11 +211,10 @@ body::after {
 header {
   position: relative;
   z-index: 10;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  padding: 1.2rem 1.5rem 1rem;
-  border-bottom: 1px solid rgba(0, 255, 153, 0.15);
+  padding: 1.2rem 1.5rem 0.5rem;
   background: transparent;
 }
 
@@ -307,7 +306,7 @@ header {
 .tagline {
   font-family: 'Share Tech Mono', monospace;
   font-size: 0.62rem;
-  color: var(--red);
+  color: #ffffff;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   opacity: 0.8;
@@ -327,7 +326,7 @@ header {
   gap: 2rem;
   padding: 0.75rem 1rem;
   background: rgba(0, 255, 153, 0.025);
-  border-bottom: 1px solid rgba(0, 255, 153, 0.1);
+  border-top: 1px solid rgba(0, 255, 153, 0.1);
   font-size: 0.7rem;
   flex-wrap: wrap;
 }
@@ -1257,7 +1256,7 @@ main {
   border: none;
   border-radius: 0;
   overflow: visible;
-  margin-top: 2rem;
+  margin-top: 0.25rem;
 }
 
 /* ── TABS ── */
@@ -1300,6 +1299,34 @@ main {
 }
 
 .tab-btn.active .tab-badge { background: rgba(0, 255, 153, 0.22); }
+
+.tabs-user {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 0.75rem;
+  flex-shrink: 0;
+}
+.tabs-username {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: var(--green);
+  opacity: 0.7;
+}
+.tabs-auth-btn {
+  background: transparent;
+  border: 1px solid #1a3a1a;
+  color: #555;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  font-family: inherit;
+}
+.tabs-auth-btn--login { color: var(--green); }
 
 .tab-panel { padding: 1.5rem 0; }
 
@@ -1586,8 +1613,7 @@ main {
   html { font-size: 16px; }
 
   header {
-    padding: 0.9rem 1rem 0.75rem;
-    grid-template-columns: 1fr auto 1fr; /* keep logo centred */
+    padding: 0.9rem 1rem 0.4rem;
   }
   .logo-img { height: 72px; width: 72px; }
   .logo-wordmark { font-size: clamp(1.4rem, 7vw, 2.4rem); }
@@ -1620,8 +1646,7 @@ main {
   html { font-size: 15px; }
 
   header {
-    padding: 0.75rem 0.75rem 0.6rem;
-    grid-template-columns: 1fr auto 1fr;
+    padding: 0.75rem 0.75rem 0.3rem;
   }
   .header-spacer { display: block; }
   .logo { gap: 0.45rem; justify-content: center; }
@@ -1904,5 +1929,5 @@ main {
 /* Auth screen in light mode */
 [data-theme="light"] .logo-crypto { color: var(--green); }
 [data-theme="light"] .logo-ripz   { color: var(--red); }
-[data-theme="light"] .tagline     { color: var(--red); }
+[data-theme="light"] .tagline     { color: #222; }
 [data-theme="light"] .ticker-badge { color: var(--red); border-color: var(--red); }

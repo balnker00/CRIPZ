@@ -11,7 +11,7 @@ export function useGame(user) {
   const [collection, setCollection]     = useState([])
   const [revealedCards, setRevealedCards] = useState([])
   const [collFilter, setCollFilter]     = useState('ALL')
-  const [activeTab, setActiveTab]       = useState('collection')
+  const [activeTab, setActiveTab]       = useState('openpacks')
   const [notif, setNotif]               = useState({ msg: '', rare: false, show: false })
   const [flash, setFlash]               = useState(false)
   const [pulling, setPulling]           = useState(false)
@@ -70,7 +70,7 @@ export function useGame(user) {
     if (!user) {
       setRevealedCards([])
       setCollFilter('ALL')
-      setActiveTab('collection')
+      setActiveTab('openpacks')
     }
   }, [user])
 

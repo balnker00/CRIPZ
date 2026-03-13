@@ -3,8 +3,6 @@ import { useAuth } from './hooks/useAuth'
 import { useGame } from './hooks/useGame'
 import Header from './components/Header'
 import StatsBar from './components/StatsBar'
-import PackSection from './components/PackSection'
-import RevealArea from './components/RevealArea'
 import TabsPanel from './components/TabsPanel'
 import Notification from './components/Notification'
 import LoadingScreen from './components/LoadingScreen'
@@ -69,12 +67,17 @@ export default function App() {
       <div className={`app-content${!appReady ? ' app-content-hidden' : ''}`}>
         {flash && <div className="flash" />}
 
-        <Header username={username} onSignOut={signOut} onLogin={() => setShowAuth(true)} />
-        <StatsBar stats={stats} />
+        <Header />
 
         <main>
-          <PackSection
-            onOpen={handleOpenPack}
+          <TabsPanel
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            coins={coins}
+            collection={collection}
+            collFilter={collFilter}
+            setCollFilter={setCollFilter}
+            onOpenPack={handleOpenPack}
             pulling={pulling}
             coinsLoading={coinsLoading}
             coinsError={coinsError}
@@ -83,23 +86,16 @@ export default function App() {
             resetAt={resetAt}
             rewardAd={rewardAd}
             showNotif={showNotif}
-          />
-
-          <RevealArea
-            cards={revealedCards}
-            onShare={rewardShare}
+            revealedCards={revealedCards}
+            rewardShare={rewardShare}
             totalCards={stats.totalCards}
-          />
-
-          <TabsPanel
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            coins={coins}
-            collection={collection}
-            collFilter={collFilter}
-            setCollFilter={setCollFilter}
+            username={username}
+            onSignOut={signOut}
+            onLogin={() => setShowAuth(true)}
           />
         </main>
+
+        <StatsBar stats={stats} />
 
         <Notification msg={notif.msg} rare={notif.rare} show={notif.show} />
       </div>
