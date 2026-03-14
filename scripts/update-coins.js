@@ -1,12 +1,12 @@
 // scripts/update-coins.js
-// Fetches current MARKET CAP, ATH, and HOLDERS from Birdeye and updates the coinz table.
+// Fetches current MARKET CAP and HOLDERS from Birdeye and updates the coinz table.
 // Run via GitHub Actions every 12h. Requires Node 18+.
 
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL        = process.env.SUPABASE_URL
+const SUPABASE_URL         = process.env.SUPABASE_URL
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY
-const BIRDEYE_API_KEY     = process.env.BIRDEYE_API_KEY
+const BIRDEYE_API_KEY      = process.env.BIRDEYE_API_KEY
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY || !BIRDEYE_API_KEY) {
   console.error('Missing required env vars: SUPABASE_URL, SUPABASE_SERVICE_KEY, BIRDEYE_API_KEY')
@@ -33,7 +33,7 @@ function chunk(arr, size) {
   return out
 }
 
-/** Format a raw number into display string: 1500000 → "1.5M" */
+/** Format a raw number into display string: 1500000 → "1.50M" */
 function fmt(n) {
   if (n == null || isNaN(n)) return null
   if (n >= 1e9) return `${(n / 1e9).toFixed(2)}B`
@@ -42,7 +42,7 @@ function fmt(n) {
   return String(Math.round(n))
 }
 
-/** GET with retry logic. Backs off on 429 and transient errors. */
+/** GET with retry + exponential backoff. Handles 429 rate-limit responses. */
 async function get(url, retries = 4) {
   let delay = 2000
   for (let attempt = 1; attempt <= retries; attempt++) {
@@ -53,7 +53,7 @@ async function get(url, retries = 4) {
         await sleep(60_000)
         continue
       }
-      if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`)
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
       return await res.json()
     } catch (err) {
       if (attempt === retries) throw err
@@ -77,11 +77,9 @@ async function updateMarketCaps(coins) {
     let data
 
     try {
-      data = await get(
-        `https://public-api.birdeye.so/defi/multi_price?list_address=${addrList}`
-      )
+      data = await get(`https://public-api.birdeye.so/defi/multi_price?list_address=${addrList}`)
     } catch (err) {
-      console.error(`  [MCAP] Batch ${i + 1} fetch failed:`, err.message)
+      console.error(`  [MCAP] Batch ${i + 1} failed:`, err.message)
       await sleep(1500)
       continue
     }
@@ -91,7 +89,6 @@ async function updateMarketCaps(coins) {
 
     for (const coin of batch) {
       const entry = tokenMap[coin['CONTRACT ADDRESS']]
-      // Birdeye returns marketCap or mc depending on endpoint version
       const mcap  = entry?.marketCap ?? entry?.mc ?? null
       if (mcap != null) {
         upserts.push({ id: coin.id, 'MARKET CAP': fmt(mcap) })
@@ -113,15 +110,14 @@ async function updateMarketCaps(coins) {
   console.log(`\n[MCAP] Done — ${updated} coins updated`)
 }
 
-// ── Phase 2: HOLDERS + ATH via token_overview (one at a time) ────────────
+// ── Phase 2: HOLDERS via token_overview (one per coin) ────────────────────
 
-async function updateHoldersAndAth(coins) {
-  console.log(`\n[HOLDERS/ATH] ${coins.length} coins — one request per coin`)
-  console.log('  Estimated time at 700ms/req:', Math.round((coins.length * 0.7) / 60), 'minutes\n')
+async function updateHolders(coins) {
+  console.log(`\n[HOLDERS] ${coins.length} coins — one request per coin`)
+  console.log(`  Estimated time at 700ms/req: ~${Math.round((coins.length * 0.7) / 60)} minutes\n`)
 
-  let holdersUpdated = 0
-  let athUpdated     = 0
-  let skipped        = 0
+  let updated = 0
+  let skipped = 0
 
   for (const [i, coin] of coins.entries()) {
     let data
@@ -131,50 +127,33 @@ async function updateHoldersAndAth(coins) {
         `https://public-api.birdeye.so/defi/token_overview?address=${coin['CONTRACT ADDRESS']}`
       )
     } catch (err) {
-      console.error(`  Coin ${coin.id} (${coin['CONTRACT ADDRESS']}) failed:`, err.message)
+      console.error(`  Coin ${coin.id} failed:`, err.message)
       skipped++
       await sleep(700)
       continue
     }
 
-    const tokenData = data?.data
-    if (!tokenData) { skipped++; await sleep(700); continue }
-
-    const patch = {}
-
-    const holders = tokenData.holder ?? tokenData.holders ?? null
+    const holders = data?.data?.holder ?? data?.data?.holders ?? null
     if (holders != null) {
-      patch['HOLDERS'] = fmt(holders)
-      holdersUpdated++
-    }
-
-    // Birdeye returns ATH as all-time-high price in USD. We store it formatted.
-    const ath = tokenData.ath ?? tokenData.athPrice ?? null
-    if (ath != null) {
-      patch['ATH'] = `$${Number(ath).toFixed(ath < 0.01 ? 6 : 4)}`
-      athUpdated++
-    }
-
-    if (Object.keys(patch).length > 0) {
       const { error } = await supabase
         .from('coinz')
-        .update(patch)
+        .update({ 'HOLDERS': fmt(holders) })
         .eq('id', coin.id)
-      if (error) console.error(`  Supabase update error for coin ${coin.id}:`, error.message)
+      if (!error) updated++
+      else console.error(`  Supabase error for coin ${coin.id}:`, error.message)
+    } else {
+      skipped++
     }
 
-    // Progress log every 100 coins
     if ((i + 1) % 100 === 0 || i === coins.length - 1) {
-      console.log(
-        `  [${i + 1}/${coins.length}] holders: ${holdersUpdated} | ath: ${athUpdated} | skipped: ${skipped}`
-      )
+      console.log(`  [${i + 1}/${coins.length}] updated: ${updated} | skipped: ${skipped}`)
     }
 
     // 700ms delay ≈ 85 req/min — safely under 100/min free-tier limit
     await sleep(700)
   }
 
-  console.log(`\n[HOLDERS/ATH] Done — holders: ${holdersUpdated} | ath: ${athUpdated} | skipped: ${skipped}`)
+  console.log(`\n[HOLDERS] Done — ${updated} updated | ${skipped} skipped`)
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────
@@ -183,7 +162,6 @@ async function main() {
   console.log('=== CryptoRipz coin data updater ===')
   console.log('Started:', new Date().toISOString())
 
-  // Fetch all coins that have a contract address
   const { data: coins, error } = await supabase
     .from('coinz')
     .select('id, "CONTRACT ADDRESS"')
@@ -191,14 +169,14 @@ async function main() {
     .neq('"CONTRACT ADDRESS"', '')
 
   if (error) {
-    console.error('Failed to fetch coins from Supabase:', error.message)
+    console.error('Failed to fetch coins:', error.message)
     process.exit(1)
   }
 
   console.log(`Loaded ${coins.length} coins with contract addresses`)
 
   await updateMarketCaps(coins)
-  await updateHoldersAndAth(coins)
+  await updateHolders(coins)
 
   console.log('\n=== Finished:', new Date().toISOString(), '===')
 }
