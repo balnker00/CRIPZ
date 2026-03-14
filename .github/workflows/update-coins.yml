@@ -1,0 +1,32 @@
+name: Update Coin Data
+
+on:
+  schedule:
+    # Runs at 00:00 and 12:00 UTC every day
+    - cron: '0 0,12 * * *'
+  workflow_dispatch: # allows manual trigger from GitHub Actions tab
+
+jobs:
+  update:
+    name: Fetch latest MCAP, ATH, HOLDERS from Birdeye
+    runs-on: ubuntu-latest
+    timeout-minutes: 150  # 7000 coins at ~700ms each ≈ 82 min for holders phase
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install @supabase/supabase-js
+
+      - name: Run update script
+        run: node scripts/update-coins.js
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          BIRDEYE_API_KEY:      ${{ secrets.BIRDEYE_API_KEY }}
