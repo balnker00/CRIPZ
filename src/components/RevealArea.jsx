@@ -13,7 +13,7 @@ function buildTweetText(cards, totalCards) {
   const baseRarity = isGolden ? best.rarity.replace('GOLDEN_', '') : best.rarity
   const goldenTag  = isGolden ? '★ GOLDEN ' : ''
 
-  return `just pulled ${cards.length} memecoin cards on CryptoRipz 🃏\n\nbest pull: ${goldenTag}${baseRarity} — ${best.coin?.['NAME'] ?? best.coin?.name}\n\n${totalCards} cards in my collection and counting`
+  return `just pulled ${cards.length} memecoin cards on CryptoRipz 🃏\n\nbest pull: ${goldenTag}${baseRarity} — ${best.coin?.['NAME'] ?? best.coin?.name}\n\n${totalCards} cards in my collection and counting\n\nCheck https://cryptoripz.com to ripzzz your own packs`
 }
 
 export default function RevealArea({ cards, onShare, totalCards = 0 }) {

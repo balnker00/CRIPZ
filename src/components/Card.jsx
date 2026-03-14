@@ -25,7 +25,7 @@ function buildTweetUrl(coin, rarity) {
   const isGolden  = rarity.startsWith('GOLDEN_')
   const goldenTag = isGolden ? '★ GOLDEN ' : ''
   const coinName  = (coin['NAME'] ?? '').toUpperCase()
-  const text      = `I just RIPZZZed ${goldenTag}${coinName} on CryptoRipz 🃏`
+  const text      = `I just RIPZZZed ${goldenTag}${coinName} on CryptoRipz 🃏\n\nCheck https://cryptoripz.com to ripzzz your own packs`
   return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
 }
 
