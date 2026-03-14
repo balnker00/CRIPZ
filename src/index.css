@@ -1250,6 +1250,32 @@ main {
   color: white;
 }
 
+/* Share toast */
+.card-share-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  background: rgba(10, 10, 10, 0.92);
+  border: 1px solid rgba(0, 255, 153, 0.35);
+  color: rgba(0, 255, 153, 0.9);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  padding: 0.55rem 1.2rem;
+  border-radius: 4px;
+  pointer-events: auto;
+  cursor: pointer;
+  white-space: nowrap;
+  animation: toastIn 0.2s ease;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0);   }
+}
+
 /* Duplicate count badge — top-right corner */
 .card-count-badge {
   position: absolute;
