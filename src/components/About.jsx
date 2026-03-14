@@ -6,7 +6,7 @@ export default function About() {
         <div className="about-section-title">🔷 About CryptoRipz</div>
         <ul className="about-list">
           <li>Collect memecoin trading cards through gacha pack pulls. Each card represents a real memecoin — from legendary OGs to fresh off-the-pump newcomers.</li>
-          <li>Each pack contains <strong>5 cards</strong>. Open packs to grow your Collection.</li>
+          <li>Each pack contains <strong>4 cards</strong>. Open packs to grow your Collection.</li>
           <li>Cards are pulled randomly by rarity weight. Rarer pulls = bigger market cap, bigger legend.</li>
           <li>Any card can come as a <strong style={{ color: '#FFD700' }}>★ Golden</strong> copy — a special foil version with ~12% chance per pull.</li>
         </ul>
