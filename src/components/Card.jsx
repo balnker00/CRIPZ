@@ -15,6 +15,14 @@ function rarityClass(rarity) {
   return rarity.toLowerCase().replace('_', '-')
 }
 
+/** Route image through wsrv.nl so CORS headers are always present.
+ *  Required for both display (crossOrigin="anonymous") and html2canvas capture. */
+function proxyImg(url) {
+  if (!url) return null
+  if (url.startsWith('data:') || url.startsWith('/')) return url
+  return `https://wsrv.nl/?url=${encodeURIComponent(url)}`
+}
+
 function dexscreenerUrl(coin) {
   const contract = coin['CONTRACT ADDRESS'] || coin['CONTRACT']
   if (contract) return `https://dexscreener.com/solana/${contract}`
@@ -134,9 +142,8 @@ const Card = memo(function Card({ coin, rarity, animate = false, delay = 0, coun
 
       <div className="card-image">
         {coin['IMAGE URL'] && !imgErr
-          && !(coin['IMAGE URL'].startsWith('http://') && location.protocol === 'https:')
           ? <img
-              src={coin['IMAGE URL']}
+              src={proxyImg(coin['IMAGE URL'])}
               alt={coin['NAME']}
               loading="lazy"
               onError={() => setImgErr(true)}
