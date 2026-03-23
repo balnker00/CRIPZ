@@ -11,12 +11,12 @@ export default function Contact({ onBack }) {
           For questions, feedback, bug reports, or partnership inquiries, hit us on X (Twitter).
         </p>
         <a
-          href="https://x.com/cryptoripz"
+          href="https://x.com/cryptoripz_sol"
           target="_blank"
           rel="noopener noreferrer"
           className="contact-x-link"
         >
-          ↗ @cryptoripz on X
+          ↗ @cryptoripz_sol on X
         </a>
       </section>
 
