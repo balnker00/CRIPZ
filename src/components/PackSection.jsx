@@ -39,13 +39,23 @@ function bestRipTier(cards) {
   return null
 }
 
+const INTRO_KEY = 'cripz-intro-seen'
+
 export default function PackSection({
   onOpen, pulling, coinsLoading, coinsError,
   packsLeft, onCooldown, resetAt, rewardAd, showNotif,
-  revealedCards,
+  revealedCards, onAbout,
 }) {
   const [adOpen, setAdOpen] = useState(false)
   const [adSecs, setAdSecs] = useState(AD_DURATION)
+  const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem(INTRO_KEY))
+  const [hidingIntro, setHidingIntro] = useState(false)
+
+  function dismissIntro() {
+    setHidingIntro(true)
+    setTimeout(() => { setShowIntro(false); setHidingIntro(false) }, 500)
+    sessionStorage.setItem(INTRO_KEY, '1')
+  }
   const countdown   = useCountdown(resetAt)
   const packLocked  = pulling || coinsLoading || !!coinsError || onCooldown
   const btnDisabled = packLocked
@@ -78,6 +88,16 @@ export default function PackSection({
   return (
     <div className="pack-section">
       <div className="section-label">// Season 1 - the memes //</div>
+
+      {showIntro && (
+        <div className={`intro-banner${hidingIntro ? ' hiding' : ''}`}>
+          <span className="intro-banner-text">
+            Collect memecoin trading cards through gacha pack pulls. Each card represents a real memecoin — from legendary OGs to fresh off-the-pump newcomers.{' '}
+            <button className="intro-banner-link" onClick={onAbout}>learn more →</button>
+          </span>
+          <button className="intro-banner-close" onClick={dismissIntro}>✕</button>
+        </div>
+      )}
 
       {pulling && (
         <div className={`pack-logo-rip${bestRipTier(revealedCards) ? ` pack-rip--${bestRipTier(revealedCards)}` : ''}`}>
