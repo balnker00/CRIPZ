@@ -82,6 +82,7 @@ export default function TabsPanel({
               rewardAd={rewardAd}
               showNotif={showNotif}
               revealedCards={revealedCards}
+              onAbout={() => setActiveTab('about')}
             />
             <RevealArea
               cards={revealedCards}

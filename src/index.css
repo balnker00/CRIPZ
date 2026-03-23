@@ -403,6 +403,18 @@ main {
   color: var(--text);
   opacity: 0.85;
 }
+.intro-banner-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--green);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.intro-banner-link:hover { opacity: 0.75; }
 .intro-banner-close {
   background: none;
   border: none;

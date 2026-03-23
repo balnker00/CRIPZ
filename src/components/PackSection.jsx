@@ -44,7 +44,7 @@ const INTRO_KEY = 'cripz-intro-seen'
 export default function PackSection({
   onOpen, pulling, coinsLoading, coinsError,
   packsLeft, onCooldown, resetAt, rewardAd, showNotif,
-  revealedCards,
+  revealedCards, onAbout,
 }) {
   const [adOpen, setAdOpen] = useState(false)
   const [adSecs, setAdSecs] = useState(AD_DURATION)
@@ -92,7 +92,8 @@ export default function PackSection({
       {showIntro && (
         <div className={`intro-banner${hidingIntro ? ' hiding' : ''}`}>
           <span className="intro-banner-text">
-            Collect memecoin trading cards through gacha pack pulls. Each card represents a real memecoin — from legendary OGs to fresh off-the-pump newcomers.
+            Collect memecoin trading cards through gacha pack pulls. Each card represents a real memecoin — from legendary OGs to fresh off-the-pump newcomers.{' '}
+            <button className="intro-banner-link" onClick={onAbout}>learn more →</button>
           </span>
           <button className="intro-banner-close" onClick={dismissIntro}>✕</button>
         </div>
