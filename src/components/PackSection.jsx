@@ -51,12 +51,6 @@ export default function PackSection({
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem(INTRO_KEY))
   const [hidingIntro, setHidingIntro] = useState(false)
 
-  useEffect(() => {
-    if (!showIntro) return
-    const t = setTimeout(dismissIntro, 6000)
-    return () => clearTimeout(t)
-  }, [showIntro]) // eslint-disable-line react-hooks/exhaustive-deps
-
   function dismissIntro() {
     setHidingIntro(true)
     setTimeout(() => { setShowIntro(false); setHidingIntro(false) }, 500)
