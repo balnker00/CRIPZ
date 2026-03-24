@@ -8,7 +8,7 @@ export default function Contact({ onBack }) {
       <section className="about-section">
         <div className="about-section-title">Reach Us</div>
         <p className="about-desc">
-          For questions, feedback, bug reports, or partnership inquiries, hit us on X (Twitter).
+          For questions, feedback, bug reports, or partnership inquiries, hit us on X (Twitter) or Telegram.
         </p>
         <a
           href="https://x.com/cryptoripz_sol"
@@ -17,6 +17,14 @@ export default function Contact({ onBack }) {
           className="contact-x-link"
         >
           ↗ @cryptoripz_sol on X
+        </a>
+        <a
+          href="https://t.me/cryptoripz"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="contact-x-link"
+        >
+          ↗ t.me/cryptoripz on Telegram
         </a>
       </section>
 
